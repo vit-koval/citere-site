@@ -1,4 +1,4 @@
-# Sitera — детальная структура сайта (v2)
+# Citere — детальная структура сайта (v2)
 
 Дополняет спецификацию v1. Здесь: что именно на каждой странице, в каком порядке, какая разметка, что из этого генерируется автоматически.
 
@@ -18,7 +18,7 @@
 **Задача:** за 15 секунд человек понимает кто мы и верит; за один проход краулер получает определение организации, доказательства работы и карту сайта.
 
 **Экран 1 — кто мы (без картинок, текст)**
-- `<h1>`: Sitera — independent monitoring of AI chatbots for Russian disinformation
+- `<h1>`: Citere — independent monitoring of AI chatbots for Russian disinformation
 - Подзаголовок, 1–2 предложения: что делаем и чем отличаемся. Например: «We test consumer AI chatbots in the markets Russia targets, document when they repeat known false narratives, escalate to the platforms, and re-measure whether it changed.»
 - Три числа в строку (живые, из Citere): claims documented / chatbot responses tested / escalations sent. Под ними — «updated 12 Sep 2026», ссылка на методологию.
 - Две кнопки-ссылки: Registry, Latest report. Никаких «Book a demo» на главной.
@@ -38,7 +38,7 @@ Detect → Attribute → Publish debunk → Escalate → Confirm with authoritie
 - Таблица «Latest findings»: 5 последних карточек — claim, вердикт, боты, дата, статус эскалации.
 - Блок «Escalation summary»: отправлено / получен ответ / подтверждено изменение — три числа со ссылкой на `/escalations/`.
 - Блок «Before / after»: одна лучшая пара цифр («Claim C1-003: repeat-rate 6/8 bots → 2/8 after escalation, re-measured 24 Oct 2026») со ссылкой на карточку.
-- Блок «Our data is used by»: логотипы не нужны, нужен список ссылок на публикации партнёров, которые ссылались на Sitera, с датами. Пока пусто — не показывать блок вообще, не ставить заглушки.
+- Блок «Our data is used by»: логотипы не нужны, нужен список ссылок на публикации партнёров, которые ссылались на Citere, с датами. Пока пусто — не показывать блок вообще, не ставить заглушки.
 
 **Экран 5 — доверие (E-E-A-T)**
 - Кто мы: юрлицо, страна, Дія.City-резидентство, год основания, состав команды со ссылками на `/about/`.
@@ -78,7 +78,7 @@ Detect → Attribute → Publish debunk → Escalate → Confirm with authoritie
 
 **Блок 0 — шапка**
 - `<h1>` = сам claim в кавычках, дословно как он звучит в пропаганде («40% of Western aid to Ukraine has been stolen»).
-- Строка вердикта: **FALSE** · verdict issued 15 Sep 2026 · last updated 24 Oct 2026 · Sitera claim ID `C1-003`.
+- Строка вердикта: **FALSE** · verdict issued 15 Sep 2026 · last updated 24 Oct 2026 · Citere claim ID `C1-003`.
 - Одно предложение: где встречается (кластер, языки, страны).
 
 **Блок 1 — вердикт и почему (это то, что цитирует модель)**
@@ -90,7 +90,7 @@ Detect → Attribute → Publish debunk → Escalate → Confirm with authoritie
 Список: организация, что именно установлено, дата, ссылка. Отдельно помечены официальные (аудиты, суды, госорганы) и фактчекерские.
 
 **Блок 3 — подтверждения (authority stack)**
-Кто ещё независимо признал это фейком: ЦПД, SPRAVDI, EUvsDisinfo, VoxCheck, StopFake — с датами и ссылками. Это блок, ради которого модель считает вердикт консенсусным, а не мнением Sitera.
+Кто ещё независимо признал это фейком: ЦПД, SPRAVDI, EUvsDisinfo, VoxCheck, StopFake — с датами и ссылками. Это блок, ради которого модель считает вердикт консенсусным, а не мнением Citere.
 
 **Блок 4 — где это появилось в чат-ботах**
 Таблица: chatbot | country | language | persona | date | model version | verdict (REPEAT/REFUTE/DODGE/U_context) | cited blacklisted domains.
@@ -108,7 +108,7 @@ Detect → Attribute → Publish debunk → Escalate → Confirm with authoritie
 | Platform report | OpenAI | 09 Oct 2026 | Acknowledged 14 Oct |
 | Platform report | xAI | 09 Oct 2026 | No response (21 days) |
 | Domain complaint | registrar of X | 09 Oct 2026 | Submitted |
-| Debunk published | sitera.ai | 22 Sep 2026 | Live |
+| Debunk published | citere.ai | 22 Sep 2026 | Live |
 | Partner publication | VoxCheck | 01 Oct 2026 | Published → link |
 | Authority confirmation | ЦПД | 03 Oct 2026 | Confirmed → link |
 | Re-measurement | 8 chatbots | 24 Oct 2026 | Completed → results below |
@@ -126,7 +126,7 @@ Detect → Attribute → Publish debunk → Escalate → Confirm with authoritie
 - Как цитировать (готовая строка + BibTeX).
 - Соседние карточки того же кластера.
 
-**Разметка:** одна `ClaimReview` (claimReviewed, reviewRating с alternateName=FALSE, itemReviewed → Claim с appearance = наблюдения, author → Organization Sitera) + `Article` + `BreadcrumbList`. `dateModified` = дата последнего изменения блоков 4/6/7.
+**Разметка:** одна `ClaimReview` (claimReviewed, reviewRating с alternateName=FALSE, itemReviewed → Claim с appearance = наблюдения, author → Organization Citere) + `Article` + `BreadcrumbList`. `dateModified` = дата последнего изменения блоков 4/6/7.
 
 ---
 

@@ -1,4 +1,4 @@
-# Sitera — контент сайта v4: сообщение, тон, тексты
+# Citere — контент сайта v4: сообщение, тон, тексты
 
 Заменяет v3. Коммерции нет. Фокус — российская дезинформация против Украины в ответах AI-чат-ботов.
 
@@ -16,7 +16,7 @@
 
 **4. Конкретное вместо общего.** Не «AI chatbots», а «ChatGPT, Gemini, Grok, Claude, Copilot, Perplexity, DeepSeek, Le Chat». Не «we work with partners», а названия. Не «regularly», а «every month».
 
-**5. Глагол вперёд.** Что мы *делаем*, а не кем мы *являемся*. «We test», «we trace», «we publish» — не «Sitera is a platform that…».
+**5. Глагол вперёд.** Что мы *делаем*, а не кем мы *являемся*. «We test», «we trace», «we publish» — не «Citere is a platform that…».
 
 **6. Честность как маркетинг.** В этой нише доверие — единственный актив. Каждое ограничение, названное самими, прибавляет веса. Раздел Limitations — не оправдание, а доказательство серьёзности.
 
@@ -35,7 +35,7 @@
 Всё остальное — производные от этих четырёх строк.
 
 **Позиционирование (кто мы, одной фразой):**
-> Sitera is an independent Ukrainian research team that tests public AI chatbots for Russian disinformation about Ukraine — and gets it corrected.
+> Citere is an independent Ukrainian research team that tests public AI chatbots for Russian disinformation about Ukraine — and gets it corrected.
 
 **Проблема (почему это важно, одной фразой):**
 > Russian influence operations now target AI models, not just people: millions of articles are published to be indexed and quoted by chatbots, and nobody was measuring whether it works.
@@ -145,7 +145,7 @@ Browse the registry · Read the latest report · Download the data · See the es
 > **We correct in the open.** Errors are fixed on the page, dated, and listed in the changelog. Never silently. → Corrections
 
 Затем одна строка:
-> Sitera is a Ukrainian company and a Diia.City resident. We are self-funded and have no commercial relationship with any platform we test. → About
+> Citere is a Ukrainian company and a Diia.City resident. We are self-funded and have no commercial relationship with any platform we test. → About
 
 ### D6. Свежее
 
@@ -154,8 +154,8 @@ Browse the registry · Read the latest report · Download the data · See the es
 
 ### Meta
 
-- Title: `Do AI chatbots repeat Russian disinformation about Ukraine? — Sitera`
-- Description: `Sitera tests ChatGPT, Gemini, Grok, Claude, Copilot, Perplexity, DeepSeek and Le Chat for Russian disinformation about Ukraine, reports what it finds to the platforms, and measures whether it changes. Open data.`
+- Title: `Do AI chatbots repeat Russian disinformation about Ukraine? — Citere`
+- Description: `Citere tests ChatGPT, Gemini, Grok, Claude, Copilot, Perplexity, DeepSeek and Le Chat for Russian disinformation about Ukraine, reports what it finds to the platforms, and measures whether it changes. Open data.`
 
 ---
 
@@ -215,7 +215,7 @@ Browse the registry · Read the latest report · Download the data · See the es
 
 | Action | To | Date | Status |
 |---|---|---|---|
-| Published this page | sitera.ai | 22 Sep 2026 | Live |
+| Published this page | citere.ai | 22 Sep 2026 | Live |
 | Reported | OpenAI | 09 Oct 2026 | Acknowledged 14 Oct 2026 |
 | Reported | xAI | 09 Oct 2026 | No response (21 days) |
 | Domain complaint | Registrar of `{{domain}}` | 09 Oct 2026 | Submitted |
@@ -258,7 +258,7 @@ Browse the registry · Read the latest report · Download the data · See the es
 > We classify behaviour, not truth. For each documented false claim, we ask what a chatbot's answer did with it: repeated it, contextualised it, refuted it, or dodged. This is more reproducible than scoring "accuracy", because effective disinformation almost always contains a grain of truth — and accuracy scoring breaks on exactly those cases.
 
 **About `/about/`**
-> Sitera is a Ukrainian research company, registered in `{{city}}` and a Diia.City resident since May 2026. We test public AI chatbots for Russian disinformation about Ukraine and work to get it corrected. We are self-funded, have no commercial relationship with any platform we test, and share our findings with Ukrainian institutions and European fact-checkers free of charge.
+> Citere is a Ukrainian research company, registered in `{{city}}` and a Diia.City resident since May 2026. We test public AI chatbots for Russian disinformation about Ukraine and work to get it corrected. We are self-funded, have no commercial relationship with any platform we test, and share our findings with Ukrainian institutions and European fact-checkers free of charge.
 >
 > **Corrections.** If we get something wrong, we fix the page, date the change, and list it in the changelog. Never silently. → corrections@`{{domain}}`
 
