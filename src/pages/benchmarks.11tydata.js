@@ -25,7 +25,7 @@ module.exports = {
         idx: true, bar: true, more: "/registry/", moreLabel: "Browse by cluster" },
       { key: "most_repeated_claims", title: "Most-repeated claims", sub: "all runs, all personas pooled",
         idx: true, bar: false, more: "/registry/", moreLabel: "Full registry" },
-      { key: "biggest_change", title: "Biggest change after we reported", sub: "before → after",
+      { key: "biggest_change", title: "Biggest change after we reported", sub: "P2 · before → after",
         idx: false, bar: false, more: data.navigation.has.escalations ? "/escalations/" : null,
         moreLabel: "Escalation log" }
     ],

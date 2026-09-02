@@ -20,7 +20,7 @@
     - Every page that shows marks must also render the trademark line from logos.json.
 #}
 
-{% macro botMark(logos, key, size="sm") %}
+{% macro botMark(logos, key, size="sm", decorative=false) %}
   {%- set bot = logos.byKey[key] -%}
   {%- if not bot -%}
     <span class="mini" style="background:#6b7280" aria-hidden="true">??</span>
@@ -30,7 +30,7 @@
     {%- if bot.file and (("assets/logos/" ~ bot.file) | fileExists) -%}
       <img class="botmark botmark-{{ size }}"
            src="{{ ('/assets/logos/' ~ bot.file) | url }}"
-           alt="{{ bot.name }}"
+           alt="{{ "" if decorative else bot.name }}"
            width="{{ px }}" height="{{ px }}" loading="lazy" decoding="async">
     {%- else -%}
       <span class="{{ cls }}" style="background:{{ bot.brand_color }}" aria-hidden="true"

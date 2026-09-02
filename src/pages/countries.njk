@@ -34,7 +34,7 @@ permalink: "{{ '/countries/' | loc(lang) }}"
     <th scope="col">{{ 'col.spread' | t }}</th></tr></thead>
   <tbody>
   {%- for row in profiles.matrix.rows %}
-    <tr><td class="cl"><span class="markcell">{{ botMark(logos, row.chatbot, "sm") }}{{ row.name }}</span></td>
+    <tr><td class="cl"><span class="markcell">{{ botMark(logos, row.chatbot, "sm", true) }}{{ row.name }}</span></td>
       {%- for cell in row.cells %}<td class="rmeta">{% if cell %}{{ cell.rate | rate }}{% else %}<span style="color:var(--dimmer)">&mdash;</span>{% endif %}</td>{% endfor %}
       <td class="rmeta" style="color:var({{ '--false' if row.spread > 0.025 else ('--mislead' if row.spread > 0.015 else '--dim') }})">{{ row.spread | pp | replace("+","") }}</td></tr>
   {%- endfor %}

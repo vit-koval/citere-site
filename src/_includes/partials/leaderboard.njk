@@ -6,7 +6,7 @@
   {%- for row in lbRows | take(5) %}
   <div class="row"{% if row.persona %} data-persona="{{ row.persona }}"{% endif %}>
     {%- if lbShowIdx %}<span class="idx">{{ loop.index }}</span>{% endif %}
-    {%- if row.chatbot %}{{ botMark(logos, row.chatbot, "sm") }}{% endif %}
+    {%- if row.chatbot %}{{ botMark(logos, row.chatbot, "sm", true) }}{% endif %}
     <span class="rname">{% if lbFlag %}{{ row.key | flag }} {% endif %}{{ row.label }}</span>
     {%- if lbShowBar %}<span class="barm"><i style="width:{{ row.width }}%"></i></span>{% endif %}
     {%- if row.before is defined %}

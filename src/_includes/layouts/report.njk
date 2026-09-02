@@ -28,7 +28,7 @@ wrap: wrap-narrow
     <th scope="col">{{ 'col.contamination' | t }}</th></tr></thead>
   <tbody>
   {%- for bot in profiles.chatbots %}
-    <tr><td class="cl"><span class="markcell">{{ botMark(logos, bot.key, "sm") }}{{ bot.name }}</span></td>
+    <tr><td class="cl"><span class="markcell">{{ botMark(logos, bot.key, "sm", true) }}{{ bot.name }}</span></td>
       {%- for p in benchmarks.personas %}
       {%- set cell = bot.byPersona | whereEq('persona', p) | first %}
       <td class="num" data-persona="{{ p }}">{% if cell %}{{ cell.repeat_rate | rate }}{% else %}&mdash;{% endif %}</td>

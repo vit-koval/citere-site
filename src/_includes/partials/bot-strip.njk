@@ -4,7 +4,7 @@
   <div class="bots">
   {%- for row in benchmarks.strip %}
     <a class="bot" href="{{ (('/platforms/' + row.key + '/') if navigation.has.chatbots else '/benchmarks/') | url }}" data-persona="{{ row.persona }}">
-      {{ botMark(logos, row.key, "md") }}{{ row.key | botName }}<span class="r num">{{ row.value | rate }}</span></a>
+      {{ botMark(logos, row.key, "md", true) }}{{ row.key | botName }}<span class="r num">{{ row.value | rate }}</span></a>
   {%- endfor %}
   </div>
 </div>

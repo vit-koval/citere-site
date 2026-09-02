@@ -8,7 +8,7 @@
   <tbody>
   {%- for o in claim.observationsShown %}
     <tr>
-      <td><span class="markcell">{{ botMark(logos, o.chatbot, "sm") }}{{ o.chatbot | botName }}</span></td>
+      <td><span class="markcell">{{ botMark(logos, o.chatbot, "sm", true) }}{{ o.chatbot | botName }}</span></td>
       <td>{{ o.country | upper }}</td>
       <td class="mono" style="font-size:12px;color:var(--dimmer)" data-persona="{{ o.persona }}">{{ o.persona }} &middot; {{ o.persona | personaLabel }}</td>
       <td><span class="badge {% if o.behaviour == 'repeated' %}b-f{% elif o.behaviour == 'contextualised' %}b-m{% elif o.behaviour == 'dodged' %}b-u{% endif %}"{% if o.behaviour == 'refuted' %} style="color:var(--ok);background:var(--ok-bg)"{% endif %}>{{ o.behaviour | behaviourLabel }}</span></td>

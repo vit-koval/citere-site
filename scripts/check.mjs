@@ -202,6 +202,25 @@ for (const file of htmlFiles) {
     }
   }
 
+  // CLAUDE.md 10: no rendered rate may exist without an attached persona.
+  // A rank card or heatmap that prints percentages must either tag its rows
+  // with the persona they were measured under, or say in its own subtitle
+  // which population it pools.
+  for (const [, card] of html.matchAll(/<div class="rank">([\s\S]*?)<\/div>\s*(?=<div class="rank">|<\/div>)/g)) {
+    // Only leaderboard cards, identified by their rate cell. A report card
+    // quoting a percentage from its own findings prose is not a leaderboard.
+    if (!/class="rmeta"[^>]*>[^<]*\d/.test(card)) continue;
+    const tagged = /data-persona="P[1-4]"/.test(card);
+    const declared = /<h3[^>]*>[\s\S]*?<span[^>]*>[\s\S]*?(P[1-4]|pooled|persona)[\s\S]*?<\/span>/i.test(card);
+    if (!tagged && !declared) {
+      err(page, "a rank card prints rates without naming the persona or the pooled population");
+    }
+  }
+  const heat = (html.match(/<div class="hm">[\s\S]*?<\/div>\s*<p class="vnote"/) || [])[0];
+  if (heat && /\d%/.test(heat) && !/data-persona="P[1-4]"/.test(heat)) {
+    err(page, "the heatmap prints rates without a persona on each cell");
+  }
+
   // --- claim pages ---------------------------------------------------------
   const claimMatch = page.match(/^(?:\/([a-z]{2}))?\/registry\/([^/]+)\/index\.html$/);
   if (claimMatch && claimsBySlug.has(claimMatch[2])) {

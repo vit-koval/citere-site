@@ -27,7 +27,7 @@ permalink: "{{ '/platforms/' | loc(lang) }}"
   {%- for bot in profiles.chatbots %}
     <tr data-persona="{{ bot.repeatPersona }}">
       <td class="num" style="color:var(--dimmer)">{{ loop.index }}</td>
-      <td class="cl"><span class="markcell">{{ botMark(logos, bot.key, "sm") }}<a href="{{ bot.url | url }}">{{ bot.name }}</a></span></td>
+      <td class="cl"><span class="markcell">{{ botMark(logos, bot.key, "sm", true) }}<a href="{{ bot.url | url }}">{{ bot.name }}</a></span></td>
       <td style="color:var(--dim)">{{ bot.company }}</td>
       <td><div style="display:flex;align-items:center;gap:9px"><span class="barm"><i style="width:{{ bot.repeatRate | barWidth(profiles.chatbots[0].repeatRate) }}%"></i></span><span class="rmeta">{{ bot.repeatRate | rate }}</span></div></td>
       <td class="rmeta">{{ bot.contaminationRate | rate }}</td>

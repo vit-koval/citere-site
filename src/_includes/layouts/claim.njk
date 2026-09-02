@@ -60,7 +60,7 @@ wrap: wrap-narrow
   <tbody>
   {%- for domain in claim.citedDomains %}
     {%- set source = sources | whereEq('domain', domain) | first %}
-    <tr><td><span class="domain">{{ domain | defang }}</span></td>
+    <tr><th scope="row" style="font-weight:400"><span class="domain">{{ domain | defang }}</span></th>
       <td>{% if source %}<span class="netchip {{ source.network | networkClass }}">{{ source.network | networkLabel }}</span>{% endif %}</td>
       <td style="text-align:right">{% if navigation.has.sources and source %}<a href="{{ ('/sources/' + source.slug + '/') | url }}" style="color:var(--accent);font-weight:600;font-size:13px">View domain &rarr;</a>{% endif %}</td></tr>
   {%- endfor %}
@@ -81,7 +81,7 @@ wrap: wrap-narrow
   <caption class="visually-hidden">What changed on this page, and when</caption>
   <tbody>
   {%- for entry in claim.changelog %}
-    <tr><td class="num" style="color:var(--dimmer);width:1%;white-space:nowrap"><time datetime="{{ entry.date | isoDate }}">{{ entry.date | displayDate }}</time></td>
+    <tr><th scope="row" class="num" style="color:var(--dimmer);width:1%;white-space:nowrap;font-weight:500"><time datetime="{{ entry.date | isoDate }}">{{ entry.date | displayDate }}</time></th>
       <td style="color:var(--dim)">{{ entry.note_en }}</td></tr>
   {%- endfor %}
   </tbody></table></div>

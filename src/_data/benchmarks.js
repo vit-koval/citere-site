@@ -25,7 +25,8 @@ const label = (type, key, given) => {
   return key;
 };
 
-const BOARD_PERSONA = { chatbot_repeat: "P2" };
+// biggest_change rows reproduce each claim's own before_after entry, all P2.
+const BOARD_PERSONA = { chatbot_repeat: "P2", biggest_change: "P2" };
 const leaderboards = {};
 for (const [name, rows] of Object.entries(raw.leaderboards || {})) {
   const max = rows.reduce((m, r) => Math.max(m, Math.abs(r.value || 0)), 0);

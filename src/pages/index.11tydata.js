@@ -46,7 +46,7 @@ module.exports = {
           idx: true, bar: false, more: "/registry/", moreLabel: "Full registry" });
       }
       if ((lb.biggest_change || []).length) {
-        cards.push({ rows: lb.biggest_change, title: "Before / after", sub: "after we reported",
+        cards.push({ rows: lb.biggest_change, title: "Before / after", sub: "P2 · after we reported",
           idx: false, bar: false, more: "/methodology/", moreLabel: "How we measure change" });
       }
       const contamination = (data.benchmarks.contamination_by_persona || []).map((r) => ({

@@ -4,7 +4,7 @@ wrap: wrap-narrow
 ---
 {%- from "partials/bot-mark.njk" import botMark -%}
 <div class="phead" style="display:flex;align-items:center;gap:16px">
-  {{ botMark(logos, profile.key, "lg") }}
+  {{ botMark(logos, profile.key, "lg", true) }}
   <div><h1 style="font-size:29px;margin:0 0 4px">{{ profile.name }}</h1>
     <div style="font-size:14px;color:var(--dimmer)">{{ profile.company }} &middot; public consumer interface, not API</div></div>
 </div>

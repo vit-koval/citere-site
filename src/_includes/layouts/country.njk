@@ -15,7 +15,7 @@ wrap: wrap-narrow
   <thead><tr><th scope="col">{{ 'col.chatbot' | t }}</th><th scope="col">{{ 'col.repeatRate' | t }}</th><th scope="col">{{ 'col.responses' | t }}</th></tr></thead>
   <tbody>
   {%- for row in profile.rows %}
-    <tr><td class="cl"><span class="markcell">{{ botMark(logos, row.chatbot, "sm") }}<a href="{{ ('/platforms/' + row.chatbot + '/') | url }}">{{ row.name }}</a></span></td>
+    <tr><td class="cl"><span class="markcell">{{ botMark(logos, row.chatbot, "sm", true) }}<a href="{{ ('/platforms/' + row.chatbot + '/') | url }}">{{ row.name }}</a></span></td>
       <td class="rmeta">{{ row.rate | rate }}</td>
       <td class="num" style="color:var(--dim)">{{ row.n | default("&mdash;") | safe }}</td></tr>
   {%- endfor %}
