@@ -81,6 +81,7 @@ const funnel = (raw.funnel || []).map((step) => ({
 
 module.exports = {
   ...raw,
+  raw,
   abxRows,
   funnel,
   responses: raw.responses || ((raw.funnel || [])[0] || {}).n || 0,

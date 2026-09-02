@@ -1,0 +1,12 @@
+---
+permalink: /sitemap.xml
+eleventyExcludeFromCollections: true
+---
+<?xml version="1.0" encoding="UTF-8"?>
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <sitemap><loc>{{ site.url }}/sitemap-pages.xml</loc><lastmod>{{ site.last_update | isoDate }}</lastmod></sitemap>
+  <sitemap><loc>{{ site.url }}/sitemap-registry.xml</loc><lastmod>{{ site.last_update | isoDate }}</lastmod></sitemap>
+{%- if build.ukEnabled %}
+  <sitemap><loc>{{ site.url }}/sitemap-uk.xml</loc><lastmod>{{ site.last_update | isoDate }}</lastmod></sitemap>
+{%- endif %}
+</sitemapindex>

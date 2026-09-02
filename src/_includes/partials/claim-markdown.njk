@@ -1,0 +1,69 @@
+{%- set prose = copy.en.claims[claim.id] -%}
+# "{{ claim.title_en }}"
+
+{{ claim.verdict | verdictLabel }} · Verdict issued {{ claim.verdict_date | displayDate }} · Updated {{ claim.updated | displayDate }} · ID {{ claim.id }}
+
+Cluster: {{ clusters[claim.cluster].name_en | default(claim.cluster) }} · Languages: {{ claim.langLabel }} · Grain of truth: {{ "yes" if claim.grain_of_truth else "no" }}
+
+Source: {{ site.url }}{{ claim.url }} · Data: CC BY 4.0
+
+## The verdict
+
+{{ prose.sections['verdict'].text }}
+
+## What is true
+
+{{ prose.sections['what-is-true'].text }}
+
+## Where the claim comes from
+
+{{ prose.sections['where-the-claim-comes-from'].text }}
+
+First seen {{ claim.origin.first_seen | displayDate }} on the {{ claim.origin.network | networkName }} network{% if claim.origin.attribution | length %}, attributed by {% for a in claim.origin.attribution %}{{ a.org }} ({{ a.date | displayDate }}){% if not loop.last %} and {% endif %}{% endfor %}{% endif %}.
+{% if claim.confirmations | length %}
+## Who else has checked this
+
+| Organisation | Finding | Date |
+|---|---|---|
+{% for c in claim.confirmations %}| {{ c.org }} | {{ c.finding_en }} | {{ c.date | displayDate }} |
+{% endfor %}
+{% endif %}
+## Which chatbots repeated it
+
+Personas are reported separately and never averaged.
+
+| Chatbot | Country | Persona | Verdict | Judge confidence |
+|---|---|---|---|---|
+{% for o in claim.observations %}| {{ o.chatbot | botName }} | {{ o.country | upper }} | {{ o.persona }} · {{ o.persona | personaLabel }} | {{ o.behaviour | behaviourLabel }} | {% if o.judge %}{{ o.judge.confidence }}{% endif %} |
+{% endfor %}
+{% if claim.citedDomains | length %}
+## Sources the chatbots cited
+
+{% for d in claim.citedDomains %}- {{ d | defang }}
+{% endfor %}
+{% endif %}
+## What we did
+
+{{ claim.counts.actions }} actions taken · {{ claim.counts.responses }} platform {{ claim.counts.responses | plural("response", "responses") }}{% if claim.remeasuredOn %} · re-measured {{ claim.remeasuredOn | displayDate }}{% endif %}
+
+| Action | To | Date | Status |
+|---|---|---|---|
+{% for a in claim.actions %}| {{ a.type | actionTypeLabel }} | {{ a.target | defangCopy }} | {{ a.date | displayDate }} | {{ a.status | statusLabel }}{% if a.response_date %} {{ a.response_date | displayDate }}{% endif %} |
+{% endfor %}
+We publish the fact, date and status of each action. We do not publish correspondence with platforms or the names of individuals.
+{% if claim.before_after | length %}
+## What changed
+
+Measured under persona {{ (claim.before_after | first).persona }} · {{ (claim.before_after | first).persona | personaLabel }}.
+
+| Chatbot | Before | After | Change |
+|---|---|---|---|
+{% for r in claim.before_after %}| {{ r.chatbot | botName }} | {{ r.before.rate | rate }} ({{ r.before.date | displayDate }}) | {{ r.after.rate | rate }} ({{ r.after.date | displayDate }}) | {{ (r.after.rate - r.before.rate) | pp }} |
+{% endfor %}
+Models are updated continuously and independently of our reports. We publish the change without claiming causation we cannot demonstrate.
+{% endif %}{% if claim.changelog | length %}
+## Changelog
+
+{% for e in claim.changelog %}- {{ e.date | displayDate }} — {{ e.note_en }}
+{% endfor %}
+{% endif %}

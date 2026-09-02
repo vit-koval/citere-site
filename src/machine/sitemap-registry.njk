@@ -1,0 +1,13 @@
+---
+permalink: /sitemap-registry.xml
+eleventyExcludeFromCollections: true
+---
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+{%- for claim in claims %}
+  <url><loc>{{ site.url }}{{ claim.url }}</loc><lastmod>{{ claim.updated | isoDate }}</lastmod></url>
+{%- endfor %}
+{%- for facet in facets %}
+  <url><loc>{{ site.url }}{{ facet.url }}</loc><lastmod>{{ facet.updated | isoDate }}</lastmod></url>
+{%- endfor %}
+</urlset>

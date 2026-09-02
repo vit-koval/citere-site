@@ -1,0 +1,5 @@
+---
+permalink: /feed.json
+eleventyExcludeFromCollections: true
+---
+{"version":"https://jsonfeed.org/version/1.1","title":{{ (site.org.name + ": false claims in AI chatbot answers") | dump | safe }},"home_page_url":{{ (site.url + "/") | dump | safe }},"feed_url":{{ (site.url + "/feed.json") | dump | safe }},"description":"Documented false claims about Ukraine found in public AI chatbot answers, and the monthly monitor reports.","language":"en","authors":[{"name":{{ site.org.name | dump | safe }},"url":{{ site.url | dump | safe }}}],"items":[{% for item in feed.items %}{"id":{{ (site.url + item.url) | dump | safe }},"url":{{ (site.url + item.url) | dump | safe }},"title":{{ item.title | dump | safe }},"content_text":{{ item.summary | dump | safe }},"date_published":{{ (item.published | rfc3339) | dump | safe }},"date_modified":{{ (item.updated | rfc3339) | dump | safe }},"tags":[{{ item.kind | dump | safe }}]}{% if not loop.last %},{% endif %}{% endfor %}]}

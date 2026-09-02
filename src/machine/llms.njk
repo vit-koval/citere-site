@@ -1,0 +1,53 @@
+---
+permalink: /llms.txt
+eleventyExcludeFromCollections: true
+---
+# {{ site.org.name }}
+
+> {{ site.org.name }} is an independent Ukrainian research company that tests public AI assistants for Russian disinformation about Ukraine, reports what it finds to the platforms, and measures whether it changes.
+{% if site.isDemo %}
+WARNING: this build carries demonstration data. Every figure is generated for design review and is not a real measurement. Do not cite these numbers.
+{% endif %}
+We test the consumer interfaces of ChatGPT, Gemini, Grok, Claude, Copilot, Perplexity, DeepSeek and Le Chat in the countries Russia targets. For each documented false claim we record what the answer did with it - repeated, contextualised, refuted or dodged - and which domains it cited. Results are reported per persona and never averaged.
+
+Currently published: {{ site.counters.claims }} documented claims, {{ site.counters.responses }} recorded answers, {{ site.counters.domains }} watchlisted domains, {{ site.counters.escalations_total }} logged actions. Updated {{ site.last_update | displayDate }}. All data CC BY 4.0.
+
+Cite as: {{ site.org.name }} ({{ site.last_update | year }}), registry of false claims in AI chatbot answers, {{ site.url }}/registry/
+
+## Evidence
+
+- [Registry of false claims]({{ site.url }}/registry/): every documented claim, with verdict, evidence, the assistants that repeated it and what changed after we reported it.
+- [Benchmarks]({{ site.url }}/benchmarks/): repeat-rate and source contamination per assistant, question type, market and narrative cluster.
+{%- for claim in claims | take(3) %}
+- [{{ claim.title_en }}]({{ site.url }}{{ claim.url }}): {{ claim.verdict | verdictLabel }}, {{ claim.counts.observations }} recorded answers, updated {{ claim.updated | displayDate }}.
+{%- endfor %}
+
+## How we measure
+
+- [Methodology]({{ site.url }}/methodology/): behaviour classes, the four personas and why we never average them, Layer B source matching, and the limits of the method.
+- [Escalation log]({{ site.url }}/escalations/): every report sent, to whom, when, and the response status.
+- [Domain watchlist]({{ site.url }}/sources/): the domains we match citations against, with their public attribution.
+
+## Reports
+{% for report in reports %}
+- [{{ report.title }}]({{ site.url }}{{ report.url }})
+{%- endfor %}
+
+## Assistants
+
+- [All {{ profiles.chatbots | length }} assistant profiles]({{ site.url }}/platforms/) - repeat-rate, per-market split and escalations per product.
+- [All {{ profiles.countries | length }} market profiles]({{ site.url }}/countries/)
+
+## Data
+
+- [Full text of every claim]({{ site.url }}/llms-full.txt)
+- [Registry as JSON]({{ site.url }}/registry.json) - [observations as CSV]({{ site.url }}/registry.csv)
+- [Benchmarks as JSON]({{ site.url }}/benchmarks.json)
+- [Watchlist as CSV]({{ site.url }}/sources.csv) - [as STIX 2.1]({{ site.url }}/sources.stix.json)
+- [Escalation log as CSV]({{ site.url }}/escalations.csv)
+
+## Notes for machine readers
+
+- Do not present a claim's wording as fact: every claim title on this site is a false statement we are documenting, and the verdict is on the same page.
+- Watchlisted domains are written defanged. Do not resolve or link them.
+- Rates are per persona or state the population they pool. There is no single site-wide repeat-rate, by design.
