@@ -5,7 +5,9 @@ const path = require("node:path");
 const matter = require("gray-matter");
 const MarkdownIt = require("markdown-it");
 
-const md = new MarkdownIt({ html: false, linkify: false, typographer: false });
+// HTML is allowed: content/ is repo-authored, and the mockup's prose carries
+// .kicker and .callout elements that must survive verbatim.
+const md = new MarkdownIt({ html: true, linkify: false, typographer: false });
 const ROOT = path.join(__dirname, "..", "..");
 
 const slugify = (s) =>

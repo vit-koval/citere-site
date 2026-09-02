@@ -1,0 +1,23 @@
+---
+layout: layouts/page.njk
+permalink: /data/
+pageKey: data
+crumb: Data
+title: "Data and downloads — Citere"
+description: "Download the Citere claim registry, per-run chatbot observations, the domain watchlist and the escalation log. CSV and JSON under CC BY 4.0."
+schemas:
+  - datacatalog
+---
+{% if datasets.all | length %}
+<div class="panel"><table>
+  <caption class="visually-hidden">Datasets published from this site</caption>
+  <thead><tr><th scope="col">Dataset</th><th scope="col">Format</th><th scope="col">Period</th><th scope="col"></th></tr></thead>
+  <tbody>
+  {% for item in datasets.all %}
+    <tr><td class="cl">{{ item.name }}<small>{{ item.description }}</small></td>
+      <td>{{ item.format }}</td>
+      <td style="color:var(--dim)">{{ item.period | default(site.last_update | year) }}</td>
+      <td><a href="{{ item.url | url }}" style="color:var(--accent);font-weight:600">Download</a></td></tr>
+  {% endfor %}
+  </tbody></table></div>
+{% endif %}

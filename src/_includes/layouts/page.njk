@@ -3,9 +3,9 @@ layout: layouts/base.njk
 wrap: wrap-narrow
 ---
 <div class="phead"><h1>{{ h1 }}</h1>
-  <p class="plead">{{ doc.introText | mdInline | safe }}</p></div>
-
-<div class="prose">
+  <p class="plead">{{ doc.data.lead | mdInline | safe }}</p></div>
 {{ content | safe }}
+<div class="prose">
+{{ doc.html | fill(figures | default({})) | safe }}
 </div>
 <div style="height:40px"></div>

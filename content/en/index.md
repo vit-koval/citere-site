@@ -1,61 +1,52 @@
 ---
-page: index
+lead: >
+  **Sometimes — and we measure exactly when.** We track {{ claims }} documented false claims across
+  {{ chatbots }} public AI assistants in {{ languages }} languages, report every case to the platform,
+  and re-measure four weeks later.
 ---
 
-## The audience is the model {#the-audience-is-the-model}
+## The audience is the model {#band}
 
 Russian influence networks no longer write only for people. The Pravda network alone publishes millions of articles a year across hundreds of near-empty websites in dozens of languages. Almost nobody reads them. They exist to be indexed, retrieved and quoted by AI systems.
 
-When a chatbot answers a question about Ukraine, it often searches the live web first. If a Kremlin-linked site is in the results, the false claim can surface in the answer — presented in the calm, neutral voice people trust.
+When a chatbot answers a question about Ukraine it often searches the live web first. If a Kremlin-linked site is in the results, the false claim can surface in the answer — in the calm, neutral voice people trust. That answer has no share button, no feed and no moderator.
 
-That answer has no share button, no feed and no moderator. It is generated once, for one person, and disappears. Nothing built to catch disinformation on social media can see it.
+## Detect {#step-detect}
 
-The attribution of these networks is public and independent of us: Viginum on Portal Kombat, NewsGuard on the Pravda network, and DFRLab on Doppelganger.
+We ask each chatbot the questions people ask about Ukraine, from neutral to hostile, and record what it does with a documented false claim.
 
-## What we do {#what-we-do}
+## Trace {#step-trace}
 
-We are an independent research team based in Ukraine. We test public AI chatbots the way a normal user would — through the consumer interface, not the API — in the languages and countries Russia targets. Then we do six things.
+We extract every source cited and match it against a versioned list of Kremlin-linked domains.
 
-## Detect {#detect}
+## Publish {#step-publish}
 
-We ask each chatbot the questions people ask about Ukraine, from neutral to hostile, and record how it handles each documented false claim: repeats it, contextualises it, refutes it, or dodges.
+Each claim gets a permanent page: verdict, evidence, what is genuinely true underneath.
 
-## Trace {#trace}
+## Report {#step-report}
 
-We extract every source the chatbot cited and match it against a versioned list of Kremlin-linked domains. Content and sources are checked separately; the overlap is where the real problems are.
+Findings go to platform trust-and-safety; domains to registrars, hosts and CERT partners.
 
-## Publish {#publish}
+## Confirm {#step-confirm}
 
-Every claim gets a permanent public page: the verdict, the evidence, what is genuinely true underneath, which chatbots repeated it and when. Machine-readable and openly licensed.
+We share everything with Ukrainian institutions and fact-checkers, and link their findings.
 
-## Report {#report}
+## Re-measure {#step-remeasure}
 
-Each confirmed finding goes to the platform's trust-and-safety channel with the prompt, the answer, the cited domains and the debunk. Contaminated domains go to registrars, hosts and CERT-level partners.
+Four weeks later we run the identical questions and publish the before and after.
 
-## Confirm {#confirm}
+## We show our method {#trust-method}
 
-We share findings with Ukraine's Centre for Countering Disinformation, SPRAVDI and independent fact-checkers, and link their confirmations on each claim page.
+Every verdict and number links to how it was produced.
 
-## Re-measure {#re-measure}
+## We publish the data {#trust-data}
 
-Four weeks later we run the same questions again and publish the before-and-after, model versions included. We report the change; we do not claim credit we cannot prove.
+CSV and JSON under CC BY 4.0, with a DOI per release.
 
-## Trust method {#trust-method}
+## We log our actions {#trust-actions}
 
-**We show our method.** Every verdict, every table, every number links to how it was produced.
+Every report sent and every answer received, dated.
 
-## Trust data {#trust-data}
+## We correct in the open {#trust-corrections}
 
-**We publish the data.** Everything on this site is downloadable as CSV or JSON under CC BY 4.0, with DOIs for citation.
-
-## Trust actions {#trust-actions}
-
-**We record our own actions.** Every report we send and every answer we get is logged publicly with a date.
-
-## Trust corrections {#trust-corrections}
-
-**We correct in the open.** Errors are fixed on the page, dated, and listed in the changelog. Never silently.
-
-## Independence {#independence}
-
-Sitera is a Ukrainian company and a Diia.City resident. We are self-funded and have no commercial relationship with any platform we test.
+Errors are fixed on the page and listed in the changelog.

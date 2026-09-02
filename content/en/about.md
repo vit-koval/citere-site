@@ -1,21 +1,32 @@
 ---
-page: about
+h1: About Citere
+lead: >
+  Citere is a Ukrainian research company, registered in Chernivtsi and a Diia.City resident since
+  May 2026. We test public AI chatbots for Russian disinformation about Ukraine and work to get it
+  corrected.
 ---
 
-Sitera is a Ukrainian research company and a Diia.City resident. We test public AI chatbots for Russian disinformation about Ukraine and work to get it corrected. We are self-funded, have no commercial relationship with any platform we test, and share our findings with Ukrainian institutions and European fact-checkers free of charge.
+## What we do and what we don't
 
-## What we are for {#what-we-are-for}
+We operate exclusively through the public consumer interfaces of AI assistants — the same product ordinary users get, not privileged API access — because that is the surface where the harm actually reaches people. We do not run influence operations of our own, we do not lobby, and we do not optimise anyone's presence in AI answers.
 
-Chatbot answers are read as neutral and leave no trace a moderator can review. We measure how often those answers carry documented Russian false claims about Ukraine, trace the sources behind them, report what we find to the company that makes the product, and measure again. Everything we measure is published as data anyone can check.
+## Independence and funding
 
-## Editorial policy {#editorial-policy}
+We are self-funded and have no contractual relationship with any of the AI platforms we test. We share our findings with Ukrainian state institutions and with European fact-checking and research organisations free of charge, and we do so before and independently of any commercial discussion.
 
-We publish findings whether or not they suit anyone, including our own earlier conclusions. A verdict is issued only against a documented claim, with the evidence on the page. We name the organisations whose attribution we rely on and link their work. We do not accept payment, review rights or embargoes from any company whose product we test.
+## Team
 
-## Corrections {#corrections}
+Founder and research lead, plus a small engineering and analysis team. Named profiles are listed here once each member has consented to being public — several work on topics where that carries risk.
 
-If we get something wrong, we fix the page, date the change, and list it in the changelog. Never silently. Corrections apply to prose and to data: a corrected measurement is re-published with a note saying what changed and when.
+## Corrections policy {#corrections}
+
+If we get something wrong, we fix the page, date the change, and list it in that page's changelog. Corrections are never made silently. If a correction changes a verdict, we say so at the top of the page and notify anyone we sent the original finding to.
 
 ## Contact {#contact}
 
-Write to us about a specific finding, a correction, or access to extended data. We answer research and correction mail first.
+- **research@citere.ai** — researchers, data requests, collaboration
+- **platforms@citere.ai** — trust & safety teams responding to a report
+- **press@citere.ai** — media enquiries
+- **corrections@citere.ai** — report an error on this site
+
+A <span class="mono">security.txt</span> is published at the site root for vulnerability reports.

@@ -422,6 +422,13 @@ footer{border-top:1px solid var(--line);margin-top:34px;padding:34px 0 60px;font
 /* ---------- added for the built site (not in the mockup) ---------- */
 /* CLAUDE.md 6 requires a skip link and visible focus styles; the mockup is a
    static comp and carries neither. Nothing above this line is modified. */
+/* The mockup marks up breadcrumbs as <p class="crumbs">; the built site uses a
+   <nav> so the landmark and aria-label required by CLAUDE.md 6 exist. Restore
+   the paragraph margins so the spacing is pixel-identical to the mockup. */
+nav.crumbs{margin:1em 0}
+.visually-hidden{position:absolute;width:1px;height:1px;padding:0;margin:-1px;
+  overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+
 .skip-link{position:absolute;left:-9999px;top:0;z-index:60;background:var(--card);
   color:var(--ink);padding:10px 16px;border:1px solid var(--line);border-radius:8px}
 .skip-link:focus{left:12px;top:12px}

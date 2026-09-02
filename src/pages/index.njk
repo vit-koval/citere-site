@@ -1,0 +1,72 @@
+---
+layout: layouts/base.njk
+permalink: /
+pageKey: index
+title: "Do AI chatbots repeat Russian disinformation about Ukraine?"
+description: "Citere tests ChatGPT, Gemini, Grok, Claude, Copilot, Perplexity, DeepSeek and Le Chat for Russian disinformation about Ukraine. Open data, CC BY 4.0."
+---
+{%- set doc = copy.en.index -%}
+<div class="stage">
+{% set side = "l" %}{% include "partials/hero-mesh.njk" %}
+{% set side = "r" %}{% include "partials/hero-mesh.njk" %}
+
+  <div class="hero">
+    {%- if benchmarks.label %}
+    <span class="pill"><span class="live"></span>{{ benchmarks.label }}{% if benchmarks.countries | length %} &middot; {% for code in benchmarks.countries %}{{ code | countryName }}{% if not loop.last %}, {% endif %}{% endfor %}{% endif %}</span>
+    {%- endif %}
+    <h1>Do AI chatbots repeat Russian disinformation about Ukraine?</h1>
+    {%- if site.counters.claims %}
+    <p class="sub">{{ doc.data.lead | fill(figures) | mdInline | safe }}</p>
+    {%- endif %}
+    <div class="cta">
+      {%- if navigation.has.registry %}<a class="btn btn-p" href="{{ '/registry/' | url }}">Browse the registry</a>{% endif %}
+      {%- if navigation.has.reports %}<a class="btn btn-s" href="{{ '/monitor/' | url }}">Latest report</a>{% endif %}
+    </div>
+    <p class="stamp">Updated <time datetime="{{ site.last_update | isoDate }}">{{ site.last_update | displayDate }}</time> &middot; Open data, CC BY 4.0 &middot;
+      <a href="{{ '/methodology/' | url }}">How we measure</a></p>
+  </div>
+</div>
+
+{% include "partials/home-evidence.njk" %}
+
+{%- if site.used_by | length %}
+<section><div class="cited">
+  <p class="cap">Our data is used by</p>
+  <div class="orgs">
+    {%- for item in site.used_by %}<a class="org" href="{{ item.url }}">{{ item.org }}</a>{% endfor %}
+  </div>
+  <p class="note">Shown only once an organisation has published or confirmed receipt — each name links
+    to the specific publication.</p>
+</div></section>
+{%- endif %}
+
+<section><div class="band">
+  <h2>{{ doc.sections['band'].title }}</h2>
+  {{ doc.sections['band'].html | safe }}
+  {%- if quoteFigures %}
+  <div class="quote">In our first run, chatbots refuted pure inventions <b>{{ quoteFigures.pure | rate }}</b> of the time — and
+    repeated the claims built on a grain of truth in <b>{{ quoteFigures.grain | rate }}</b> of answers.</div>
+  {%- endif %}
+</div></section>
+
+<section>
+  <div class="shead"><h2>How it works</h2><a href="{{ '/methodology/' | url }}">Methodology &rarr;</a></div>
+  <div class="steps">
+  {%- for step in ['detect','trace','publish','report','confirm','remeasure'] %}
+    <div class="st"><div class="i">{{ loop.index }}</div>
+      <h4>{{ doc.sections['step-' + step].title }}</h4>
+      {{ doc.sections['step-' + step].html | safe }}</div>
+  {%- endfor %}
+  </div>
+</section>
+
+<section>
+  <div class="shead"><h2>Why trust this</h2></div>
+  <div class="grid4">
+  {%- for item in trustCards %}
+    <div class="t"><h4>{{ doc.sections[item.key].title }}</h4>
+      {{ doc.sections[item.key].html | safe }}
+      {%- if item.href %}<a href="{{ item.href | url }}">{{ item.label }} &rarr;</a>{% endif %}</div>
+  {%- endfor %}
+  </div>
+</section>
