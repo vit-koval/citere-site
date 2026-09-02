@@ -161,6 +161,24 @@ module.exports = function (eleventyConfig) {
     return `indicator--${uuid}`;
   });
 
+  eleventyConfig.addFilter("xmlEscape", (value) =>
+    String(value === null || value === undefined ? "" : value)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+  );
+
+  // RFC 822 date for RSS. Built from the ISO date in data, always UTC.
+  eleventyConfig.addFilter("rfc822", (value) => {
+    const d = new Date(`${String(value).slice(0, 10)}T00:00:00Z`);
+    return Number.isNaN(d.getTime()) ? "" : d.toUTCString();
+  });
+  eleventyConfig.addFilter("rfc3339", (value) => {
+    const d = new Date(`${String(value).slice(0, 10)}T00:00:00Z`);
+    return Number.isNaN(d.getTime()) ? "" : d.toISOString();
+  });
+
   eleventyConfig.addFilter("csvCell", (value) => {
     const s = value === null || value === undefined ? "" : String(value);
     return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;

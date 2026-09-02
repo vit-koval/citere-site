@@ -196,26 +196,116 @@ if (!htmlFiles.length) {
   console.log("check: no HTML pages yet");
 }
 
-const sitemap = join(SITE, "sitemap.xml");
-if (existsSync(sitemap)) {
-  const xml = readFileSync(sitemap, "utf8");
+const site = JSON.parse(readFileSync(join(ROOT, "data/site.json"), "utf8"));
+const SITE_URL = `https://${site.domain}`;
+
+// A canonical URL points at the document, not at this build's mount point, so
+// machine outputs are checked against unprefixed _site paths.
+const canonicalToPath = (url) => {
+  if (!url.startsWith(SITE_URL)) return null;
+  const path = url.slice(SITE_URL.length) || "/";
+  return path.startsWith("/") ? path : null;
+};
+const pathExists = (path) => {
+  const clean = path.split("#")[0].split("?")[0];
+  if (clean.endsWith("/")) return sitePaths.has(clean + "index.html");
+  return sitePaths.has(clean) || sitePaths.has(clean + "/index.html");
+};
+
+// --- sitemaps --------------------------------------------------------------
+const sitemapFiles = allFiles.filter((f) => /sitemap[a-z-]*\.xml$/.test(f));
+if (sitemapFiles.length) {
+  const index = join(SITE, "sitemap.xml");
+  if (!existsSync(index)) err("sitemap", "sitemap.xml index is missing");
+
+  const childLocs = new Set();
+  for (const file of sitemapFiles) {
+    const xml = readFileSync(file, "utf8");
+    const isIndex = xml.includes("<sitemapindex");
+    for (const [, loc] of xml.matchAll(/<loc>([^<]+)<\/loc>/g)) {
+      const path = canonicalToPath(loc);
+      if (path === null) {
+        err(relative(SITE, file), `loc is not on ${SITE_URL}: ${loc}`);
+        continue;
+      }
+      if (isIndex) {
+        if (!pathExists(path)) err("sitemap.xml", `points at a missing sitemap: ${path}`);
+      } else {
+        childLocs.add(path);
+        if (!pathExists(path)) err(relative(SITE, file), `lists a page that does not exist: ${path}`);
+      }
+    }
+  }
+
   for (const file of htmlFiles) {
-    const url = "/" + relative(SITE, file).split(/[\\/]/).join("/").replace(/index\.html$/, "");
-    if (!xml.includes(url)) err("sitemap.xml", `does not cover ${url}`);
+    const path = "/" + relative(SITE, file).split(/[\\/]/).join("/").replace(/index\.html$/, "");
+    if (!childLocs.has(path)) err("sitemap", `does not cover ${path}`);
   }
 }
 
-for (const name of ["robots.txt", "llms.txt"]) {
-  const f = join(SITE, name);
-  if (!existsSync(f)) continue;
-  const body = readFileSync(f, "utf8");
-  for (const [, path] of body.matchAll(/(?:^|\s)(\/[a-z0-9./_-]*)/gi)) {
-    if (path === "/") continue;
-    const ok = path.endsWith("/")
-      ? sitePaths.has(path + "index.html")
-      : sitePaths.has(path) || sitePaths.has(path + "/index.html");
-    if (!ok) err(name, `lists a path that does not exist: ${path}`);
+// --- robots.txt and llms.txt ----------------------------------------------
+for (const name of ["robots.txt", "llms.txt", "llms-full.txt"]) {
+  const file = join(SITE, name);
+  if (!existsSync(file)) continue;
+  const body = readFileSync(file, "utf8");
+  for (const [, url] of body.matchAll(new RegExp(`(^|[\\s(<])(${SITE_URL}[^\\s)>\\]]*)`, "g"))) {
+    const path = canonicalToPath(url.replace(/[.,]$/, ""));
+    if (path !== null && !pathExists(path)) err(name, `lists a path that does not exist: ${path}`);
   }
+}
+
+const llms = join(SITE, "llms.txt");
+if (existsSync(llms)) {
+  const kb = statSync(llms).size / 1024;
+  if (kb > 4) err("llms.txt", `${kb.toFixed(1)} KB, max 4 KB`);
+}
+
+// --- feeds -----------------------------------------------------------------
+let jsonFeedItems = null;
+const feedJson = join(SITE, "feed.json");
+if (existsSync(feedJson)) {
+  try {
+    const parsed = JSON.parse(readFileSync(feedJson, "utf8"));
+    if (!String(parsed.version || "").includes("jsonfeed.org")) err("feed.json", "no JSON Feed version");
+    if (!Array.isArray(parsed.items)) err("feed.json", "items is not an array");
+    else {
+      jsonFeedItems = parsed.items.length;
+      if (parsed.items.length > 50) err("feed.json", `${parsed.items.length} items, max 50`);
+      for (const item of parsed.items) {
+        const path = canonicalToPath(item.url || "");
+        if (path === null || !pathExists(path)) err("feed.json", `item points nowhere: ${item.url}`);
+      }
+    }
+  } catch (e) {
+    err("feed.json", `invalid JSON: ${e.message}`);
+  }
+}
+
+const feedXml = join(SITE, "feed.xml");
+if (existsSync(feedXml)) {
+  const xml = readFileSync(feedXml, "utf8");
+  if (!xml.startsWith("<?xml")) err("feed.xml", "no XML declaration");
+  for (const tag of ["<rss", "<channel>", "</channel>", "</rss>"]) {
+    if (!xml.includes(tag)) err("feed.xml", `missing ${tag}`);
+  }
+  const unescaped = xml.match(/&(?!(amp|lt|gt|quot|apos|#\d+);)/g);
+  if (unescaped) err("feed.xml", `${unescaped.length} unescaped ampersand(s)`);
+  const items = (xml.match(/<item>/g) || []).length;
+  if (items > 50) err("feed.xml", `${items} items, max 50`);
+  if (jsonFeedItems !== null && items !== jsonFeedItems) {
+    err("feed.xml", `${items} items but feed.json has ${jsonFeedItems}`);
+  }
+}
+
+// --- security.txt ----------------------------------------------------------
+const security = join(SITE, ".well-known/security.txt");
+if (existsSync(security)) {
+  const body = readFileSync(security, "utf8");
+  if (!/^Contact:\s*\S+/m.test(body)) err("security.txt", "no Contact field");
+  const expires = (body.match(/^Expires:\s*(\S+)/m) || [])[1];
+  if (!expires) err("security.txt", "no Expires field");
+  else if (!(Date.parse(expires) > Date.now())) err("security.txt", `Expires is not in the future: ${expires}`);
+  if (!/^Preferred-Languages:/m.test(body)) err("security.txt", "no Preferred-Languages field");
 }
 
 // The methodology forbids attributing a domain to a network ourselves, so a
