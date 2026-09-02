@@ -1,0 +1,49 @@
+---
+layout: layouts/base.njk
+permalink: /platforms/
+lang: en
+h1: How each AI chatbot handles Russian disinformation about Ukraine
+breadcrumbTrail:
+  - title: Home
+    url: /
+  - title: Chatbots
+    url: /platforms/
+---
+{% set doc = copy.en.platforms %}
+<h1>{{ h1 }}</h1>
+<p class="lede">{{ doc.introText }}</p>
+{% include "partials/updated.njk" %}
+
+<h2 id="chatbots">The chatbots we test</h2>
+<div class="table-wrap">
+<table>
+  <caption>Every chatbot with recorded answers. Counts, not averaged rates: per-persona rates are on each profile.</caption>
+  <thead>
+    <tr>
+      <th scope="col">Chatbot</th><th scope="col">Company</th>
+      <th scope="col" class="num">Answers</th><th scope="col" class="num">Repeated</th>
+      <th scope="col" class="num">Refuted</th><th scope="col" class="num">Dodged</th>
+      <th scope="col" class="num">Cited a watchlisted domain</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for item in profiles.chatbots %}
+    <tr>
+      <th scope="row"><a href="{{ item.url | url }}">{{ item.name }}</a></th>
+      <td>{{ item.company }}</td>
+      <td class="num">{{ item.stats.answers }}</td>
+      <td class="num">{{ item.stats.repeated }}</td>
+      <td class="num">{{ item.stats.refuted }}</td>
+      <td class="num">{{ item.stats.dodged }}</td>
+      <td class="num">{{ item.stats.contaminated }}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+</div>
+
+{% for id in doc.order %}
+{% set section = doc.sections[id] %}
+<h2 id="{{ section.id }}">{{ section.title }}</h2>
+{{ section.html | safe }}
+{% endfor %}

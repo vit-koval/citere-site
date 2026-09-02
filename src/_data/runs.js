@@ -53,8 +53,16 @@ for (const o of observations) {
 
 function summarise(list) {
   const dates = list.map((o) => o.date).sort();
+  // Totals are counts only. No rate is exposed at this level: a rate here would
+  // be averaged across personas, which CLAUDE.md 5.3 forbids.
+  const totals = list.reduce((bucket, o) => tally(bucket, o), blank());
   return {
     answers: list.length,
+    repeated: totals.repeated,
+    contextualised: totals.contextualised,
+    refuted: totals.refuted,
+    dodged: totals.dodged,
+    nonEvasive: list.length - totals.dodged,
     claims: [...new Set(list.map((o) => o.claim.id))].length,
     chatbots: [...new Set(list.map((o) => o.chatbot))].sort(),
     countries: [...new Set(list.map((o) => o.country))].sort(),
@@ -77,15 +85,41 @@ function summarise(list) {
       .sort((a, b) => a.country.localeCompare(b.country) || a.persona.localeCompare(b.persona)),
     byChatbot: group(list, (o) => o.chatbot)
       .map((row) => ({ ...row, chatbot: row.key }))
-      .sort((a, b) => a.chatbot.localeCompare(b.chatbot))
+      .sort((a, b) => a.chatbot.localeCompare(b.chatbot)),
+    byMonthPersona: group(list, (o) => `${o.date.slice(0, 7)}|${o.persona}`)
+      .map((row) => {
+        const [month, persona] = row.key.split("|");
+        return { ...row, month, persona };
+      })
+      .sort((a, b) => a.month.localeCompare(b.month) || a.persona.localeCompare(b.persona)),
+    byCountry: group(list, (o) => o.country)
+      .map((row) => ({ ...row, country: row.key }))
+      .sort((a, b) => a.country.localeCompare(b.country)),
+    claimIds: [...new Set(list.map((o) => o.claim.id))]
   };
 }
 
 const summariseRuns = (runIds) =>
   summarise(observations.filter((o) => runIds.includes(o.run)));
 
+const forChatbot = Object.fromEntries(
+  [...new Set(observations.map((o) => o.chatbot))].map((bot) => [
+    bot,
+    summarise(observations.filter((o) => o.chatbot === bot))
+  ])
+);
+
+const forCountry = Object.fromEntries(
+  [...new Set(observations.map((o) => o.country))].map((code) => [
+    code,
+    summarise(observations.filter((o) => o.country === code))
+  ])
+);
+
 module.exports = {
   summariseRuns,
+  forChatbot,
+  forCountry,
   byRun: Object.fromEntries(Object.entries(runs).map(([run, list]) => [run, summarise(list)])),
   all: summarise(observations),
   summarise

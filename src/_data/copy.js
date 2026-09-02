@@ -3,7 +3,8 @@ const { loadDir } = require("../_lib/markdown.cjs");
 
 const lang = (code) => ({
   ...loadDir(`content/${code}`),
-  reports: loadDir(`content/${code}/reports`)
+  reports: loadDir(`content/${code}/reports`),
+  countries: loadDir(`content/${code}/countries`)
 });
 
 module.exports = {
