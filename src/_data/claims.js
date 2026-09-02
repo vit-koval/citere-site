@@ -20,6 +20,7 @@ else {
       const behaviours = (claim.observations || []).map((o) => o.behaviour);
       return {
         ...claim,
+        raw: claim,
         prose,
         url: `/registry/${claim.slug}/`,
         title: claim.title_en,
@@ -36,6 +37,7 @@ else {
           actions: (claim.actions || []).length,
           responses: (claim.actions || []).filter((a) => a.response_date).length
         },
+        nonEvasive: behaviours.filter((b) => b !== "dodged").length,
         escalationStatus: (claim.actions || [])
           .filter((a) => a.type === "platform_report")
           .map((a) => a.status)

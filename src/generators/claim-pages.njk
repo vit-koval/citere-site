@@ -1,0 +1,12 @@
+---
+pagination:
+  data: claims
+  size: 1
+  alias: claim
+layout: layouts/claim.njk
+lang: en
+schemas:
+  - claimreview
+  - article
+permalink: "/registry/{{ claim.slug }}/"
+---

@@ -1,0 +1,7 @@
+---
+permalink: /registry.csv
+eleventyExcludeFromCollections: true
+---
+claim_id,slug,verdict,verdict_date,updated,cluster,run,chatbot,country,language,persona,date,model_version,behaviour,cited_domains,url
+{% for claim in claims %}{% for o in claim.observations %}{{ claim.id | csvCell }},{{ claim.slug | csvCell }},{{ claim.verdict | csvCell }},{{ claim.verdict_date | csvCell }},{{ claim.updated | csvCell }},{{ claim.cluster | csvCell }},{{ o.run | csvCell }},{{ o.chatbot | csvCell }},{{ o.country | csvCell }},{{ o.language | csvCell }},{{ o.persona | csvCell }},{{ o.date | csvCell }},{{ o.model_version | default("") | csvCell }},{{ o.behaviour | csvCell }},{{ o.cited_domains | join(" ") | csvCell }},{{ (site.url + claim.url) | csvCell }}
+{% endfor %}{% endfor %}

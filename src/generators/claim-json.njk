@@ -1,0 +1,9 @@
+---
+pagination:
+  data: claims
+  size: 1
+  alias: claim
+permalink: "/registry/{{ claim.slug }}.json"
+eleventyExcludeFromCollections: true
+---
+{{ claim.raw | dump(2) | safe }}

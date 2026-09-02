@@ -26,12 +26,14 @@ validate("data/site.json", schema("site"), read("data/site.json"));
 validate("data/sources.json", schema("sources"), read("data/sources.json"));
 validate("data/platforms.json", schema("platforms"), read("data/platforms.json"));
 validate("data/countries.json", schema("countries"), read("data/countries.json"));
+validate("data/clusters.json", schema("clusters"), read("data/clusters.json"));
 validate("data/escalations.json", schema("escalations"), read("data/escalations.json"));
 validate("data/reports.json", schema("reports"), read("data/reports.json"));
 
 const claimSchema = schema("claim");
 const claimDir = join(ROOT, "data/claims");
 const claimFiles = existsSync(claimDir) ? readdirSync(claimDir).filter((f) => f.endsWith(".json")) : [];
+const clusters = read("data/clusters.json");
 const seenSlugs = new Map();
 const claimIds = new Set();
 
@@ -46,6 +48,9 @@ for (const file of claimFiles) {
       errors.push(`data/claims/${file}: slug "${claim.slug}" already used by ${seenSlugs.get(claim.slug)}`);
     }
     seenSlugs.set(claim.slug, file);
+  }
+  if (claim.cluster && !clusters[claim.cluster]) {
+    errors.push(`data/claims/${file}: cluster "${claim.cluster}" has no entry in data/clusters.json`);
   }
   if (claim.id) claimIds.add(claim.id);
 }

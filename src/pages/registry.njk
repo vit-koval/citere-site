@@ -1,0 +1,47 @@
+---
+layout: layouts/base.njk
+permalink: /registry/
+lang: en
+h1: False claims about Ukraine found in AI chatbot answers
+schemas:
+  - collectionpage
+  - dataset
+breadcrumbTrail:
+  - title: Home
+    url: /
+  - title: Registry
+    url: /registry/
+---
+<h1>{{ h1 }}</h1>
+<p class="lede">This registry lists every false claim about Ukraine we have documented in the answers of at least one public AI chatbot. Each entry shows the verdict and evidence, what is genuinely true underneath the claim, which chatbots repeated it and under what kind of question, the sources they cited, every action we took, and what we found when we measured again. {{ claims | length }} claims, {{ site.counters.responses }} recorded answers.</p>
+{% include "partials/updated.njk" %}
+
+<h2 id="how-to-read">How to read this registry</h2>
+<dl>
+  <dt><b>Verdict</b></dt>
+  <dd>False: fabricated. Misleading: a real fact stretched into a false conclusion. Unsupported: presented as established, no evidence either way.</dd>
+  <dt><b>Chatbot behaviour</b></dt>
+  <dd>Repeated: stated as fact. Contextualised: engaged, but marked the truth boundary. Refuted: corrected it. Dodged: declined.</dd>
+  <dt><b>Personas</b></dt>
+  <dd>We ask each question four ways, from a neutral check to a hostile request to write the narrative. Results are shown per persona and never averaged.</dd>
+</dl>
+
+{% if facets | length %}
+<h2 id="filters">Filter</h2>
+{% for group in ['cluster', 'country', 'language', 'chatbot', 'verdict'] %}
+  {% set items = facets | whereEq('type', group) %}
+  {% if items | length %}
+  <h3>{{ items[0].heading }}</h3>
+  <ul class="menu-list">
+  {% for facet in items %}
+    <li><a href="{{ facet.url }}">{{ facet.label }}</a> ({{ facet.claims | length }})</li>
+  {% endfor %}
+  </ul>
+  {% endif %}
+{% endfor %}
+{% endif %}
+
+<h2 id="claims">All claims</h2>
+{% set tableClaims = claims %}
+{% set tableCaption = "Every documented claim, most recently updated first." %}
+{% include "partials/claims-table.njk" %}

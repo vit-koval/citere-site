@@ -1,0 +1,33 @@
+{%- set ratingValues = { "false": 1, "misleading": 2, "unsupported": 3 } -%}
+{%- set appearances = [] -%}
+{%- for observation in claim.observations -%}
+{%- set appearances = (appearances.push({
+  "@type": "CreativeWork",
+  "name": (observation.chatbot | chatbotLabel) + " answer, " + (observation.country | countryName) + ", " + (observation.date | displayDate),
+  "datePublished": observation.date,
+  "inLanguage": observation.language
+}), appearances) -%}
+{%- endfor -%}
+{%- set jsonldReview = {
+  "@context": "https://schema.org",
+  "@type": "ClaimReview",
+  "url": site.url + claim.url,
+  "claimReviewed": claim.title_en,
+  "datePublished": claim.verdict_date,
+  "dateModified": claim.updated,
+  "author": { "@type": "Organization", "name": site.org.name, "url": site.url },
+  "reviewRating": {
+    "@type": "Rating",
+    "ratingValue": ratingValues[claim.verdict],
+    "alternateName": claim.verdict | verdictLabel,
+    "bestRating": 5,
+    "worstRating": 1
+  },
+  "itemReviewed": {
+    "@type": "Claim",
+    "name": claim.title_en,
+    "firstAppearance": { "@type": "CreativeWork", "datePublished": claim.origin.first_seen },
+    "appearance": appearances
+  }
+} -%}
+<script type="application/ld+json">{{ jsonldReview | compact | jsonld | safe }}</script>

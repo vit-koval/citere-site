@@ -60,6 +60,22 @@ module.exports = function (eleventyConfig) {
   eleventyConfig.addFilter("actionTypeLabel", (v) => ACTION_TYPES[v] || v);
   eleventyConfig.addFilter("networkLabel", (v) => NETWORKS[v] || v);
 
+  const CHATBOTS = {
+    chatgpt: "ChatGPT", gemini: "Gemini", grok: "Grok", claude: "Claude",
+    copilot: "Copilot", perplexity: "Perplexity", deepseek: "DeepSeek", "le-chat": "Le Chat"
+  };
+  const regionNames = new Intl.DisplayNames(["en"], { type: "region" });
+  const langNames = new Intl.DisplayNames(["en"], { type: "language" });
+
+  eleventyConfig.addFilter("chatbotLabel", (v) => CHATBOTS[v] || v);
+  eleventyConfig.addFilter("countryName", (v) => {
+    try { return regionNames.of(String(v).toUpperCase()) || String(v).toUpperCase(); }
+    catch { return String(v).toUpperCase(); }
+  });
+  eleventyConfig.addFilter("languageName", (v) => {
+    try { return langNames.of(String(v)) || v; } catch { return v; }
+  });
+
   eleventyConfig.addFilter("rate", (v) => (v === null || v === undefined ? "n/a" : `${Math.round(v * 1000) / 10}%`));
   eleventyConfig.addFilter("pp", (v) => {
     if (v === null || v === undefined) return "n/a";

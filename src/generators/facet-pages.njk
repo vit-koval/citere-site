@@ -1,0 +1,18 @@
+---
+pagination:
+  data: facets
+  size: 1
+  alias: facet
+layout: layouts/base.njk
+lang: en
+schemas:
+  - collectionpage
+permalink: "{{ facet.url }}"
+---
+<h1>{{ facetHeading }}</h1>
+<p class="lede">{{ facetIntro }}</p>
+{% include "partials/updated.njk" %}
+{% set tableClaims = facet.claims %}
+{% set tableCaption = "Claims in this view, most recently updated first." %}
+{% include "partials/claims-table.njk" %}
+<p><a href="/registry/">All {{ claims | length }} claims in the registry</a></p>

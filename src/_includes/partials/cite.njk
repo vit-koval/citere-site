@@ -1,0 +1,8 @@
+<p class="cite-block">{{ site.org.name }} ({{ claim.verdict_date | year }}). {{ claim.title_en }}. Claim {{ claim.id }}, verdict {{ claim.verdict | verdictLabel }}. Updated {{ claim.updated | displayDate }}. {{ site.url }}{{ claim.url }}</p>
+<p class="cite-block">@misc{ {{- claim.id | lower | replace("-", "") }},
+  author = { {{- site.org.name -}} },
+  title  = { {{- claim.title_en -}} },
+  year   = { {{- claim.verdict_date | year -}} },
+  note   = {Claim { {{- claim.id -}} }, verdict { {{- claim.verdict | verdictLabel -}} }},
+  url    = { {{- site.url }}{{ claim.url -}} }
+}</p>

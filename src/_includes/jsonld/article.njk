@@ -1,0 +1,14 @@
+{%- set jsonldArticle = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": articleHeadline | default(title),
+  "url": site.url + page.url,
+  "datePublished": articlePublished,
+  "dateModified": articleModified | default(site.last_update),
+  "inLanguage": lang | default("en"),
+  "author": { "@type": "Organization", "name": site.org.name, "url": site.url },
+  "publisher": { "@type": "Organization", "name": site.org.name, "url": site.url },
+  "isAccessibleForFree": true,
+  "license": "https://creativecommons.org/licenses/by/4.0/"
+} -%}
+<script type="application/ld+json">{{ jsonldArticle | compact | jsonld | safe }}</script>

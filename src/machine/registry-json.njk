@@ -1,0 +1,6 @@
+---
+permalink: /registry.json
+eleventyExcludeFromCollections: true
+---
+{% set payload = { "publisher": site.org.name, "url": site.url, "license": "https://creativecommons.org/licenses/by/4.0/", "updated": site.last_update, "methodology_version": site.methodology_version, "watchlist_version": site.watchlist_version, "count": claims | length } %}
+{"publisher":{{ payload.publisher | dump | safe }},"url":{{ payload.url | dump | safe }},"license":{{ payload.license | dump | safe }},"updated":{{ payload.updated | dump | safe }},"methodology_version":{{ payload.methodology_version | dump | safe }},"watchlist_version":{{ payload.watchlist_version | dump | safe }},"count":{{ payload.count }},"claims":[{% for claim in claims %}{{ claim.raw | dump | safe }}{% if not loop.last %},{% endif %}{% endfor %}]}
