@@ -1,0 +1,99 @@
+{
+  "_note": "Brand marks belong to their owners and are used here for identification only (nominative fair use). Do not recreate or redraw any mark. Place official SVG/PNG files downloaded from the brand pages below into src/assets/logos/ using the `file` name. Until a file is present, the template falls back to the monogram tile — which is a legitimate permanent option, not a placeholder.",
+  "attribution_line_en": "Assistant names and marks are the property of their respective owners and are used for identification only. Citere is not affiliated with, endorsed by or sponsored by any of them.",
+  "attribution_line_uk": "Назви та знаки асистентів належать їхнім власникам і використовуються лише для ідентифікації. Citere не є афілійованою з ними, не має їхнього схвалення чи спонсорства.",
+  "fallback": "monogram",
+  "assistants": [
+    {
+      "key": "chatgpt",
+      "name": "ChatGPT",
+      "company": "OpenAI",
+      "domain": "openai.com",
+      "monogram": "GP",
+      "brand_color": "#0e9c74",
+      "file": "openai.svg",
+      "brand_page": "https://openai.com/brand/",
+      "notes": "Official downloads and usage terms on the brand page. Guidelines: don't alter the mark, don't build your own lockup, don't pair the logomark with product or model names, prefer the black or white version for contrast. Permission questions: partnercomms@openai.com."
+    },
+    {
+      "key": "gemini",
+      "name": "Gemini",
+      "company": "Google",
+      "domain": "google.com",
+      "monogram": "GE",
+      "brand_color": "#3d7ef0",
+      "file": "google-gemini.svg",
+      "brand_page": "https://about.google/brand-resource-center/",
+      "notes": "Google marks are governed by the Brand Resource Center and Google's trademark guidelines. Use the Gemini mark only to refer to the Gemini product."
+    },
+    {
+      "key": "grok",
+      "name": "Grok",
+      "company": "xAI",
+      "domain": "x.ai",
+      "monogram": "GR",
+      "brand_color": "#15181e",
+      "file": "xai-grok.svg",
+      "brand_page": "https://x.ai/",
+      "notes": "xAI does not publish a public brand kit at a stable URL; take the mark from the product site or request it from xAI. Do not redraw it."
+    },
+    {
+      "key": "claude",
+      "name": "Claude",
+      "company": "Anthropic",
+      "domain": "anthropic.com",
+      "monogram": "CL",
+      "brand_color": "#d9714e",
+      "file": "anthropic-claude.svg",
+      "brand_page": "https://www.anthropic.com/",
+      "notes": "Anthropic publishes brand assets and trademark guidance on its site; check the current terms before use."
+    },
+    {
+      "key": "copilot",
+      "name": "Copilot",
+      "company": "Microsoft",
+      "domain": "microsoft.com",
+      "monogram": "CP",
+      "brand_color": "#0d7ad1",
+      "file": "microsoft-copilot.svg",
+      "brand_page": "https://www.microsoft.com/en-us/legal/intellectualproperty/trademarks",
+      "notes": "Microsoft's Trademark and Brand Guidelines permit referential use of product names and marks under stated conditions. Read them: they are specific about spacing, colour and prohibited implications of endorsement."
+    },
+    {
+      "key": "perplexity",
+      "name": "Perplexity",
+      "company": "Perplexity AI",
+      "domain": "perplexity.ai",
+      "monogram": "PX",
+      "brand_color": "#1c8b93",
+      "file": "perplexity.svg",
+      "brand_page": "https://www.perplexity.ai/",
+      "notes": "No stable public brand kit URL; take the mark from the product site or request it."
+    },
+    {
+      "key": "deepseek",
+      "name": "DeepSeek",
+      "company": "DeepSeek",
+      "domain": "deepseek.com",
+      "monogram": "DS",
+      "brand_color": "#5468f2",
+      "file": "deepseek.svg",
+      "brand_page": "https://www.deepseek.com/",
+      "notes": "No published brand guidelines. Use the mark as published on the product site, unaltered."
+    },
+    {
+      "key": "le-chat",
+      "name": "Le Chat",
+      "company": "Mistral AI",
+      "domain": "mistral.ai",
+      "monogram": "LC",
+      "brand_color": "#f0530f",
+      "file": "mistral-le-chat.svg",
+      "brand_page": "https://mistral.ai/",
+      "notes": "Mistral publishes brand assets on its site; check the current terms before use."
+    }
+  ],
+  "networks_and_partners": {
+    "_note": "Never render logos for watchlisted domains or influence networks. Those are named in text only, defanged, and never linked. Partner and attribution organisations (Viginum, DFRLab, NewsGuard, EU DisinfoLab, CPD, SPRAVDI) are named in text with a link to the specific publication — do not use their logos without written permission, since displaying a partner's logo implies endorsement."
+  }
+}

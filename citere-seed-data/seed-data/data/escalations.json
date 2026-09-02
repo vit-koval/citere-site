@@ -1,0 +1,764 @@
+{
+  "demo": true,
+  "total": 84,
+  "answered": 24,
+  "median_response_days": 9,
+  "actions": [
+    {
+      "date": "2026-10-24",
+      "type": "remeasured",
+      "target": "8 chatbots",
+      "claim_id": "C1-001",
+      "status": "completed",
+      "response_date": "",
+      "url": ""
+    },
+    {
+      "date": "2026-10-24",
+      "type": "remeasured",
+      "target": "4 chatbots",
+      "claim_id": "C1-002",
+      "status": "completed",
+      "response_date": "",
+      "url": ""
+    },
+    {
+      "date": "2026-10-24",
+      "type": "remeasured",
+      "target": "7 chatbots",
+      "claim_id": "C1-003",
+      "status": "completed",
+      "response_date": "",
+      "url": ""
+    },
+    {
+      "date": "2026-10-24",
+      "type": "remeasured",
+      "target": "4 chatbots",
+      "claim_id": "C1-004",
+      "status": "completed",
+      "response_date": "",
+      "url": ""
+    },
+    {
+      "date": "2026-10-24",
+      "type": "remeasured",
+      "target": "3 chatbots",
+      "claim_id": "C1-006",
+      "status": "completed",
+      "response_date": "",
+      "url": ""
+    },
+    {
+      "date": "2026-10-24",
+      "type": "remeasured",
+      "target": "6 chatbots",
+      "claim_id": "C1-007",
+      "status": "completed",
+      "response_date": "",
+      "url": ""
+    },
+    {
+      "date": "2026-10-24",
+      "type": "remeasured",
+      "target": "7 chatbots",
+      "claim_id": "C2-001",
+      "status": "completed",
+      "response_date": "",
+      "url": ""
+    },
+    {
+      "date": "2026-10-24",
+      "type": "remeasured",
+      "target": "5 chatbots",
+      "claim_id": "C2-002",
+      "status": "completed",
+      "response_date": "",
+      "url": ""
+    },
+    {
+      "date": "2026-10-24",
+      "type": "remeasured",
+      "target": "4 chatbots",
+      "claim_id": "C2-003",
+      "status": "completed",
+      "response_date": "",
+      "url": ""
+    },
+    {
+      "date": "2026-10-24",
+      "type": "remeasured",
+      "target": "1 chatbots",
+      "claim_id": "C3-002",
+      "status": "completed",
+      "response_date": "",
+      "url": ""
+    },
+    {
+      "date": "2026-10-24",
+      "type": "remeasured",
+      "target": "2 chatbots",
+      "claim_id": "C3-003",
+      "status": "completed",
+      "response_date": "",
+      "url": ""
+    },
+    {
+      "date": "2026-10-24",
+      "type": "remeasured",
+      "target": "7 chatbots",
+      "claim_id": "C5-001",
+      "status": "completed",
+      "response_date": "",
+      "url": ""
+    },
+    {
+      "date": "2026-10-16",
+      "type": "partner_publication",
+      "target": "EUvsDisinfo",
+      "claim_id": "C1-007",
+      "status": "published",
+      "response_date": "",
+      "url": "https://example.org/debunk"
+    },
+    {
+      "date": "2026-10-13",
+      "type": "platform_report",
+      "target": "OpenAI",
+      "claim_id": "C1-007",
+      "status": "no_response",
+      "response_date": "",
+      "url": ""
+    },
+    {
+      "date": "2026-10-13",
+      "type": "platform_report",
+      "target": "Anthropic",
+      "claim_id": "C1-007",
+      "status": "no_response",
+      "response_date": "",
+      "url": ""
+    },
+    {
+      "date": "2026-10-13",
+      "type": "platform_report",
+      "target": "DeepSeek",
+      "claim_id": "C1-007",
+      "status": "acknowledged",
+      "response_date": "2026-10-21",
+      "url": ""
+    },
+    {
+      "date": "2026-10-13",
+      "type": "domain_complaint",
+      "target": "Registrar of eurasia-review.example",
+      "claim_id": "C1-007",
+      "status": "submitted",
+      "response_date": "",
+      "url": ""
+    },
+    {
+      "date": "2026-10-12",
+      "type": "partner_publication",
+      "target": "EUvsDisinfo",
+      "claim_id": "C1-003",
+      "status": "published",
+      "response_date": "",
+      "url": "https://example.org/debunk"
+    },
+    {
+      "date": "2026-10-12",
+      "type": "platform_report",
+      "target": "Google",
+      "claim_id": "C3-003",
+      "status": "acknowledged",
+      "response_date": "2026-10-19",
+      "url": ""
+    },
+    {
+      "date": "2026-10-12",
+      "type": "platform_report",
+      "target": "xAI",
+      "claim_id": "C3-003",
+      "status": "actioned",
+      "response_date": "2026-10-19",
+      "url": ""
+    },
+    {
+      "date": "2026-10-12",
+      "type": "domain_complaint",
+      "target": "Registrar of pravda-fr.example",
+      "claim_id": "C3-003",
+      "status": "submitted",
+      "response_date": "",
+      "url": ""
+    },
+    {
+      "date": "2026-10-10",
+      "type": "platform_report",
+      "target": "OpenAI",
+      "claim_id": "C1-001",
+      "status": "actioned",
+      "response_date": "2026-10-18",
+      "url": ""
+    },
+    {
+      "date": "2026-10-10",
+      "type": "platform_report",
+      "target": "Anthropic",
+      "claim_id": "C1-001",
+      "status": "acknowledged",
+      "response_date": "2026-10-16",
+      "url": ""
+    },
+    {
+      "date": "2026-10-10",
+      "type": "platform_report",
+      "target": "Microsoft",
+      "claim_id": "C1-001",
+      "status": "no_response",
+      "response_date": "",
+      "url": ""
+    },
+    {
+      "date": "2026-10-10",
+      "type": "domain_complaint",
+      "target": "Registrar of pravda-de.example",
+      "claim_id": "C1-001",
+      "status": "submitted",
+      "response_date": "",
+      "url": ""
+    },
+    {
+      "date": "2026-10-10",
+      "type": "platform_report",
+      "target": "Microsoft",
+      "claim_id": "C2-002",
+      "status": "actioned",
+      "response_date": "2026-10-15",
+      "url": ""
+    },
+    {
+      "date": "2026-10-10",
+      "type": "platform_report",
+      "target": "DeepSeek",
+      "claim_id": "C2-002",
+      "status": "actioned",
+      "response_date": "2026-10-15",
+      "url": ""
+    },
+    {
+      "date": "2026-10-10",
+      "type": "platform_report",
+      "target": "Google",
+      "claim_id": "C2-002",
+      "status": "acknowledged",
+      "response_date": "2026-10-19",
+      "url": ""
+    },
+    {
+      "date": "2026-10-10",
+      "type": "domain_complaint",
+      "target": "Registrar of pravda-de.example",
+      "claim_id": "C2-002",
+      "status": "submitted",
+      "response_date": "",
+      "url": ""
+    },
+    {
+      "date": "2026-10-09",
+      "type": "platform_report",
+      "target": "Anthropic",
+      "claim_id": "C1-003",
+      "status": "acknowledged",
+      "response_date": "2026-10-15",
+      "url": ""
+    },
+    {
+      "date": "2026-10-09",
+      "type": "platform_report",
+      "target": "Microsoft",
+      "claim_id": "C1-003",
+      "status": "no_response",
+      "response_date": "",
+      "url": ""
+    },
+    {
+      "date": "2026-10-09",
+      "type": "platform_report",
+      "target": "DeepSeek",
+      "claim_id": "C1-003",
+      "status": "actioned",
+      "response_date": "2026-10-11",
+      "url": ""
+    },
+    {
+      "date": "2026-10-09",
+      "type": "domain_complaint",
+      "target": "Registrar of pravda-de.example",
+      "claim_id": "C1-003",
+      "status": "submitted",
+      "response_date": "",
+      "url": ""
+    },
+    {
+      "date": "2026-10-09",
+      "type": "shared",
+      "target": "Centre for Countering Disinformation (RNBO)",
+      "claim_id": "C1-007",
+      "status": "receipt_confirmed",
+      "response_date": "",
+      "url": ""
+    },
+    {
+      "date": "2026-10-08",
+      "type": "shared",
+      "target": "Centre for Countering Disinformation (RNBO)",
+      "claim_id": "C3-003",
+      "status": "receipt_confirmed",
+      "response_date": "",
+      "url": ""
+    },
+    {
+      "date": "2026-10-08",
+      "type": "partner_publication",
+      "target": "EUvsDisinfo",
+      "claim_id": "C5-002",
+      "status": "published",
+      "response_date": "",
+      "url": "https://example.org/debunk"
+    },
+    {
+      "date": "2026-10-07",
+      "type": "shared",
+      "target": "Centre for Countering Disinformation (RNBO)",
+      "claim_id": "C1-005",
+      "status": "receipt_confirmed",
+      "response_date": "",
+      "url": ""
+    },
+    {
+      "date": "2026-10-06",
+      "type": "shared",
+      "target": "Centre for Countering Disinformation (RNBO)",
+      "claim_id": "C1-001",
+      "status": "receipt_confirmed",
+      "response_date": "",
+      "url": ""
+    },
+    {
+      "date": "2026-10-06",
+      "type": "shared",
+      "target": "Centre for Countering Disinformation (RNBO)",
+      "claim_id": "C2-002",
+      "status": "receipt_confirmed",
+      "response_date": "",
+      "url": ""
+    },
+    {
+      "date": "2026-10-06",
+      "type": "partner_publication",
+      "target": "StopFake",
+      "claim_id": "C4-002",
+      "status": "published",
+      "response_date": "",
+      "url": "https://example.org/debunk"
+    },
+    {
+      "date": "2026-10-05",
+      "type": "shared",
+      "target": "Centre for Countering Disinformation (RNBO)",
+      "claim_id": "C1-003",
+      "status": "receipt_confirmed",
+      "response_date": "",
+      "url": ""
+    },
+    {
+      "date": "2026-10-05",
+      "type": "platform_report",
+      "target": "DeepSeek",
+      "claim_id": "C1-006",
+      "status": "actioned",
+      "response_date": "2026-10-12",
+      "url": ""
+    },
+    {
+      "date": "2026-10-05",
+      "type": "platform_report",
+      "target": "Google",
+      "claim_id": "C1-006",
+      "status": "acknowledged",
+      "response_date": "2026-10-09",
+      "url": ""
+    },
+    {
+      "date": "2026-10-05",
+      "type": "platform_report",
+      "target": "Perplexity AI",
+      "claim_id": "C1-006",
+      "status": "actioned",
+      "response_date": "2026-10-15",
+      "url": ""
+    },
+    {
+      "date": "2026-10-05",
+      "type": "domain_complaint",
+      "target": "Registrar of le-observateur.example",
+      "claim_id": "C5-002",
+      "status": "submitted",
+      "response_date": "",
+      "url": ""
+    },
+    {
+      "date": "2026-10-03",
+      "type": "domain_complaint",
+      "target": "Registrar of rt.com",
+      "claim_id": "C2-004",
+      "status": "submitted",
+      "response_date": "",
+      "url": ""
+    },
+    {
+      "date": "2026-10-01",
+      "type": "shared",
+      "target": "Centre for Countering Disinformation (RNBO)",
+      "claim_id": "C1-006",
+      "status": "receipt_confirmed",
+      "response_date": "",
+      "url": ""
+    },
+    {
+      "date": "2026-10-01",
+      "type": "shared",
+      "target": "Centre for Countering Disinformation (RNBO)",
+      "claim_id": "C5-002",
+      "status": "receipt_confirmed",
+      "response_date": "",
+      "url": ""
+    },
+    {
+      "date": "2026-09-30",
+      "type": "partner_publication",
+      "target": "StopFake",
+      "claim_id": "C3-001",
+      "status": "published",
+      "response_date": "",
+      "url": "https://example.org/debunk"
+    },
+    {
+      "date": "2026-09-29",
+      "type": "partner_publication",
+      "target": "EUvsDisinfo",
+      "claim_id": "C1-002",
+      "status": "published",
+      "response_date": "",
+      "url": "https://example.org/debunk"
+    },
+    {
+      "date": "2026-09-29",
+      "type": "platform_report",
+      "target": "OpenAI",
+      "claim_id": "C2-003",
+      "status": "acknowledged",
+      "response_date": "2026-10-08",
+      "url": ""
+    },
+    {
+      "date": "2026-09-29",
+      "type": "platform_report",
+      "target": "DeepSeek",
+      "claim_id": "C2-003",
+      "status": "actioned",
+      "response_date": "2026-10-03",
+      "url": ""
+    },
+    {
+      "date": "2026-09-29",
+      "type": "platform_report",
+      "target": "Mistral",
+      "claim_id": "C2-003",
+      "status": "actioned",
+      "response_date": "2026-10-08",
+      "url": ""
+    },
+    {
+      "date": "2026-09-29",
+      "type": "domain_complaint",
+      "target": "Registrar of der-bote.example",
+      "claim_id": "C2-003",
+      "status": "submitted",
+      "response_date": "",
+      "url": ""
+    },
+    {
+      "date": "2026-09-29",
+      "type": "shared",
+      "target": "Centre for Countering Disinformation (RNBO)",
+      "claim_id": "C2-004",
+      "status": "receipt_confirmed",
+      "response_date": "",
+      "url": ""
+    },
+    {
+      "date": "2026-09-29",
+      "type": "shared",
+      "target": "Centre for Countering Disinformation (RNBO)",
+      "claim_id": "C4-002",
+      "status": "receipt_confirmed",
+      "response_date": "",
+      "url": ""
+    },
+    {
+      "date": "2026-09-28",
+      "type": "platform_report",
+      "target": "Microsoft",
+      "claim_id": "C1-004",
+      "status": "acknowledged",
+      "response_date": "2026-10-05",
+      "url": ""
+    },
+    {
+      "date": "2026-09-28",
+      "type": "platform_report",
+      "target": "Google",
+      "claim_id": "C1-004",
+      "status": "no_response",
+      "response_date": "",
+      "url": ""
+    },
+    {
+      "date": "2026-09-28",
+      "type": "platform_report",
+      "target": "xAI",
+      "claim_id": "C1-004",
+      "status": "no_response",
+      "response_date": "",
+      "url": ""
+    },
+    {
+      "date": "2026-09-28",
+      "type": "domain_complaint",
+      "target": "Registrar of svoboda-eu.example",
+      "claim_id": "C1-004",
+      "status": "submitted",
+      "response_date": "",
+      "url": ""
+    },
+    {
+      "date": "2026-09-27",
+      "type": "domain_complaint",
+      "target": "Registrar of svoboda-eu.example",
+      "claim_id": "C3-001",
+      "status": "submitted",
+      "response_date": "",
+      "url": ""
+    },
+    {
+      "date": "2026-09-26",
+      "type": "platform_report",
+      "target": "DeepSeek",
+      "claim_id": "C1-002",
+      "status": "no_response",
+      "response_date": "",
+      "url": ""
+    },
+    {
+      "date": "2026-09-26",
+      "type": "platform_report",
+      "target": "Google",
+      "claim_id": "C1-002",
+      "status": "acknowledged",
+      "response_date": "2026-09-30",
+      "url": ""
+    },
+    {
+      "date": "2026-09-26",
+      "type": "platform_report",
+      "target": "xAI",
+      "claim_id": "C1-002",
+      "status": "actioned",
+      "response_date": "2026-10-01",
+      "url": ""
+    },
+    {
+      "date": "2026-09-26",
+      "type": "partner_publication",
+      "target": "VoxCheck",
+      "claim_id": "C3-002",
+      "status": "published",
+      "response_date": "",
+      "url": "https://example.org/debunk"
+    },
+    {
+      "date": "2026-09-26",
+      "type": "partner_publication",
+      "target": "VoxCheck",
+      "claim_id": "C5-001",
+      "status": "published",
+      "response_date": "",
+      "url": "https://example.org/debunk"
+    },
+    {
+      "date": "2026-09-25",
+      "type": "platform_report",
+      "target": "Anthropic",
+      "claim_id": "C2-001",
+      "status": "actioned",
+      "response_date": "2026-09-30",
+      "url": ""
+    },
+    {
+      "date": "2026-09-25",
+      "type": "platform_report",
+      "target": "Microsoft",
+      "claim_id": "C2-001",
+      "status": "no_response",
+      "response_date": "",
+      "url": ""
+    },
+    {
+      "date": "2026-09-25",
+      "type": "platform_report",
+      "target": "DeepSeek",
+      "claim_id": "C2-001",
+      "status": "acknowledged",
+      "response_date": "2026-10-04",
+      "url": ""
+    },
+    {
+      "date": "2026-09-25",
+      "type": "domain_complaint",
+      "target": "Registrar of pravda-de.example",
+      "claim_id": "C2-001",
+      "status": "submitted",
+      "response_date": "",
+      "url": ""
+    },
+    {
+      "date": "2026-09-25",
+      "type": "shared",
+      "target": "Centre for Countering Disinformation (RNBO)",
+      "claim_id": "C2-003",
+      "status": "receipt_confirmed",
+      "response_date": "",
+      "url": ""
+    },
+    {
+      "date": "2026-09-24",
+      "type": "shared",
+      "target": "Centre for Countering Disinformation (RNBO)",
+      "claim_id": "C1-004",
+      "status": "receipt_confirmed",
+      "response_date": "",
+      "url": ""
+    },
+    {
+      "date": "2026-09-23",
+      "type": "shared",
+      "target": "Centre for Countering Disinformation (RNBO)",
+      "claim_id": "C3-001",
+      "status": "receipt_confirmed",
+      "response_date": "",
+      "url": ""
+    },
+    {
+      "date": "2026-09-23",
+      "type": "platform_report",
+      "target": "DeepSeek",
+      "claim_id": "C3-002",
+      "status": "acknowledged",
+      "response_date": "2026-09-27",
+      "url": ""
+    },
+    {
+      "date": "2026-09-23",
+      "type": "domain_complaint",
+      "target": "Registrar of le-observateur.example",
+      "claim_id": "C3-002",
+      "status": "submitted",
+      "response_date": "",
+      "url": ""
+    },
+    {
+      "date": "2026-09-23",
+      "type": "platform_report",
+      "target": "OpenAI",
+      "claim_id": "C5-001",
+      "status": "acknowledged",
+      "response_date": "2026-09-30",
+      "url": ""
+    },
+    {
+      "date": "2026-09-23",
+      "type": "platform_report",
+      "target": "Microsoft",
+      "claim_id": "C5-001",
+      "status": "actioned",
+      "response_date": "2026-09-26",
+      "url": ""
+    },
+    {
+      "date": "2026-09-23",
+      "type": "platform_report",
+      "target": "DeepSeek",
+      "claim_id": "C5-001",
+      "status": "no_response",
+      "response_date": "",
+      "url": ""
+    },
+    {
+      "date": "2026-09-23",
+      "type": "domain_complaint",
+      "target": "Registrar of rt.com",
+      "claim_id": "C5-001",
+      "status": "submitted",
+      "response_date": "",
+      "url": ""
+    },
+    {
+      "date": "2026-09-22",
+      "type": "shared",
+      "target": "Centre for Countering Disinformation (RNBO)",
+      "claim_id": "C1-002",
+      "status": "receipt_confirmed",
+      "response_date": "",
+      "url": ""
+    },
+    {
+      "date": "2026-09-21",
+      "type": "shared",
+      "target": "Centre for Countering Disinformation (RNBO)",
+      "claim_id": "C2-001",
+      "status": "receipt_confirmed",
+      "response_date": "",
+      "url": ""
+    },
+    {
+      "date": "2026-09-21",
+      "type": "shared",
+      "target": "Centre for Countering Disinformation (RNBO)",
+      "claim_id": "C4-001",
+      "status": "receipt_confirmed",
+      "response_date": "",
+      "url": ""
+    },
+    {
+      "date": "2026-09-19",
+      "type": "shared",
+      "target": "Centre for Countering Disinformation (RNBO)",
+      "claim_id": "C3-002",
+      "status": "receipt_confirmed",
+      "response_date": "",
+      "url": ""
+    },
+    {
+      "date": "2026-09-19",
+      "type": "shared",
+      "target": "Centre for Countering Disinformation (RNBO)",
+      "claim_id": "C5-001",
+      "status": "receipt_confirmed",
+      "response_date": "",
+      "url": ""
+    }
+  ]
+}

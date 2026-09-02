@@ -1,0 +1,21 @@
+{
+  "demo": true,
+  "clusters": [
+    {
+      "id": "corruption-diverted-aid",
+      "label_en": "Corruption / diverted aid"
+    },
+    {
+      "id": "delegitimisation",
+      "label_en": "Zelensky delegitimisation"
+    },
+    {
+      "id": "weapons-diversion",
+      "label_en": "Weapons diversion"
+    },
+    {
+      "id": "energy-panic",
+      "label_en": "Energy panic"
+    }
+  ]
+}

@@ -1,0 +1,54 @@
+{
+  "demo": true,
+  "demo_banner_en": "Demonstration data. Every figure on this site is generated for design review and is not a real measurement.",
+  "demo_banner_uk": "Демонстраційні дані. Усі показники на цьому сайті згенеровано для перегляду дизайну і вони не є реальними вимірюваннями.",
+  "domain": "citere.ai",
+  "org": {
+    "name": "Citere",
+    "legal_name": "{{TODO legal entity}}",
+    "city": "Chernivtsi",
+    "country": "UA",
+    "founded": "2026",
+    "diia_city_since": "2026-05",
+    "email": {
+      "research": "research@citere.ai",
+      "platforms": "platforms@citere.ai",
+      "press": "press@citere.ai",
+      "corrections": "corrections@citere.ai"
+    },
+    "sameAs": [
+      "https://github.com/citere",
+      "https://zenodo.org"
+    ],
+    "team": [
+      {
+        "name": "{{TODO}}",
+        "role": "Founder and research lead"
+      },
+      {
+        "name": "{{TODO}}",
+        "role": "Engineering"
+      },
+      {
+        "name": "{{TODO}}",
+        "role": "Analysis"
+      }
+    ]
+  },
+  "counters": {
+    "claims": 18,
+    "responses": 1600,
+    "domains": 10,
+    "escalations_sent": 84,
+    "escalations_answered": 24,
+    "escalations_actioned": 12
+  },
+  "used_by": [],
+  "last_update": "2026-10-24",
+  "watchlist_version": "v14",
+  "methodology_version": "1.2",
+  "current_run": {
+    "label": "Run 4 in progress",
+    "markets": "Germany, France, Poland, Baltics"
+  }
+}
