@@ -167,7 +167,9 @@ a:focus-visible, summary:focus-visible {
 .badge-dodged { color: var(--neutral); }
 
 .verdict-line { margin: 0.4rem 0 0.2rem; }
-.verdict-line span { color: var(--ink-faint); }
+/* Scoped to the meta text only: a bare "span" here outranked .badge-false and
+   painted the verdict badge grey. */
+.verdict-line .meta { color: var(--ink-faint); }
 
 /* tables */
 .table-wrap { overflow-x: auto; margin: 0 0 1.4rem; }

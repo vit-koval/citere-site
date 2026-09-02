@@ -4,7 +4,7 @@ layout: layouts/base.njk
 <h1>&ldquo;{{ claim.title_en }}&rdquo;</h1>
 <p class="verdict-line">
   {% set badgeVerdict = claim.verdict %}{% include "partials/verdict-badge.njk" %}
-  <span>· {{ 'claim.verdictIssued' | t }} <time datetime="{{ claim.verdict_date | isoDate }}">{{ claim.verdict_date | displayDate }}</time>
+  <span class="meta">· {{ 'claim.verdictIssued' | t }} <time datetime="{{ claim.verdict_date | isoDate }}">{{ claim.verdict_date | displayDate }}</time>
   · {{ 'col.updated' | t }} <time datetime="{{ claim.updated | isoDate }}">{{ claim.updated | displayDate }}</time>
   · {{ 'claim.id' | t }} {{ claim.id }}
   · {{ 'claim.cluster' | t }}: <a href="{{ ('/registry/cluster/' + claim.cluster + '/') | loc(lang) | url }}">{{ clusters[claim.cluster].name_en | default(claim.cluster) }}</a></span>
