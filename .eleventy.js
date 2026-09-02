@@ -1,4 +1,5 @@
 const { md: markdown } = require("./src/_lib/markdown.cjs");
+const ui = require("./src/_data/ui.js");
 const {
   VERDICTS, BEHAVIOURS, STATUSES, ACTION_TYPES, NETWORKS, NETWORK_NAMES, NETWORK_CLASS,
   CHATBOTS, PERSONAS, MONTHS
@@ -46,6 +47,22 @@ module.exports = function (eleventyConfig) {
     }
     return existsCache.get(rel);
   });
+
+  // Interface strings. Unknown keys throw: a typo must not ship as blank
+  // chrome. A missing Ukrainian key falls back to English (CLAUDE.md 2).
+  eleventyConfig.addFilter("t", function (key, ...args) {
+    const lang = (this.ctx && this.ctx.lang) || "en";
+    let value = (ui[lang] || ui.en)[key];
+    if (value === undefined) value = ui.en[key];
+    if (value === undefined) throw new Error(`ui: unknown string key "${key}"`);
+    for (const arg of args) value = value.replace("%s", String(arg));
+    return value;
+  });
+
+  // Mount-point aware sibling URL: /about/ in English, /uk/about/ in Ukrainian.
+  eleventyConfig.addFilter("loc", (path, lang) =>
+    lang && lang !== "en" ? `/${lang}${path}` : path
+  );
 
   // ---- dates -------------------------------------------------------------
   eleventyConfig.addFilter("displayDate", (value) => {

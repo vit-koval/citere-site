@@ -1,9 +1,13 @@
 ---
 layout: layouts/page.njk
-permalink: /methodology/
 pageKey: methodology
 navKey: methodology
-crumb: Methodology
+crumbKey: crumb.methodology
 title: "Methodology — Citere"
 description: "How Citere classifies what a chatbot answer did with a documented false claim: repeated, contextualised, refuted or dodged. Never averaged."
+pagination:
+  data: build.languages
+  alias: lang
+  size: 1
+permalink: "{{ '/methodology/' | loc(lang) }}"
 ---

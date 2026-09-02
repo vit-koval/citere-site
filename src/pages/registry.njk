@@ -1,14 +1,18 @@
 ---
 layout: layouts/base.njk
-permalink: /registry/
 pageKey: registry
 navKey: registry
-crumb: Registry
+crumbKey: crumb.registry
 title: "Registry of false claims in AI chatbot answers — Citere"
 description: "Every false claim about Ukraine we have documented in a public AI chatbot answer: the verdict, the evidence, and what changed after we reported it."
 schemas:
   - collectionpage
   - dataset
+pagination:
+  data: build.languages
+  alias: lang
+  size: 1
+permalink: "{{ '/registry/' | loc(lang) }}"
 ---
 {%- set doc = copy.en.registry -%}
 <div class="phead">
@@ -34,8 +38,8 @@ schemas:
 {% include "partials/claims-table.njk" %}
 
 <div class="exports">
-  {%- if datasets.has['registry-json'] %}<a href="{{ '/registry.json' | url }}">Get the JSON</a><span>&middot;</span>{% endif %}
-  {%- if datasets.has['registry-csv'] %}<a href="{{ '/registry.csv' | url }}">Download CSV</a><span>&middot;</span>{% endif %}
+  {%- if datasets.has['registry-json'] %}<a href="{{ '/registry.json' | url }}">{{ 'claim.getJson' | t }}</a><span>&middot;</span>{% endif %}
+  {%- if datasets.has['registry-csv'] %}<a href="{{ '/registry.csv' | url }}">{{ 'action.downloadCsv' | t }}</a><span>&middot;</span>{% endif %}
   {%- if navigation.has.rss %}<a href="{{ '/feed.xml' | url }}">RSS</a><span>&middot;</span>{% endif %}
-  <a href="{{ '/data/#cite' | url }}">Cite the registry</a>
+  <a href="{{ '/data/#cite' | url }}">{{ 'action.citeRegistry' | t }}</a>
 </div>

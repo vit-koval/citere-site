@@ -1,9 +1,13 @@
+const { home, crumb } = require("../_lib/crumbs.cjs");
+const crumbLabel = (data) => String(data.entry.item.defanged);
 const { fitTitle, fitDescription } = require("../_lib/meta.cjs");
 const { NETWORK_NAMES } = require("../_lib/labels.cjs");
 
 module.exports = {
   eleventyComputed: {
-    title: (data) => fitTitle(`${data.source.defanged} — a domain cited by AI chatbots`),
+    lang: (data) => data.entry.lang,
+    source: (data) => data.entry.item,
+    title: (data) => fitTitle(`${data.entry.item.defanged} — a domain cited by AI chatbots`),
     description: (data) => {
       const s = data.source;
       return fitDescription(
@@ -17,9 +21,9 @@ module.exports = {
       );
     },
     breadcrumbTrail: (data) => [
-      { title: "Home", url: "/" },
-      { title: "Sources", url: "/sources/" },
-      { title: data.source.defanged, url: data.source.url }
+      home(data.entry.lang),
+      crumb(data.entry.lang, "crumb.sources", "/sources/"),
+      { title: crumbLabel(data), url: String(data.entry.item.url || data.entry.url) }
     ]
   }
 };

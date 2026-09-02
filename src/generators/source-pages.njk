@@ -1,11 +1,11 @@
 ---
 pagination:
-  data: sources
+  data: localised.sources
   size: 1
-  alias: source
+  alias: entry
 layout: layouts/base.njk
 wrap: wrap-narrow
-permalink: "{{ source.url }}"
+permalink: "{{ entry.url }}"
 ---
 {%- from "partials/bot-mark.njk" import botMark -%}
 <div class="phead"><h1 style="font-family:ui-monospace,monospace;font-size:26px">{{ source.defanged }}</h1>
@@ -28,10 +28,10 @@ permalink: "{{ source.url }}"
 </div>
 
 {%- if source.claims | length %}
-<h2 id="where-cited" style="margin:0 0 12px">Where it was cited</h2>
+<h2 id="where-cited" style="margin:0 0 12px">{{ 'section.whereCited' | t }}</h2>
 <div class="panel"><table>
   <caption class="visually-hidden">Claims whose recorded answers cited this domain</caption>
-  <thead><tr><th scope="col">Claim</th><th scope="col">Verdict</th><th scope="col">Cited by</th></tr></thead>
+  <thead><tr><th scope="col">{{ 'col.claim' | t }}</th><th scope="col">{{ 'col.verdict' | t }}</th><th scope="col">{{ 'col.citedBy' | t }}</th></tr></thead>
   <tbody>
   {%- for c in source.claims %}
     <tr><td class="cl"><a href="{{ c.url | url }}">&ldquo;{{ c.title_en }}&rdquo;</a></td>
@@ -41,7 +41,7 @@ permalink: "{{ source.url }}"
   </tbody></table></div>
 {%- endif %}
 
-<h2 id="complaints" style="margin:36px 0 12px">Complaints filed</h2>
+<h2 id="complaints" style="margin:36px 0 12px">{{ 'section.complaints' | t }}</h2>
 {%- if source.complaints | length %}
 <div class="panel">
   {%- for c in source.complaints %}

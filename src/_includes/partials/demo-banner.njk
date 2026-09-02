@@ -1,12 +1,11 @@
 {#- Rendered on every page while data/site.json carries demo:true. Not
     dismissible: there is no JS on this site, and a banner you can close is a
-    banner a reviewer forgets. Emitted only when the flag is actually true, so
-    a real export removes it by deleting the flag. -#}
+    banner a reviewer forgets. -#}
 {%- if site.isDemo %}
 <div class="demobar" role="alert">
   <div class="wrap demobar-in">
-    <span class="demobar-tag">Demo data</span>
-    <span class="demobar-text">{{ (site["demo_banner_" + (lang | default("en"))] | default(site.demo_banner_en)) }}</span>
+    <span class="demobar-tag">{{ 'demo.tag' | t }}</span>
+    <span class="demobar-text">{{ site["demo_banner_" + (lang | default("en"))] | default(site.demo_banner_en) }}</span>
   </div>
 </div>
 {%- endif %}

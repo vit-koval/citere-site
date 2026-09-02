@@ -1,11 +1,11 @@
 ---
 pagination:
-  data: claims
+  data: localised.claims
   size: 1
-  alias: claim
+  alias: entry
 layout: layouts/claim.njk
 schemas:
   - claimreview
   - article
-permalink: "/registry/{{ claim.slug }}/"
+permalink: "{{ entry.url }}"
 ---

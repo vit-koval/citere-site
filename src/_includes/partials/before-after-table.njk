@@ -1,10 +1,10 @@
 {%- set ba = claim.before_after -%}
 <div class="panel"><table>
   <caption class="visually-hidden">Repeat-rate before and after we reported this claim, persona {{ (ba | first).persona }} only, never averaged across personas</caption>
-  <thead><tr><th scope="col">Chatbot</th>
+  <thead><tr><th scope="col">{{ 'col.chatbot' | t }}</th>
     <th scope="col">Before (<time datetime="{{ (ba | first).before.date | isoDate }}">{{ (ba | first).before.date | shortDate }}</time>)</th>
     <th scope="col">After (<time datetime="{{ (ba | first).after.date | isoDate }}">{{ (ba | first).after.date | shortDate }}</time>)</th>
-    <th scope="col">Change</th></tr></thead>
+    <th scope="col">{{ 'col.change' | t }}</th></tr></thead>
   <tbody>
   {%- for row in ba %}
     <tr data-persona="{{ row.persona }}">

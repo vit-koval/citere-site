@@ -1,9 +1,13 @@
 ---
 layout: layouts/base.njk
-permalink: /
 pageKey: index
 title: "Do AI chatbots repeat Russian disinformation about Ukraine?"
 description: "Citere tests ChatGPT, Gemini, Grok, Claude, Copilot, Perplexity, DeepSeek and Le Chat for Russian disinformation about Ukraine. Open data, CC BY 4.0."
+pagination:
+  data: build.languages
+  alias: lang
+  size: 1
+permalink: "{{ '/' | loc(lang) }}"
 ---
 {%- set doc = copy.en.index -%}
 <div class="stage">
@@ -19,8 +23,8 @@ description: "Citere tests ChatGPT, Gemini, Grok, Claude, Copilot, Perplexity, D
     <p class="sub">{{ doc.data.lead | fill(figures) | mdInline | safe }}</p>
     {%- endif %}
     <div class="cta">
-      {%- if navigation.has.registry %}<a class="btn btn-p" href="{{ '/registry/' | url }}">Browse the registry</a>{% endif %}
-      {%- if navigation.has.reports %}<a class="btn btn-s" href="{{ '/monitor/' | url }}">Latest report</a>{% endif %}
+      {%- if navigation.has.registry %}<a class="btn btn-p" href="{{ '/registry/' | url }}">{{ 'action.browseRegistry' | t }}</a>{% endif %}
+      {%- if navigation.has.reports %}<a class="btn btn-s" href="{{ '/monitor/' | url }}">{{ 'action.latestReport' | t }}</a>{% endif %}
     </div>
     <p class="stamp">Updated <time datetime="{{ site.last_update | isoDate }}">{{ site.last_update | displayDate }}</time> &middot; Open data, CC BY 4.0 &middot;
       <a href="{{ '/methodology/' | url }}">How we measure</a></p>
@@ -50,7 +54,7 @@ description: "Citere tests ChatGPT, Gemini, Grok, Claude, Copilot, Perplexity, D
 </div></section>
 
 <section>
-  <div class="shead"><h2>How it works</h2><a href="{{ '/methodology/' | url }}">Methodology &rarr;</a></div>
+  <div class="shead"><h2>{{ 'section.howItWorks' | t }}</h2><a href="{{ '/methodology/' | url }}">Methodology &rarr;</a></div>
   <div class="steps">
   {%- for step in ['detect','trace','publish','report','confirm','remeasure'] %}
     <div class="st"><div class="i">{{ loop.index }}</div>
@@ -61,7 +65,7 @@ description: "Citere tests ChatGPT, Gemini, Grok, Claude, Copilot, Perplexity, D
 </section>
 
 <section>
-  <div class="shead"><h2>Why trust this</h2></div>
+  <div class="shead"><h2>{{ 'section.whyTrust' | t }}</h2></div>
   <div class="grid4">
   {%- for item in trustCards %}
     <div class="t"><h3>{{ doc.sections[item.key].title }}</h3>

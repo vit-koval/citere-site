@@ -1,12 +1,12 @@
 ---
 pagination:
-  data: facets
+  data: localised.facets
   size: 1
-  alias: facet
+  alias: entry
 layout: layouts/base.njk
 schemas:
   - collectionpage
-permalink: "{{ facet.url }}"
+permalink: "{{ entry.url }}"
 ---
 <div class="phead">
   <h1>{{ facetHeading }}</h1>

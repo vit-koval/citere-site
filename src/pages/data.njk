@@ -1,23 +1,27 @@
 ---
 layout: layouts/page.njk
-permalink: /data/
 pageKey: data
-crumb: Data
+crumbKey: crumb.data
 title: "Data and downloads — Citere"
 description: "Download the Citere claim registry, per-run chatbot observations, the domain watchlist and the escalation log. CSV and JSON under CC BY 4.0."
 schemas:
   - datacatalog
+pagination:
+  data: build.languages
+  alias: lang
+  size: 1
+permalink: "{{ '/data/' | loc(lang) }}"
 ---
 {% if datasets.all | length %}
 <div class="panel"><table>
   <caption class="visually-hidden">Datasets published from this site</caption>
-  <thead><tr><th scope="col">Dataset</th><th scope="col">Format</th><th scope="col">Period</th><th scope="col"></th></tr></thead>
+  <thead><tr><th scope="col">{{ 'col.dataset' | t }}</th><th scope="col">{{ 'col.format' | t }}</th><th scope="col">{{ 'col.period' | t }}</th><th scope="col"></th></tr></thead>
   <tbody>
   {% for item in datasets.all %}
     <tr><td class="cl">{{ item.name }}<small>{{ item.description }}</small></td>
       <td>{{ item.format }}</td>
       <td style="color:var(--dim)">{{ item.period | default(site.last_update | year) }}</td>
-      <td><a href="{{ item.url | url }}" style="color:var(--accent);font-weight:600">Download</a></td></tr>
+      <td><a href="{{ item.url | url }}" style="color:var(--accent);font-weight:600">{{ 'action.download' | t }}</a></td></tr>
   {% endfor %}
   </tbody></table></div>
 {% endif %}

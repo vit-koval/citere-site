@@ -1,9 +1,13 @@
 ---
 layout: layouts/page.njk
-permalink: /about/
 pageKey: about
 navKey: 
-crumb: About
+crumbKey: crumb.about
 title: "About Citere"
 description: "Citere is a Ukrainian research company testing public AI chatbots for Russian disinformation about Ukraine, and working to get what it finds corrected."
+pagination:
+  data: build.languages
+  alias: lang
+  size: 1
+permalink: "{{ '/about/' | loc(lang) }}"
 ---

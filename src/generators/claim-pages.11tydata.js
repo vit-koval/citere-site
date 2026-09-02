@@ -1,3 +1,5 @@
+const { home, crumb } = require("../_lib/crumbs.cjs");
+const crumbLabel = (data) => String(data.entry.item.id);
 const { fitTitle, fitDescription, listOf } = require("../_lib/meta.cjs");
 const { VERDICTS, CHATBOTS } = require("../_lib/labels.cjs");
 
@@ -8,10 +10,12 @@ const countryName = (c) => {
 
 module.exports = {
   eleventyComputed: {
-    prose: (data) => data.copy.en.claims[data.claim.id],
-    title: (data) => fitTitle(`“${data.claim.title_en}”`),
+    lang: (data) => data.entry.lang,
+    claim: (data) => data.entry.item,
+    prose: (data) => data.copy.en.claims[data.entry.item.id],
+    title: (data) => fitTitle(`“${data.entry.item.title_en}”`),
     description: (data) => {
-      const claim = data.claim;
+      const claim = data.entry.item;
       // Values reach eleventyComputed proxy-wrapped for dependency tracking,
       // so coerce before using one as an object key.
       const bots = [...claim.repeatedBy].map((b) => (CHATBOTS[String(b)] || {}).name || String(b));
@@ -28,13 +32,13 @@ module.exports = {
         `claim ${claim.id}`
       );
     },
-    articleHeadline: (data) => data.claim.title_en,
-    articlePublished: (data) => data.claim.verdict_date,
-    articleModified: (data) => data.claim.updated,
+    articleHeadline: (data) => data.entry.item.title_en,
+    articlePublished: (data) => data.entry.item.verdict_date,
+    articleModified: (data) => data.entry.item.updated,
     breadcrumbTrail: (data) => [
-      { title: "Home", url: "/" },
-      { title: "Registry", url: "/registry/" },
-      { title: data.claim.id, url: data.claim.url }
+      home(data.entry.lang),
+      crumb(data.entry.lang, "crumb.registry", "/registry/"),
+      { title: crumbLabel(data), url: String(data.entry.item.url || data.entry.url) }
     ]
   }
 };

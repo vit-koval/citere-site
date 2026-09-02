@@ -4,12 +4,13 @@
 {% include "partials/head.njk" %}
 </head>
 <body>
-<a class="skip-link" href="#main">Skip to content</a>
+<a class="skip-link" href="#main">{{ 'skip' | t }}</a>
 {% include "partials/demo-banner.njk" %}
 {% include "partials/nav.njk" %}
 <main id="main">
 <div class="{{ wrap | default('wrap') }}">
 {% include "partials/crumbs.njk" %}
+{% include "partials/translation-notice.njk" %}
 {{ content | safe }}
 </div>
 </main>

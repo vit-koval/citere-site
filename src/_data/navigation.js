@@ -29,7 +29,7 @@ const P = {
   security: "machine/security.njk"
 };
 
-const entry = (key, label, url, template) => ({ key, label, url, template });
+const entry = (key, label, url, template, shared) => ({ key, label, url, template, shared });
 
 const MAIN = [
   entry("registry", "Registry", "/registry/", P.registry),
@@ -43,30 +43,30 @@ const MAIN = [
 
 const FOOTER = [
   {
-    heading: "Monitoring",
+    headingKey: "footer.monitoring",
     links: [
-      entry("registry", "Claim registry", "/registry/", P.registry),
+      entry("claimRegistry", "Claim registry", "/registry/", P.registry),
       entry("benchmarks", "Benchmarks", "/benchmarks/", P.benchmarks),
       entry("reports", "Reports", "/monitor/", P.reports),
       entry("chatbots", "Chatbots", "/platforms/", P.chatbots),
       entry("countries", "Countries", "/countries/", P.countries),
       entry("sources", "Sources", "/sources/", P.sources),
-      entry("escalations", "Escalation log", "/escalations/", P.escalations)
+      entry("escalationLog", "Escalation log", "/escalations/", P.escalations)
     ]
   },
   {
-    heading: "Method &amp; data",
+    headingKey: "footer.method",
     links: [
       entry("methodology", "Methodology", "/methodology/", P.methodology),
-      entry("data", "Data &amp; downloads", "/data/", P.data),
-      entry("cite", "How to cite", "/data/#cite", P.data),
-      entry("rss", "RSS", "/feed.xml", P.feed),
-      entry("jsonfeed", "JSON Feed", "/feed.json", P.feedJson),
-      entry("llms", "llms.txt", "/llms.txt", P.llms)
+      entry("dataDownloads", "Data &amp; downloads", "/data/", P.data),
+      entry("howToCite", "How to cite", "/data/#cite", P.data),
+      entry("rss", "RSS", "/feed.xml", P.feed, true),
+      entry("jsonFeed", "JSON Feed", "/feed.json", P.feedJson, true),
+      entry("llms", "llms.txt", "/llms.txt", P.llms, true)
     ]
   },
   {
-    heading: "Organisation",
+    headingKey: "footer.organisation",
     links: [
       entry("about", "About", "/about/", P.about),
       entry("mission", "Mission", "/mission/", P.mission),
@@ -82,7 +82,7 @@ const LEGAL = [
   entry("terms", "Terms", "/terms/", P.terms),
   entry("privacy", "Privacy", "/privacy/", P.privacy),
   entry("press", "Press &amp; Media", "/press/", P.press),
-  entry("security", "security.txt", "/.well-known/security.txt", P.security)
+  entry("security", "security.txt", "/.well-known/security.txt", P.security, true)
 ];
 
 const live = (list) => list.filter((item) => built(item.template));

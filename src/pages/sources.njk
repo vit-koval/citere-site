@@ -1,13 +1,17 @@
 ---
 layout: layouts/base.njk
-permalink: /sources/
 pageKey: sources
 navKey: sources
-crumb: Sources
+crumbKey: crumb.sources
 title: "Kremlin-linked domains cited by AI chatbots — Citere"
 description: "The domains from Russian influence infrastructure we have observed cited in public AI chatbot answers, with their published attribution. CSV and STIX 2.1."
 schemas:
   - dataset
+pagination:
+  data: build.languages
+  alias: lang
+  size: 1
+permalink: "{{ '/sources/' | loc(lang) }}"
 ---
 {%- set doc = copy.en.sources -%}
 <div class="phead"><h1>{{ doc.data.h1 }}</h1>
@@ -23,8 +27,8 @@ schemas:
 
 <div class="panel"><table>
   <caption class="visually-hidden">Watchlisted domains, most cited first</caption>
-  <thead><tr><th scope="col">Domain</th><th scope="col">Network</th><th scope="col">First seen</th>
-    <th scope="col">Cited in</th><th scope="col">Citations</th></tr></thead>
+  <thead><tr><th scope="col">{{ 'col.domain' | t }}</th><th scope="col">{{ 'col.network' | t }}</th><th scope="col">{{ 'col.firstSeen' | t }}</th>
+    <th scope="col">{{ 'col.citedIn' | t }}</th><th scope="col">{{ 'col.citations' | t }}</th></tr></thead>
   <tbody>
   {%- for s in sources %}
     <tr><td><a href="{{ s.url | url }}"><span class="domain">{{ s.defanged }}</span></a></td>
@@ -51,6 +55,6 @@ schemas:
 {%- endif %}
 
 <div class="exports" style="margin:18px 0 44px">
-  {%- if datasets.has['sources-csv'] %}<a href="{{ '/sources.csv' | url }}">Download CSV</a><span>&middot;</span>{% endif %}
+  {%- if datasets.has['sources-csv'] %}<a href="{{ '/sources.csv' | url }}">{{ 'action.downloadCsv' | t }}</a><span>&middot;</span>{% endif %}
   {%- if datasets.has['sources-stix'] %}<a href="{{ '/sources.stix.json' | url }}">STIX 2.1</a><span>&middot;</span>{% endif %}
   <a href="{{ '/methodology/' | url }}">How the watchlist is built</a></div>

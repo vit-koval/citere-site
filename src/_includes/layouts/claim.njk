@@ -8,7 +8,7 @@ wrap: wrap-narrow
     <span>Verdict issued <time datetime="{{ claim.verdict_date | isoDate }}">{{ claim.verdict_date | displayDate }}</time></span><span>&middot;</span>
     <span>Updated <time datetime="{{ claim.updated | isoDate }}">{{ claim.updated | displayDate }}</time></span>
     <span>&middot;</span><span>ID {{ claim.id }}</span></div>
-  <h1 style="font-size:29px;line-height:1.24;max-width:30ch">&ldquo;{{ claim.title_en }}&rdquo;</h1>
+  <h1 style="font-size:29px;line-height:1.24;max-width:30ch">&ldquo;{{ claim.titles[lang] | default(claim.title_en) }}&rdquo;</h1>
   <div class="tiles" style="margin-top:4px">
     <a class="tile" href="{{ ('/registry/cluster/' + claim.cluster + '/') | url }}">{{ clusters[claim.cluster].name_en | default(claim.cluster) }}</a>
     <span class="tile">{% for l in claim.languages %}{{ l | upper }}{% if not loop.last %} &middot; {% endif %}{% endfor %}</span>
@@ -16,10 +16,10 @@ wrap: wrap-narrow
 </div>
 
 <div class="prose" style="max-width:none">
-  <h2 id="the-verdict">The verdict</h2>
+  <h2 id="the-verdict">{{ 'claim.verdict' | t }}</h2>
   {{ prose.sections['verdict'].html | prefixLinks | defangCopy | safe }}
 
-  <h2 id="what-is-true">What is true</h2>
+  <h2 id="what-is-true">{{ 'claim.whatIsTrue' | t }}</h2>
   {{ prose.sections['what-is-true'].html | prefixLinks | defangCopy | safe }}
 
   {%- if claim.grain_of_truth and benchmarks.headline %}
@@ -28,7 +28,7 @@ wrap: wrap-narrow
     grain of truth in <b>{{ benchmarks.headline.grain_repeated | rate }}</b> of non-evasive answers.</div>
   {%- endif %}
 
-  <h2 id="where-the-claim-comes-from">Where the claim comes from</h2>
+  <h2 id="where-the-claim-comes-from">{{ 'claim.origin' | t }}</h2>
   {{ prose.sections['where-the-claim-comes-from'].html | prefixLinks | defangCopy | safe }}
   <p>First seen <time datetime="{{ claim.origin.first_seen | isoDate }}">{{ claim.origin.first_seen | displayDate }}</time>
     on the {{ claim.origin.network | networkName }} network{% if claim.origin.attribution | length %}, attributed by
@@ -37,10 +37,10 @@ wrap: wrap-narrow
 </div>
 
 {%- if claim.confirmations | length %}
-<h2 id="who-else-has-checked-this" style="margin:36px 0 12px">Who else has checked this</h2>
+<h2 id="who-else-has-checked-this" style="margin:36px 0 12px">{{ 'claim.whoElse' | t }}</h2>
 <div class="panel"><table>
   <caption class="visually-hidden">Independent organisations that reached the same conclusion</caption>
-  <thead><tr><th scope="col">Organisation</th><th scope="col">Finding</th><th scope="col">Date</th></tr></thead>
+  <thead><tr><th scope="col">{{ 'col.organisation' | t }}</th><th scope="col">{{ 'col.finding' | t }}</th><th scope="col">{{ 'col.date' | t }}</th></tr></thead>
   <tbody>
   {%- for c in claim.confirmations %}
     <tr><td>{% if c.url %}<a href="{{ c.url }}">{{ c.org }}</a>{% else %}{{ c.org }}{% endif %}</td>
@@ -50,11 +50,11 @@ wrap: wrap-narrow
   </tbody></table></div>
 {%- endif %}
 
-<h2 id="which-chatbots-repeated-it" style="margin:36px 0 8px">Which chatbots repeated it</h2>
+<h2 id="which-chatbots-repeated-it" style="margin:36px 0 8px">{{ 'claim.whichChatbots' | t }}</h2>
 {% include "partials/observations-table.njk" %}
 
 {%- if claim.citedDomains | length %}
-<h2 id="sources-the-chatbots-cited" style="margin:36px 0 12px">Sources the chatbots cited</h2>
+<h2 id="sources-the-chatbots-cited" style="margin:36px 0 12px">{{ 'claim.sourcesCited' | t }}</h2>
 <div class="panel"><table>
   <caption class="visually-hidden">Watchlisted domains cited in the recorded answers. Domains are printed defanged and never linked.</caption>
   <tbody>
@@ -67,16 +67,16 @@ wrap: wrap-narrow
   </tbody></table></div>
 {%- endif %}
 
-<h2 id="what-we-did" style="margin:36px 0 12px">What we did</h2>
+<h2 id="what-we-did" style="margin:36px 0 12px">{{ 'claim.whatWeDid' | t }}</h2>
 {% include "partials/actions-table.njk" %}
 
 {%- if claim.before_after | length %}
-<h2 id="what-changed" style="margin:36px 0 12px">What changed</h2>
+<h2 id="what-changed" style="margin:36px 0 12px">{{ 'claim.whatChanged' | t }}</h2>
 {% include "partials/before-after-table.njk" %}
 {%- endif %}
 
 {%- if claim.changelog | length %}
-<h2 id="changelog" style="margin:36px 0 12px">Changelog</h2>
+<h2 id="changelog" style="margin:36px 0 12px">{{ 'claim.changelog' | t }}</h2>
 <div class="panel"><table>
   <caption class="visually-hidden">What changed on this page, and when</caption>
   <tbody>
@@ -88,7 +88,7 @@ wrap: wrap-narrow
 {%- endif %}
 
 <div class="exports" style="margin:28px 0 40px">
-  <a href="{{ ('/registry/' + claim.slug + '.json') | url }}">Get the JSON</a><span>&middot;</span>
-  <a href="{{ ('/registry/' + claim.slug + '.md') | url }}">Get the Markdown</a>
-  {%- if navigation.has.data %}<span>&middot;</span><a href="{{ '/data/#cite' | url }}">Cite this page</a>{% endif %}
+  <a href="{{ ('/registry/' + claim.slug + '.json') | url }}">{{ 'claim.getJson' | t }}</a><span>&middot;</span>
+  <a href="{{ ('/registry/' + claim.slug + '.md') | url }}">{{ 'claim.getMarkdown' | t }}</a>
+  {%- if navigation.has.data %}<span>&middot;</span><a href="{{ '/data/#cite' | url }}">{{ 'claim.cite' | t }}</a>{% endif %}
 </div>

@@ -1,9 +1,13 @@
 ---
 layout: layouts/page.njk
-permalink: /mission/
 pageKey: mission
 navKey: 
-crumb: Mission
+crumbKey: crumb.mission
 title: "Mission — Citere"
 description: "Why Citere exists: to make it measurable, and therefore fixable, when AI systems repeat state disinformation to the people who trust them."
+pagination:
+  data: build.languages
+  alias: lang
+  size: 1
+permalink: "{{ '/mission/' | loc(lang) }}"
 ---

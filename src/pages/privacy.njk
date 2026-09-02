@@ -1,9 +1,13 @@
 ---
 layout: layouts/page.njk
-permalink: /privacy/
 pageKey: privacy
 navKey: 
-crumb: Privacy
+crumbKey: crumb.privacy
 title: "Privacy — Citere"
 description: "The Citere site sets no cookies, runs no third-party trackers and asks you for nothing. What the server logs hold, and what we never collect."
+pagination:
+  data: build.languages
+  alias: lang
+  size: 1
+permalink: "{{ '/privacy/' | loc(lang) }}"
 ---

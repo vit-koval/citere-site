@@ -13,7 +13,7 @@
 
 {%- if claims | length %}
 <section>
-  <div class="shead"><h2>Latest findings</h2>
+  <div class="shead"><h2>{{ 'section.latestFindings' | t }}</h2>
     <a href="{{ '/registry/' | url }}">All {{ claims | length }} {{ claims | length | plural("claim", "claims") }} &rarr;</a></div>
   {%- set tableClaims = claims | take(5) %}
   {%- set tableCaption = "The most recently updated claims" %}
@@ -24,8 +24,8 @@
 
 {%- if rankingCards | length %}
 <section>
-  <div class="shead"><h2>Rankings</h2>
-    {%- if navigation.has.benchmarks %}<a href="{{ '/benchmarks/' | url }}">All rankings &rarr;</a>{% endif %}</div>
+  <div class="shead"><h2>{{ 'section.rankings' | t }}</h2>
+    {%- if navigation.has.benchmarks %}<a href="{{ '/benchmarks/' | url }}">{{ 'action.allRankings' | t }} &rarr;</a>{% endif %}</div>
   <p class="lead">Every figure is computed from recorded answers and links to the run it came from.
     Personas are reported separately and never averaged.</p>
   <div class="grid3">
@@ -41,8 +41,8 @@
 
 {%- if clusterTiles | length %}
 <section>
-  <div class="shead"><h2>Markets we monitor</h2>
-    {%- if navigation.has.countries %}<a href="{{ '/countries/' | url }}">All countries &rarr;</a>{% endif %}</div>
+  <div class="shead"><h2>{{ 'section.markets' | t }}</h2>
+    {%- if navigation.has.countries %}<a href="{{ '/countries/' | url }}">{{ 'action.allCountries' | t }} &rarr;</a>{% endif %}</div>
   {%- if countryCards | length %}
   <div class="grid4">
   {%- for c in countryCards %}

@@ -9,10 +9,10 @@ wrap: wrap-narrow
     source contamination <b>{{ profile.contaminationRate | rate }}</b>.
     {%- if profile.note %} {{ profile.note }}{% endif %}</p></div>
 
-<h2 id="assistants" style="margin:0 0 12px">Assistants in this market</h2>
+<h2 id="assistants" style="margin:0 0 12px">{{ 'section.assistantsHere' | t }}</h2>
 <div class="panel"><table>
   <caption class="visually-hidden">Repeat-rate per assistant for answers served to this market</caption>
-  <thead><tr><th scope="col">Chatbot</th><th scope="col">Repeat-rate</th><th scope="col">Responses</th></tr></thead>
+  <thead><tr><th scope="col">{{ 'col.chatbot' | t }}</th><th scope="col">{{ 'col.repeatRate' | t }}</th><th scope="col">{{ 'col.responses' | t }}</th></tr></thead>
   <tbody>
   {%- for row in profile.rows %}
     <tr><td class="cl"><span class="markcell">{{ botMark(logos, row.chatbot, "sm") }}<a href="{{ ('/platforms/' + row.chatbot + '/') | url }}">{{ row.name }}</a></span></td>
@@ -31,7 +31,7 @@ wrap: wrap-narrow
 {%- endif %}
 
 {%- if profile.partners | length %}
-<h2 id="partners" style="margin:36px 0 12px">Local partners</h2>
+<h2 id="partners" style="margin:36px 0 12px">{{ 'section.localPartners' | t }}</h2>
 <div class="prose" style="max-width:none"><p>We share findings for this market with
   {% for p in profile.partners %}{{ p }}{% if not loop.last %}{% if loop.revindex0 == 1 %} and {% else %}, {% endif %}{% endif %}{% endfor %}.</p></div>
 {%- endif %}

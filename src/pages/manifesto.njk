@@ -1,9 +1,13 @@
 ---
 layout: layouts/page.njk
-permalink: /manifesto/
 pageKey: manifesto
 navKey: 
-crumb: Manifesto
+crumbKey: crumb.manifesto
 title: "Manifesto — Citere"
 description: "Ten commitments Citere holds itself to when measuring how AI assistants handle Russian disinformation about Ukraine. Published so you can check them."
+pagination:
+  data: build.languages
+  alias: lang
+  size: 1
+permalink: "{{ '/manifesto/' | loc(lang) }}"
 ---

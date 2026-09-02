@@ -1,0 +1,5 @@
+{#- CLAUDE.md 2: a page with no Ukrainian prose falls back to the English
+    original under a one-line notice, rather than failing the build. -#}
+{%- if translationMissing %}
+<p class="note translation-notice">{{ 'translation.missing' | t }}</p>
+{%- endif %}

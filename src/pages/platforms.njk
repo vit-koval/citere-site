@@ -1,10 +1,14 @@
 ---
 layout: layouts/base.njk
-permalink: /platforms/
 pageKey: platforms
 navKey: chatbots
 title: "Chatbot benchmark — Citere"
 description: "How eight public AI assistants handle documented false claims about Ukraine: repeat-rate and source contamination per assistant, with the claims each repeated."
+pagination:
+  data: build.languages
+  alias: lang
+  size: 1
+permalink: "{{ '/platforms/' | loc(lang) }}"
 ---
 {%- from "partials/bot-mark.njk" import botMark -%}
 {%- set doc = copy.en.platforms -%}
@@ -16,9 +20,9 @@ description: "How eight public AI assistants handle documented false claims abou
 
 <div class="panel"><table>
   <caption class="visually-hidden">Assistants ranked by repeat-rate on the P2 topical-news persona</caption>
-  <thead><tr><th scope="col">#</th><th scope="col">Chatbot</th><th scope="col">Company</th>
-    <th scope="col">Repeat-rate</th><th scope="col">Contamination</th>
-    <th scope="col">Claims repeated</th><th scope="col">Escalations</th><th scope="col">Change</th></tr></thead>
+  <thead><tr><th scope="col">#</th><th scope="col">{{ 'col.chatbot' | t }}</th><th scope="col">{{ 'col.company' | t }}</th>
+    <th scope="col">{{ 'col.repeatRate' | t }}</th><th scope="col">{{ 'col.contamination' | t }}</th>
+    <th scope="col">{{ 'col.claimsRepeated' | t }}</th><th scope="col">{{ 'col.escalations' | t }}</th><th scope="col">{{ 'col.change' | t }}</th></tr></thead>
   <tbody>
   {%- for bot in profiles.chatbots %}
     <tr data-persona="{{ bot.repeatPersona }}">
@@ -41,5 +45,5 @@ description: "How eight public AI assistants handle documented false claims abou
   describe that product at that date and model version.</p>
 
 <div class="exports" style="margin-bottom:44px">
-  {%- if navigation.has.benchmarks %}<a href="{{ '/benchmarks/' | url }}">All benchmarks</a><span>&middot;</span>{% endif %}
+  {%- if navigation.has.benchmarks %}<a href="{{ '/benchmarks/' | url }}">{{ 'action.allBenchmarks' | t }}</a><span>&middot;</span>{% endif %}
   <a href="{{ '/methodology/' | url }}">How repeat-rate is computed</a></div>

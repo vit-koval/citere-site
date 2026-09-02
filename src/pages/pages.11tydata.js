@@ -1,6 +1,6 @@
 // Shared by every page in src/pages/. A page declares pageKey; its H1, lead and
 // prose come from content/en/{pageKey}.md so no sentence lives in a template.
-const ROOTCRUMB = { title: "Home", url: "/" };
+const { home, crumb, t } = require("../_lib/crumbs.cjs");
 
 module.exports = {
   eleventyComputed: {
@@ -10,6 +10,8 @@ module.exports = {
       return (doc && doc.data && doc.data.h1) || data.h1;
     },
     breadcrumbTrail: (data) =>
-      data.crumb ? [ROOTCRUMB, { title: data.crumb, url: data.page.url }] : [ROOTCRUMB]
+      data.crumbKey
+        ? [home(data.lang), crumb(data.lang, data.crumbKey, String(data.basePath))]
+        : [home(data.lang)]
   }
 };

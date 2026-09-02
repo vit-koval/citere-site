@@ -1,8 +1,12 @@
+const { home, crumb } = require("../_lib/crumbs.cjs");
+const crumbLabel = (data) => String(data.entry.item.name);
 const { fitTitle, fitDescription } = require("../_lib/meta.cjs");
 
 module.exports = {
   eleventyComputed: {
-    title: (data) => fitTitle(`${data.profile.name} and Russian disinformation on Ukraine — Citere`),
+    lang: (data) => data.entry.lang,
+    profile: (data) => data.entry.item,
+    title: (data) => fitTitle(`${data.entry.item.name} and Russian disinformation on Ukraine — Citere`),
     description: (data) => {
       const p = data.profile;
       const pct = (v) => `${Math.round((v || 0) * 1000) / 10}%`;
@@ -16,18 +20,18 @@ module.exports = {
         p.url
       );
     },
-    articleHeadline: (data) => `How ${data.profile.name} handles Russian disinformation about Ukraine`,
+    articleHeadline: (data) => `How ${data.entry.item.name} handles Russian disinformation about Ukraine`,
     articlePublished: (data) => data.site.last_update,
     articleModified: (data) => data.site.last_update,
     dataset: (data) => ({
-      name: `Citere observations: ${data.profile.name}`,
-      description: `Recorded answers from ${data.profile.name}, per persona and per market.`,
-      keywords: [data.profile.name, "AI chatbots", "disinformation", "Ukraine"]
+      name: `Citere observations: ${data.entry.item.name}`,
+      description: `Recorded answers from ${data.entry.item.name}, per persona and per market.`,
+      keywords: [data.entry.item.name, "AI chatbots", "disinformation", "Ukraine"]
     }),
     breadcrumbTrail: (data) => [
-      { title: "Home", url: "/" },
-      { title: "Chatbots", url: "/platforms/" },
-      { title: data.profile.name, url: data.profile.url }
+      home(data.entry.lang),
+      crumb(data.entry.lang, "crumb.chatbots", "/platforms/"),
+      { title: crumbLabel(data), url: String(data.entry.item.url || data.entry.url) }
     ]
   }
 };

@@ -26,10 +26,10 @@ wrap: wrap-narrow
     <div class="l">claims repeated</div><div class="s">of {{ claims | length }} documented</div></div>
 </div>
 
-<h2 id="by-persona" style="margin:0 0 12px">By question type</h2>
+<h2 id="by-persona" style="margin:0 0 12px">{{ 'section.byQuestionType' | t }}</h2>
 <div class="panel"><table>
   <caption class="visually-hidden">Repeat-rate for this assistant per persona, never averaged</caption>
-  <thead><tr><th scope="col">Persona</th><th scope="col">Repeat-rate</th><th scope="col">Responses</th></tr></thead>
+  <thead><tr><th scope="col">{{ 'col.persona' | t }}</th><th scope="col">{{ 'col.repeatRate' | t }}</th><th scope="col">{{ 'col.responses' | t }}</th></tr></thead>
   <tbody>
   {%- for row in profile.byPersona %}
     <tr data-persona="{{ row.persona }}"><td class="mono" style="font-size:12px;color:var(--dimmer)">{{ row.persona }} &middot; {{ row.persona | personaLabel }}</td>
@@ -39,10 +39,10 @@ wrap: wrap-narrow
   </tbody></table></div>
 
 {%- if profile.byCountry | length %}
-<h2 id="by-country" style="margin:36px 0 12px">By country</h2>
+<h2 id="by-country" style="margin:36px 0 12px">{{ 'section.byCountry' | t }}</h2>
 <div class="panel"><table>
   <caption class="visually-hidden">Repeat-rate for this assistant per market</caption>
-  <thead><tr><th scope="col">Country</th><th scope="col">Repeat-rate</th><th scope="col">Responses</th></tr></thead>
+  <thead><tr><th scope="col">{{ 'col.country' | t }}</th><th scope="col">{{ 'col.repeatRate' | t }}</th><th scope="col">{{ 'col.responses' | t }}</th></tr></thead>
   <tbody>
   {%- for row in profile.byCountry %}
     <tr><td>{% if navigation.has.countries %}<a href="{{ ('/countries/' + row.country + '/') | url }}">{{ row.country | countryName }}</a>{% else %}{{ row.country | countryName }}{% endif %}</td>
@@ -55,10 +55,10 @@ wrap: wrap-narrow
 {%- endif %}
 
 {%- if profile.repeatedClaims | length %}
-<h2 id="claims" style="margin:36px 0 12px">Claims this chatbot repeated</h2>
+<h2 id="claims" style="margin:36px 0 12px">{{ 'section.claimsRepeated' | t }}</h2>
 <div class="panel"><table>
   <caption class="visually-hidden">Documented claims this assistant stated as fact in at least one answer</caption>
-  <thead><tr><th scope="col">Claim</th><th scope="col">Verdict</th><th scope="col">Cluster</th></tr></thead>
+  <thead><tr><th scope="col">{{ 'col.claim' | t }}</th><th scope="col">{{ 'col.verdict' | t }}</th><th scope="col">{{ 'col.cluster' | t }}</th></tr></thead>
   <tbody>
   {%- for item in profile.repeatedClaims %}
     <tr><td class="cl"><a href="{{ item.url | url }}">&ldquo;{{ item.title_en }}&rdquo;</a></td>

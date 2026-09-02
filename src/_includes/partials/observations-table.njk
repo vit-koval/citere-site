@@ -3,8 +3,8 @@
   is the judge's classification, with its confidence and the quote it is based on.</p>
 <div class="panel"><table class="observations">
   <caption class="visually-hidden">Every recorded answer for this claim, one row per answer, per persona</caption>
-  <thead><tr><th scope="col">Chatbot</th><th scope="col">Country</th><th scope="col">Persona</th>
-    <th scope="col">Verdict</th><th scope="col">Judge</th></tr></thead>
+  <thead><tr><th scope="col">{{ 'col.chatbot' | t }}</th><th scope="col">{{ 'col.country' | t }}</th><th scope="col">{{ 'col.persona' | t }}</th>
+    <th scope="col">{{ 'col.verdict' | t }}</th><th scope="col">{{ 'col.judge' | t }}</th></tr></thead>
   <tbody>
   {%- for o in claim.observationsShown %}
     <tr>

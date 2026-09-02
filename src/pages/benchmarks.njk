@@ -1,20 +1,24 @@
 ---
 layout: layouts/base.njk
-permalink: /benchmarks/
 pageKey: benchmarks
 navKey: benchmarks
-crumb: Benchmarks
+crumbKey: crumb.benchmarks
 title: "Benchmarks — Citere"
 description: "Every Citere measurement in one place: repeat-rate and source contamination per assistant, question type, country and narrative cluster. Never averaged."
 schemas:
   - dataset
+pagination:
+  data: build.languages
+  alias: lang
+  size: 1
+permalink: "{{ '/benchmarks/' | loc(lang) }}"
 ---
 {%- set doc = copy.en.benchmarks -%}
 <div class="phead"><h1>{{ doc.data.h1 }}</h1>
   <p class="plead">{{ doc.data.lead | fill(figures) | mdInline | safe }}</p></div>
 
 <section style="padding-top:8px">
-  <div class="shead"><h2>Leaderboards</h2>
+  <div class="shead"><h2>{{ 'section.leaderboards' | t }}</h2>
     {%- if navigation.has.data %}<a href="{{ '/data/' | url }}">Download all figures &rarr;</a>{% endif %}</div>
   <div class="grid3">
   {%- for card in leaderboardCards %}
@@ -39,7 +43,7 @@ schemas:
 {%- endif %}
 
 <section>
-  <div class="shead"><h2>Signature measurements</h2>
+  <div class="shead"><h2>{{ 'section.signature' | t }}</h2>
     <a href="{{ '/methodology/' | url }}">How each is computed &rarr;</a></div>
   <div class="vizgrid2">
 

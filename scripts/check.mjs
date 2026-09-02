@@ -138,7 +138,7 @@ for (const file of htmlFiles) {
 
   // The aria-label is translated, so the check keys on the class and requires
   // the label to be present in whatever language the page is in.
-  const isHome = page === "/index.html";
+  const isHome = page === "/index.html" || /^\/[a-z]{2}\/index\.html$/.test(page);
   const breadcrumbNav = html.match(/<nav[^>]*class="crumbs"[^>]*>/i);
   if (!breadcrumbNav && !isHome) err(page, "no breadcrumb nav");
   else if (breadcrumbNav && !/aria-label="[^"]+"/i.test(breadcrumbNav[0])) {

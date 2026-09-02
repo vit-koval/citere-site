@@ -1,11 +1,11 @@
 ---
 pagination:
-  data: profiles.countries
+  data: localised.countries
   size: 1
-  alias: profile
+  alias: entry
 layout: layouts/country.njk
 schemas:
   - article
   - dataset
-permalink: "{{ profile.url }}"
+permalink: "{{ entry.url }}"
 ---

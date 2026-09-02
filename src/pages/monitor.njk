@@ -1,11 +1,15 @@
 ---
 layout: layouts/base.njk
-permalink: /monitor/
 pageKey: monitor
 navKey: reports
-crumb: Reports
+crumbKey: crumb.reports
 title: "Monthly monitor reports — Citere"
 description: "How eight public AI assistants handled documented false claims about Ukraine, month by month: repeat-rate and cited sources per assistant and market."
+pagination:
+  data: build.languages
+  alias: lang
+  size: 1
+permalink: "{{ '/monitor/' | loc(lang) }}"
 ---
 {%- set doc = copy.en.monitor -%}
 <div class="phead"><h1>{{ doc.data.h1 }}</h1>
@@ -19,7 +23,7 @@ description: "How eight public AI assistants handled documented false claims abo
     <div class="row"><span class="rname" style="color:var(--dim);white-space:normal">{{ reportLead[r.slug] }}</span></div>
     {%- endif %}
     <div class="row"><span class="rname" style="color:var(--dimmer)">{{ r.n_responses }} responses &middot; {{ r.chatbots | length }} assistants</span></div>
-    <a class="more" href="{{ r.url | url }}">Read the report &rarr;</a></div>
+    <a class="more" href="{{ r.url | url }}">{{ 'action.readReport' | t }} &rarr;</a></div>
 {%- endfor %}
 </div>
 <div style="height:44px"></div>

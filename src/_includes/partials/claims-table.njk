@@ -1,13 +1,13 @@
 <div class="panel"><table>
   <caption class="visually-hidden">{{ tableCaption }}</caption>
   <thead><tr>
-    <th scope="col">Claim</th><th scope="col">Verdict</th><th scope="col">Repeated by</th>
-    <th scope="col">Status</th><th scope="col">Updated{% if sortedByUpdated %} &darr;{% endif %}</th>
+    <th scope="col">{{ 'col.claim' | t }}</th><th scope="col">{{ 'col.verdict' | t }}</th><th scope="col">{{ 'col.repeatedBy' | t }}</th>
+    <th scope="col">{{ 'col.status' | t }}</th><th scope="col">Updated{% if sortedByUpdated %} &darr;{% endif %}</th>
   </tr></thead>
   <tbody>
   {%- for item in tableClaims %}
     <tr>
-      <td class="cl"><a href="{{ item.url | url }}">&ldquo;{{ item.title_en }}&rdquo;</a>
+      <td class="cl"><a href="{{ item.url | loc(lang) | url }}">&ldquo;{{ item.titles[lang] | default(item.title_en) }}&rdquo;</a>
         <small>{{ clusters[item.cluster].name_en | default(item.cluster) }} &middot; {{ item.langLabel }}</small></td>
       <td>{% set badgeVerdict = item.verdict %}{% include "partials/verdict-badge.njk" %}</td>
       <td>{% set stackBots = item.repeatedBy %}{% set stackTotal = stackTotalOverride %}{% include "partials/bot-stack.njk" %}</td>

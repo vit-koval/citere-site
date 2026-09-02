@@ -1,9 +1,13 @@
 ---
 layout: layouts/page.njk
-permalink: /press/
 pageKey: press
 navKey: 
-crumb: Press &amp; Media
+crumbKey: crumb.press
 title: "Press and media — Citere"
 description: "How to quote Citere research on AI chatbots and Russian disinformation, how to describe us, and where to get chart-ready data. CC BY 4.0."
+pagination:
+  data: build.languages
+  alias: lang
+  size: 1
+permalink: "{{ '/press/' | loc(lang) }}"
 ---

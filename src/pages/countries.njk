@@ -1,9 +1,13 @@
 ---
 layout: layouts/base.njk
-permalink: /countries/
 pageKey: countries
 title: "Country benchmark — Citere"
 description: "The same documented false claims about Ukraine, asked in the local language, across the markets Russia targets. Repeat-rate per assistant and per market."
+pagination:
+  data: build.languages
+  alias: lang
+  size: 1
+permalink: "{{ '/countries/' | loc(lang) }}"
 ---
 {%- from "partials/bot-mark.njk" import botMark -%}
 {%- set doc = copy.en.countries -%}
@@ -22,12 +26,12 @@ description: "The same documented false claims about Ukraine, asked in the local
 {%- endfor %}
 </div>
 
-<div class="shead"><h2>Same claim, four markets</h2><span style="font-size:13px;color:var(--dimmer)">all personas in each market's sample</span></div>
+<div class="shead"><h2>{{ 'section.sameClaim' | t }}</h2><span style="font-size:13px;color:var(--dimmer)">all personas in each market's sample</span></div>
 <div class="panel"><table>
   <caption class="visually-hidden">Repeat-rate per assistant in each market, with the spread between its best and worst</caption>
-  <thead><tr><th scope="col">Chatbot</th>
+  <thead><tr><th scope="col">{{ 'col.chatbot' | t }}</th>
     {%- for c in profiles.countries %}<th scope="col">{{ c.key | flag }} {{ c.key | upper }}</th>{% endfor %}
-    <th scope="col">Spread</th></tr></thead>
+    <th scope="col">{{ 'col.spread' | t }}</th></tr></thead>
   <tbody>
   {%- for row in profiles.matrix.rows %}
     <tr><td class="cl"><span class="markcell">{{ botMark(logos, row.chatbot, "sm") }}{{ row.name }}</span></td>
@@ -39,10 +43,10 @@ description: "The same documented false claims about Ukraine, asked in the local
   A wide spread means the safeguards do not travel across languages equally.</p>
 
 {%- if profiles.clusterGrid | length %}
-<div class="shead"><h2>Which clusters are active where</h2></div>
+<div class="shead"><h2>{{ 'section.clustersWhere' | t }}</h2></div>
 <div class="panel"><table>
   <caption class="visually-hidden">Repeat-rate per narrative cluster in each market</caption>
-  <thead><tr><th scope="col">Cluster</th>
+  <thead><tr><th scope="col">{{ 'col.cluster' | t }}</th>
     {%- for c in profiles.countries %}<th scope="col">{{ c.key | flag }} {{ c.key | upper }}</th>{% endfor %}</tr></thead>
   <tbody>
   {%- for row in profiles.clusterGrid %}

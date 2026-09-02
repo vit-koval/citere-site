@@ -1,11 +1,14 @@
 const { fitTitle, fitDescription } = require("../_lib/meta.cjs");
+const { home, crumb } = require("../_lib/crumbs.cjs");
 
 module.exports = {
   eleventyComputed: {
-    prose: (data) => data.copy.en.reports[data.report.slug],
-    title: (data) => fitTitle(`${data.report.title} — Citere`),
+    lang: (data) => data.entry.lang,
+    report: (data) => data.entry.item,
+    prose: (data) => data.copy.en.reports[data.entry.item.slug],
+    title: (data) => fitTitle(`${data.entry.item.title} — Citere`),
     description: (data) => {
-      const r = data.report;
+      const r = data.entry.item;
       return fitDescription(
         [
           `${r.title}:`,
@@ -17,19 +20,19 @@ module.exports = {
         r.url
       );
     },
-    articleHeadline: (data) => data.report.title,
-    articlePublished: (data) => data.report.date,
-    articleModified: (data) => data.report.date,
-    updated: (data) => data.report.date,
+    articleHeadline: (data) => data.entry.item.title,
+    articlePublished: (data) => data.entry.item.date,
+    articleModified: (data) => data.entry.item.date,
+    updated: (data) => data.entry.item.date,
     dataset: (data) => ({
-      name: data.report.title,
-      description: `Chatbot answers recorded for the ${data.report.period || data.report.date} Citere run.`,
+      name: data.entry.item.title,
+      description: `Chatbot answers recorded for the ${data.entry.item.period || data.entry.item.date} Citere run.`,
       keywords: ["AI chatbots", "disinformation", "Ukraine", "monitoring"]
     }),
     breadcrumbTrail: (data) => [
-      { title: "Home", url: "/" },
-      { title: "Reports", url: "/monitor/" },
-      { title: data.report.period || data.report.slug, url: data.report.url }
+      home(data.entry.lang),
+      crumb(data.entry.lang, "crumb.reports", "/monitor/"),
+      { title: data.entry.item.period || data.entry.item.slug, url: data.entry.item.url }
     ]
   }
 };

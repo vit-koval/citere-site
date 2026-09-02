@@ -33,6 +33,7 @@ const claims = files
       ...claim,
       raw: claim,
       url: `/registry/${claim.slug}/`,
+      titles: { en: claim.title_en, uk: claim.title_uk || claim.title_en },
       hasProse: fs.existsSync(proseFile),
       chatbots: [...new Set(observations.map((o) => o.chatbot))],
       repeatedBy,

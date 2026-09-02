@@ -1,13 +1,17 @@
 ---
 layout: layouts/base.njk
-permalink: /escalations/
 pageKey: escalations
 navKey: escalations
-crumb: Escalations
+crumbKey: crumb.escalations
 title: "Escalation log — Citere"
 description: "Every report Citere sent to a platform or registrar about disinformation in AI chatbot answers: the fact, the date and the status, never the correspondence."
 schemas:
   - dataset
+pagination:
+  data: build.languages
+  alias: lang
+  size: 1
+permalink: "{{ '/escalations/' | loc(lang) }}"
 ---
 {%- set doc = copy.en.escalations -%}
 <div class="phead"><h1>{{ doc.data.h1 }}</h1>
@@ -24,8 +28,8 @@ schemas:
 
 <div class="panel"><table>
   <caption class="visually-hidden">Every logged action, newest first</caption>
-  <thead><tr><th scope="col">Date</th><th scope="col">Type</th><th scope="col">Target</th>
-    <th scope="col">Claim</th><th scope="col">Status</th><th scope="col">Response</th></tr></thead>
+  <thead><tr><th scope="col">{{ 'col.date' | t }}</th><th scope="col">{{ 'col.type' | t }}</th><th scope="col">{{ 'col.target' | t }}</th>
+    <th scope="col">{{ 'col.claim' | t }}</th><th scope="col">{{ 'col.status' | t }}</th><th scope="col">{{ 'col.response' | t }}</th></tr></thead>
   <tbody>
   {%- for e in escalations.actions | take(60) %}
     {%- set claim = claims | whereEq('id', e.claim_id) | first %}
@@ -45,5 +49,5 @@ schemas:
 </div>
 
 <div class="exports" style="margin:18px 0 40px">
-  {%- if datasets.has['escalations-csv'] %}<a href="{{ '/escalations.csv' | url }}">Download the log (CSV)</a><span>&middot;</span>{% endif %}
+  {%- if datasets.has['escalations-csv'] %}<a href="{{ '/escalations.csv' | url }}">{{ 'action.downloadLog' | t }}</a><span>&middot;</span>{% endif %}
   <a href="{{ '/methodology/' | url }}">What we do not publish</a></div>

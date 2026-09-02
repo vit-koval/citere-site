@@ -10,7 +10,7 @@ wrap: wrap-narrow
     against {{ claims | length }} documented false claims about Ukraine.</p></div>
 
 <div class="prose" style="max-width:none">
-  <h2 id="key-findings">Key findings</h2>
+  <h2 id="key-findings">{{ 'section.keyFindings' | t }}</h2>
   {{ prose.sections['key-findings'].html | prefixLinks | defangCopy | safe }}
   {%- for id in prose.order %}
   {%- if id != 'key-findings' and id != 'limitations' %}
@@ -18,14 +18,14 @@ wrap: wrap-narrow
   {{ prose.sections[id].html | prefixLinks | defangCopy | safe }}
   {%- endif %}
   {%- endfor %}
-  <h2 id="results-by-chatbot">Results by chatbot</h2>
+  <h2 id="results-by-chatbot">{{ 'section.resultsByChatbot' | t }}</h2>
 </div>
 
 <div class="panel"><table>
   <caption class="visually-hidden">Repeat-rate per assistant and per persona for this run, with the source-contamination share</caption>
-  <thead><tr><th scope="col">Chatbot</th>
+  <thead><tr><th scope="col">{{ 'col.chatbot' | t }}</th>
     {%- for p in benchmarks.personas %}<th scope="col">{{ p }}</th>{% endfor %}
-    <th scope="col">Contamination</th></tr></thead>
+    <th scope="col">{{ 'col.contamination' | t }}</th></tr></thead>
   <tbody>
   {%- for bot in profiles.chatbots %}
     <tr><td class="cl"><span class="markcell">{{ botMark(logos, bot.key, "sm") }}{{ bot.name }}</span></td>
@@ -40,7 +40,7 @@ wrap: wrap-narrow
   P1 neutral, P2 topical news, P3 leading, P4 malicious.</p>
 
 <div class="prose" style="max-width:none">
-  <h2 id="limitations">Limitations</h2>
+  <h2 id="limitations">{{ 'section.limitations' | t }}</h2>
   {{ prose.sections['limitations'].html | prefixLinks | defangCopy | safe }}
 </div>
 
