@@ -33,11 +33,20 @@ const median = responseDays.length
 
 const lastUpdate = [site.last_update, ...claims.map((c) => c.updated)].filter(Boolean).sort().pop();
 
+const { CHATBOTS } = require("../_lib/labels.cjs");
+const sources = readJson("data/sources.json");
+const benchmarks = readJson("data/benchmarks.json");
+
 module.exports = {
   ...site,
   url: `https://${site.domain}`,
   counters: {
     claims: claims.length,
+    clusters: new Set(claims.map((c) => c.cluster)).size,
+    chatbots: new Set((benchmarks.heatmap || []).map((r) => r.chatbot)).size || Object.keys(CHATBOTS).length,
+    personas: new Set((benchmarks.heatmap || []).map((r) => r.persona)).size || 4,
+    languages: new Set(claims.flatMap((c) => c.languages || [])).size,
+    domains: sources.length,
     responses: claims.reduce((n, c) => n + (c.observations || []).length, 0),
     escalations_sent: sent.length,
     escalations_answered: answered.length,

@@ -1,0 +1,8 @@
+{%- set peak = benchmarks.trend | maxField("median_repeat") -%}
+<div class="tbars">
+  {%- for point in benchmarks.trend %}
+  <div class="tbar" data-persona="{{ point.persona }}"><div class="val">{{ point.median_repeat | rate }}</div>
+    <div class="col" style="height:90px"><i style="height:{{ (point.median_repeat / peak * 100) | round }}%{% if loop.last %};background:#127a4a{% endif %}"></i></div>
+    <div class="lbl">{{ point.month | monthLabel }}</div></div>
+  {%- endfor %}
+</div>

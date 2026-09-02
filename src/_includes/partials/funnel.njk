@@ -1,0 +1,9 @@
+{%- set top = benchmarks.funnel | first -%}
+<div class="funnel">
+  {%- for step in benchmarks.funnel %}
+  {%- set pct = (step.n / top.n * 100) | round %}
+  <div class="fstep f{{ loop.index }}"><span class="fn">{{ step.n }}</span>
+    <div class="ftrack"><i style="width:{{ pct }}%"></i>
+      <span class="flabel{{ ' dark' if pct < 40 }}"{% if pct < 40 %} style="left:calc({{ pct }}% + 11px)"{% endif %}>{{ step.label }}{% if step.detail %} &middot; {{ step.detail }}{% endif %}</span></div></div>
+  {%- endfor %}
+</div>

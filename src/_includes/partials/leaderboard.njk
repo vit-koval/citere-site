@@ -1,0 +1,19 @@
+{#- Rank card from the mockup. Every card names the persona its rates were
+    measured under, so no rate is rendered without one (CLAUDE.md 10). -#}
+<div class="rank">
+  <h3>{{ lbTitle }} <span>{{ lbSub }}</span></h3>
+  {%- for row in lbRows | take(5) %}
+  <div class="row"{% if row.persona %} data-persona="{{ row.persona }}"{% endif %}>
+    {%- if lbShowIdx %}<span class="idx">{{ loop.index }}</span>{% endif %}
+    {%- if row.chatbot %}<span class="mini {{ row.chatbot | botClass }}">{{ row.chatbot | botCode }}</span>{% endif %}
+    <span class="rname">{% if lbFlag %}{{ row.key | flag }} {% endif %}{{ row.label }}</span>
+    {%- if lbShowBar %}<span class="barm"><i style="width:{{ row.width }}%"></i></span>{% endif %}
+    {%- if row.before is defined %}
+    <span class="rmeta" style="color:var({{ '--ok' if (row.after - row.before) < -0.005 else '--dim' }})">{{ (row.before * 100) | round(1) }} &rarr; {{ row.after | rate }}</span>
+    {%- else %}
+    <span class="rmeta">{{ row.value | rate }}</span>
+    {%- endif %}
+  </div>
+  {%- endfor %}
+  {%- if lbMore %}<a class="more" href="{{ lbMore | url }}">{{ lbMoreLabel }} &rarr;</a>{% endif %}
+</div>

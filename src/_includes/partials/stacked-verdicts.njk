@@ -1,0 +1,10 @@
+<div class="sb">
+  {%- for row in benchmarks.verdict_split %}
+  <div class="sbrow" data-persona="{{ row.persona }}"><span class="pl">{{ row.persona }} &middot; {{ row.persona | personaLabel }}</span>
+    <div class="sbbar"><i class="s-rep" style="width:{{ (row.repeated * 100) | round }}%"></i><i class="s-ctx" style="width:{{ (row.contextualised * 100) | round }}%"></i><i class="s-ref" style="width:{{ (row.refuted * 100) | round }}%"></i><i class="s-dod" style="width:{{ (row.dodged * 100) | round }}%"></i></div>
+    <span class="nn">n={{ row.n }}</span></div>
+  {%- endfor %}
+</div>
+<div class="sblegend">
+  <span><span class="sq s-rep"></span>Repeated</span><span><span class="sq s-ctx"></span>Contextualised</span>
+  <span><span class="sq s-ref"></span>Refuted</span><span><span class="sq s-dod"></span>Dodged</span></div>

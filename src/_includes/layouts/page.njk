@@ -6,6 +6,6 @@ wrap: wrap-narrow
   <p class="plead">{{ doc.data.lead | mdInline | safe }}</p></div>
 {{ content | safe }}
 <div class="prose">
-{{ doc.html | fill(figures | default({})) | safe }}
+{{ doc.html | fill(figures | default({})) | prefixLinks | safe }}
 </div>
 <div style="height:40px"></div>

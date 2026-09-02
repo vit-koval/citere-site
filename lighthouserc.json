@@ -4,9 +4,9 @@
       "staticDistDir": "_site-lighthouse",
       "url": [
         "http://localhost/index.html",
+        "http://localhost/benchmarks/index.html",
         "http://localhost/registry/index.html",
-        "http://localhost/registry/c1-003-100m-western-aid-stolen/index.html",
-        "http://localhost/monitor/2026-09-monitor/index.html"
+        "http://localhost/registry/c1-003-100m-western-aid-stolen/index.html"
       ],
       "numberOfRuns": 1,
       "settings": {
@@ -16,12 +16,35 @@
     },
     "assert": {
       "assertions": {
-        "categories:performance": ["error", { "minScore": 0.95 }],
-        "categories:accessibility": ["error", { "minScore": 0.95 }],
-        "categories:best-practices": ["error", { "minScore": 0.95 }],
-        "categories:seo": ["error", { "minScore": 0.95 }]
+        "categories:performance": [
+          "error",
+          {
+            "minScore": 0.95
+          }
+        ],
+        "categories:accessibility": [
+          "error",
+          {
+            "minScore": 0.95
+          }
+        ],
+        "categories:best-practices": [
+          "error",
+          {
+            "minScore": 0.95
+          }
+        ],
+        "categories:seo": [
+          "error",
+          {
+            "minScore": 0.95
+          }
+        ]
       }
     },
-    "upload": { "target": "filesystem", "outputDir": ".lighthouseci" }
+    "upload": {
+      "target": "filesystem",
+      "outputDir": ".lighthouseci"
+    }
   }
 }

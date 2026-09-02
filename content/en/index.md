@@ -1,6 +1,6 @@
 ---
 lead: >
-  **Sometimes — and we measure exactly when.** We track {{ claims }} documented false claims across
+  **Sometimes — and we measure exactly when.** We track {{ claims }} across
   {{ chatbots }} public AI assistants in {{ languages }} languages, report every case to the platform,
   and re-measure four weeks later.
 ---

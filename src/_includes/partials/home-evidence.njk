@@ -2,6 +2,14 @@
     page fills in as claims and benchmarks land rather than showing a
     placeholder (CLAUDE.md 11.6). -#}
 
+{%- if benchmarks.strip | length %}
+{% include "partials/bot-strip.njk" %}
+{%- endif %}
+
+{%- if metricCards | length %}
+{% include "partials/metric-cards.njk" %}
+{%- endif %}
+
 {%- if claims | length %}
 <section>
   <div class="shead"><h2>Latest findings</h2>
@@ -13,6 +21,23 @@
 </section>
 {%- endif %}
 
+{%- if rankingCards | length %}
+<section>
+  <div class="shead"><h2>Rankings</h2>
+    {%- if navigation.has.benchmarks %}<a href="{{ '/benchmarks/' | url }}">All rankings &rarr;</a>{% endif %}</div>
+  <p class="lead">Every figure is computed from recorded answers and links to the run it came from.
+    Personas are reported separately and never averaged.</p>
+  <div class="grid3">
+  {%- for card in rankingCards %}
+    {%- set lbRows = card.rows %}{% set lbTitle = card.title %}{% set lbSub = card.sub %}
+    {%- set lbShowIdx = card.idx %}{% set lbShowBar = card.bar %}{% set lbFlag = false %}
+    {%- set lbMore = card.more %}{% set lbMoreLabel = card.moreLabel %}
+    {% include "partials/leaderboard.njk" %}
+  {%- endfor %}
+  </div>
+</section>
+{%- endif %}
+
 {%- if clusterTiles | length %}
 <section>
   <div class="shead"><h2>Markets we monitor</h2>
@@ -21,7 +46,7 @@
   <div class="grid4">
   {%- for c in countryCards %}
     <a class="cc {{ c.iso }}" href="{{ c.url | url }}"><div><div class="rank-n">#{{ loop.index }} by claims recorded</div><span class="flag">{{ c.iso | flag }}</span>
-      <h4>{{ c.name }}</h4><div class="stat">{{ c.claims }} {{ c.claims | plural("claim", "claims") }} &middot; {{ c.answers }} answers &middot; {{ c.languages }}</div></div>
+      <h3>{{ c.name }}</h3><div class="stat">{{ c.claims }} {{ c.claims | plural("claim", "claims") }} &middot; {{ c.answers }} answers &middot; {{ c.languages }}</div></div>
       <div class="bots-mini">{% for b in c.bots %}<span>{{ b | botCode }}</span>{% endfor %}</div></a>
   {%- endfor %}
   </div>

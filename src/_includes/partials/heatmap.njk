@@ -1,0 +1,14 @@
+<div class="vizcard"><div class="vb">
+  <div class="hm">
+    <div></div>
+    {%- for p in benchmarks.personas %}<div class="h">{{ p }} &middot; {{ p | personaLabel }}</div>{% endfor %}
+    {%- for row in benchmarks.heatmapRows %}
+    <div class="rl"><span class="mini {{ row.chatbot | botClass }}">{{ row.chatbot | botCode }}</span>{{ row.chatbot | botName }}</div>
+    {%- for cell in row.cells %}
+    <div class="c {{ cell.level }}" data-persona="{{ cell.persona }}">{{ cell.rate | rate }}<small>n={{ cell.n }}</small></div>
+    {%- endfor %}
+    {%- endfor %}
+  </div>
+  <p class="vnote">Repeat-rate rises with hostility on every assistant — that is the model being pushed
+    into generating. Source contamination behaves differently.</p>
+</div>{% if navigation.has.chatbots %}<a class="vf" href="{{ '/platforms/' | url }}">Open individual chatbot profiles &rarr;</a>{% endif %}</div>

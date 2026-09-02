@@ -1,0 +1,136 @@
+---
+layout: layouts/base.njk
+permalink: /benchmarks/
+pageKey: benchmarks
+navKey: benchmarks
+crumb: Benchmarks
+title: "Benchmarks — Citere"
+description: "Every Citere measurement in one place: repeat-rate and source contamination per assistant, question type, country and narrative cluster. Never averaged."
+schemas:
+  - dataset
+---
+{%- set doc = copy.en.benchmarks -%}
+<div class="phead"><h1>{{ doc.data.h1 }}</h1>
+  <p class="plead">{{ doc.data.lead | fill(figures) | mdInline | safe }}</p></div>
+
+<section style="padding-top:8px">
+  <div class="shead"><h2>Leaderboards</h2>
+    {%- if navigation.has.data %}<a href="{{ '/data/' | url }}">Download all figures &rarr;</a>{% endif %}</div>
+  <div class="grid3">
+  {%- for card in leaderboardCards %}
+    {%- set lbRows = benchmarks.leaderboards[card.key] %}
+    {%- if lbRows | length %}
+    {%- set lbTitle = card.title %}{% set lbSub = card.sub %}
+    {%- set lbShowIdx = card.idx %}{% set lbShowBar = card.bar %}{% set lbFlag = card.flag %}
+    {%- set lbMore = card.more %}{% set lbMoreLabel = card.moreLabel %}
+    {% include "partials/leaderboard.njk" %}
+    {%- endif %}
+  {%- endfor %}
+  </div>
+</section>
+
+{%- if benchmarks.heatmapRows | length %}
+<section>
+  <div class="shead"><h2>Repeat-rate &middot; chatbot &times; question type</h2></div>
+  <p class="lead">The persona gradient per assistant. Cells with fewer than 20 observations are
+    reported as low-confidence rather than hidden.</p>
+  {% include "partials/heatmap.njk" %}
+</section>
+{%- endif %}
+
+<section>
+  <div class="shead"><h2>Signature measurements</h2>
+    <a href="{{ '/methodology/' | url }}">How each is computed &rarr;</a></div>
+  <div class="vizgrid2">
+
+    {%- if benchmarks.grain_of_truth | length %}
+    <div class="vizcard">
+      <div class="vh"><h3>Chatbots don&rsquo;t fall for lies. They fall for half-truths.</h3>
+        <p>Repeat-rate on claims spliced onto a real fact, versus pure fabrications — same assistants,
+          same run, same question types.</p></div>
+      <div class="vb">
+        {%- set dumbbellRows = grainRows %}{% set dumbbellMax = grainMax %}{% set dumbbellLegend = true %}
+        {% include "partials/dumbbell.njk" %}
+        <p class="vnote">Assistants handle clean fakes well and fail on the blends: the real case
+          underneath gives the model something true to over-extend. <b>This is the single most important
+          finding in our data.</b></p>
+      </div>
+      <a class="vf" href="{{ '/registry/' | url }}">See the claims involved &rarr;</a></div>
+    {%- endif %}
+
+    {%- if benchmarks.abx %}
+    <div class="vizcard">
+      <div class="vh"><h3>A&times;B matrix</h3>
+        <p>What the answer said, crossed with what it cited. The intersection turns raw flags into a
+          short list a human can act on.</p></div>
+      <div class="vb">
+        {% include "partials/abx-matrix.njk" %}
+        <p class="vnote"><b>HIGH</b> means the assistant produced it from memory — a training-data signal.
+          <b>CRITICAL</b> means it repeated the claim <i>and</i> cited a Kremlin-linked source — a
+          retrieval-poisoning signal. Two different attacks, two different fixes.</p>
+      </div>
+      {%- if navigation.has.escalations %}<a class="vf" href="{{ '/escalations/' | url }}">See the escalation queue &rarr;</a>{% endif %}</div>
+    {%- endif %}
+
+    {%- if benchmarks.funnel | length %}
+    <div class="vizcard">
+      <div class="vh"><h3>From {{ (benchmarks.funnel | first).n }} answers to {{ (benchmarks.funnel | last).n }} critical signals</h3>
+        <p>How raw collection narrows into something worth a human&rsquo;s attention — and a
+          platform&rsquo;s.</p></div>
+      <div class="vb">
+        {% include "partials/funnel.njk" %}
+        <p class="vnote">Layer B alone flagged {{ funnelFlagged }} responses. Crossing content with source
+          collapsed that to {{ (benchmarks.funnel | last).n }} truly critical cases. That is the product:
+          focusing attention instead of drowning it.</p>
+      </div>
+      <a class="vf" href="{{ '/methodology/' | url }}">How tiers are assigned &rarr;</a></div>
+    {%- endif %}
+
+    {%- if benchmarks.verdict_split | length %}
+    <div class="vizcard">
+      <div class="vh"><h3>What assistants did with the claim</h3>
+        <p>Layer A verdict distribution per question type, across all {{ benchmarks.responses }} responses.</p></div>
+      <div class="vb">
+        {% include "partials/stacked-verdicts.njk" %}
+        <p class="vnote">Refusal stays high everywhere. What changes with hostility is the split between
+          repeating and dodging.</p>
+      </div>
+      <a class="vf" href="{{ '/methodology/' | url }}">Verdict definitions &rarr;</a></div>
+    {%- endif %}
+
+    {%- if benchmarks.contamination_by_persona | length %}
+    <div class="vizcard">
+      <div class="vh"><h3>Where contamination enters</h3>
+        <p>Share of answers citing a Kremlin-linked domain, by question type.</p></div>
+      <div class="vb">
+        {%- set dumbbellRows = contaminationRows %}{% set dumbbellMax = contaminationMax %}{% set dumbbellLegend = false %}
+        {% include "partials/dumbbell.njk" %}
+        <p class="vnote"><b>Contamination peaks on the innocent question, not the hostile one.</b> An
+          ordinary news question sends the assistant to live web search, where Kremlin-linked mirrors are
+          waiting. A malicious prompt rarely triggers a search at all. This is why both layers are needed —
+          they catch different attacks.</p>
+      </div>
+      {%- if navigation.has.sources %}<a class="vf" href="{{ '/sources/' | url }}">Which domains &rarr;</a>{% endif %}</div>
+    {%- endif %}
+
+    {%- if benchmarks.trend | length %}
+    <div class="vizcard">
+      <div class="vh"><h3>Repeat-rate over time</h3>
+        <p>Median across all eight assistants, P2 topical news, run by run.</p></div>
+      <div class="vb">
+        {% include "partials/trend-bars.njk" %}
+        <p class="vnote">Assistants update continuously and independently of our reports — we record model
+          versions at every measurement and publish the change without claiming causation we cannot
+          demonstrate.</p>
+      </div>
+      {%- if navigation.has.reports %}<a class="vf" href="{{ '/monitor/' | url }}">Read the monthly reports &rarr;</a>{% endif %}</div>
+    {%- endif %}
+
+  </div>
+</section>
+
+<div class="exports" style="margin:0 0 44px">
+  {%- if datasets.has['benchmarks-json'] %}<a href="{{ '/benchmarks.json' | url }}">Download every figure (JSON)</a><span>&middot;</span>{% endif %}
+  <a href="{{ '/methodology/' | url }}">How we compute these</a><span>&middot;</span>
+  <a href="{{ '/data/#cite' | url }}">Cite the benchmarks</a>
+</div>

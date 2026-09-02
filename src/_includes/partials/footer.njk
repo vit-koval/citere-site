@@ -6,7 +6,7 @@
           Ukrainian research company, Diia.City resident.</p>
       </div>
       {%- for col in navigation.footer %}
-      <div class="fcol"><h5>{{ col.heading | safe }}</h5>
+      <div class="fcol"><h2>{{ col.heading | safe }}</h2>
         {%- for item in col.links %}
         <a href="{{ item.url | url }}">{{ item.label | safe }}</a>
         {%- endfor %}

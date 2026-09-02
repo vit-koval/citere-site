@@ -113,6 +113,8 @@ module.exports = function (eleventyConfig) {
   );
 
   // ---- collections -------------------------------------------------------
+  eleventyConfig.addFilter("min", (arr) => Math.min(...(arr || []).map(Number)));
+  eleventyConfig.addFilter("abs", (v) => Math.abs(Number(v)));
   eleventyConfig.addFilter("take", (arr, n) => (arr || []).slice(0, n));
   eleventyConfig.addFilter("plural", (count, one, many) => (Number(count) === 1 ? one : many));
   eleventyConfig.addFilter("unique", (arr) => [...new Set([].concat(arr || []))]);
@@ -133,6 +135,16 @@ module.exports = function (eleventyConfig) {
     String(text || "").replace(/\{\{\s*([a-zA-Z0-9_]+)\s*\}\}/g, (match, key) =>
       Object.prototype.hasOwnProperty.call(values || {}, key) ? String(values[key]) : match
     )
+  );
+
+  // Root-relative links written inside content/ Markdown never pass through the
+  // url filter, so they would 404 under a path prefix. Applied only to
+  // content-derived HTML, so links already built with | url are untouched.
+  const prefix = (process.env.PATH_PREFIX || "/").replace(/\/+$/, "");
+  eleventyConfig.addFilter("prefixLinks", (html) =>
+    prefix
+      ? String(html || "").replace(/(href|src)="\/(?!\/)/g, `$1="${prefix}/`)
+      : String(html || "")
   );
 
   // ---- structured data ---------------------------------------------------

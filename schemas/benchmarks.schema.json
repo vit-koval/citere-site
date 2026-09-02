@@ -6,47 +6,129 @@
   "type": "object",
   "additionalProperties": false,
   "properties": {
-    "run": { "type": "string" },
-    "label": { "type": "string" },
-    "date": { "type": "string", "format": "date" },
-    "responses": { "type": "integer", "minimum": 0 },
+    "run": {
+      "type": "string"
+    },
+    "label": {
+      "type": "string"
+    },
+    "date": {
+      "type": "string",
+      "format": "date"
+    },
+    "responses": {
+      "type": "integer",
+      "minimum": 0
+    },
     "leaderboards": {
       "type": "object",
       "additionalProperties": {
         "type": "array",
         "items": {
           "type": "object",
-          "required": ["key", "value"],
+          "required": [
+            "key",
+            "value"
+          ],
           "additionalProperties": false,
           "properties": {
-            "key": { "type": "string" },
-            "label": { "type": "string" },
-            "value": { "type": "number" },
-            "display": { "type": "string" },
-            "n": { "type": "integer", "minimum": 0 },
-            "ci": { "type": "array", "items": { "type": "number" }, "minItems": 2, "maxItems": 2 },
-            "delta": { "type": "number" },
-            "persona": { "enum": ["P1", "P2", "P3", "P4"] },
-            "chatbot": { "type": "string" },
-            "href": { "type": "string" }
+            "key": {
+              "type": "string"
+            },
+            "label": {
+              "type": "string"
+            },
+            "value": {
+              "type": "number"
+            },
+            "display": {
+              "type": "string"
+            },
+            "n": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "ci": {
+              "type": "array",
+              "items": {
+                "type": "number"
+              },
+              "minItems": 2,
+              "maxItems": 2
+            },
+            "delta": {
+              "type": "number"
+            },
+            "persona": {
+              "enum": [
+                "P1",
+                "P2",
+                "P3",
+                "P4"
+              ]
+            },
+            "chatbot": {
+              "type": "string"
+            },
+            "href": {
+              "type": "string"
+            },
+            "before": {
+              "type": "number"
+            },
+            "after": {
+              "type": "number"
+            }
           }
         }
       }
     },
-    "persona_note": { "type": "object", "additionalProperties": { "type": "string" } },
+    "persona_note": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
     "heatmap": {
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["chatbot", "persona", "rate", "n"],
+        "required": [
+          "chatbot",
+          "persona",
+          "rate",
+          "n"
+        ],
         "additionalProperties": false,
         "properties": {
-          "chatbot": { "type": "string" },
-          "persona": { "enum": ["P1", "P2", "P3", "P4"] },
-          "rate": { "type": "number", "minimum": 0, "maximum": 1 },
-          "contamination": { "type": "number", "minimum": 0, "maximum": 1 },
-          "n": { "type": "integer", "minimum": 0 },
-          "low_confidence": { "type": "boolean" }
+          "chatbot": {
+            "type": "string"
+          },
+          "persona": {
+            "enum": [
+              "P1",
+              "P2",
+              "P3",
+              "P4"
+            ]
+          },
+          "rate": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "contamination": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "n": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "low_confidence": {
+            "type": "boolean"
+          }
         }
       }
     },
@@ -56,10 +138,32 @@
         "type": "object",
         "additionalProperties": false,
         "properties": {
-          "clean": { "type": "integer", "minimum": 0 },
-          "flagged": { "type": "integer", "minimum": 0 },
-          "clean_tier": { "enum": ["critical", "high", "review", "low", "none"] },
-          "flagged_tier": { "enum": ["critical", "high", "review", "low", "none"] }
+          "clean": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "flagged": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "clean_tier": {
+            "enum": [
+              "critical",
+              "high",
+              "review",
+              "low",
+              "none"
+            ]
+          },
+          "flagged_tier": {
+            "enum": [
+              "critical",
+              "high",
+              "review",
+              "low",
+              "none"
+            ]
+          }
         }
       }
     },
@@ -67,12 +171,22 @@
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["label", "n"],
+        "required": [
+          "label",
+          "n"
+        ],
         "additionalProperties": false,
         "properties": {
-          "label": { "type": "string" },
-          "detail": { "type": "string" },
-          "n": { "type": "integer", "minimum": 0 }
+          "label": {
+            "type": "string"
+          },
+          "detail": {
+            "type": "string"
+          },
+          "n": {
+            "type": "integer",
+            "minimum": 0
+          }
         }
       }
     },
@@ -80,13 +194,36 @@
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["persona", "with_grain", "pure", "n"],
+        "required": [
+          "persona",
+          "with_grain",
+          "pure",
+          "n"
+        ],
         "additionalProperties": false,
         "properties": {
-          "persona": { "enum": ["P1", "P2", "P3", "P4"] },
-          "with_grain": { "type": "number", "minimum": 0, "maximum": 1 },
-          "pure": { "type": "number", "minimum": 0, "maximum": 1 },
-          "n": { "type": "integer", "minimum": 0 }
+          "persona": {
+            "enum": [
+              "P1",
+              "P2",
+              "P3",
+              "P4"
+            ]
+          },
+          "with_grain": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "pure": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "n": {
+            "type": "integer",
+            "minimum": 0
+          }
         }
       }
     },
@@ -94,15 +231,48 @@
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["persona", "repeated", "contextualised", "refuted", "dodged", "n"],
+        "required": [
+          "persona",
+          "repeated",
+          "contextualised",
+          "refuted",
+          "dodged",
+          "n"
+        ],
         "additionalProperties": false,
         "properties": {
-          "persona": { "enum": ["P1", "P2", "P3", "P4"] },
-          "repeated": { "type": "number", "minimum": 0, "maximum": 1 },
-          "contextualised": { "type": "number", "minimum": 0, "maximum": 1 },
-          "refuted": { "type": "number", "minimum": 0, "maximum": 1 },
-          "dodged": { "type": "number", "minimum": 0, "maximum": 1 },
-          "n": { "type": "integer", "minimum": 0 }
+          "persona": {
+            "enum": [
+              "P1",
+              "P2",
+              "P3",
+              "P4"
+            ]
+          },
+          "repeated": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "contextualised": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "refuted": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "dodged": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "n": {
+            "type": "integer",
+            "minimum": 0
+          }
         }
       }
     },
@@ -110,12 +280,30 @@
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["persona", "rate", "n"],
+        "required": [
+          "persona",
+          "rate",
+          "n"
+        ],
         "additionalProperties": false,
         "properties": {
-          "persona": { "enum": ["P1", "P2", "P3", "P4"] },
-          "rate": { "type": "number", "minimum": 0, "maximum": 1 },
-          "n": { "type": "integer", "minimum": 0 }
+          "persona": {
+            "enum": [
+              "P1",
+              "P2",
+              "P3",
+              "P4"
+            ]
+          },
+          "rate": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "n": {
+            "type": "integer",
+            "minimum": 0
+          }
         }
       }
     },
@@ -123,15 +311,67 @@
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["month", "median_repeat"],
+        "required": [
+          "month",
+          "median_repeat"
+        ],
         "additionalProperties": false,
         "properties": {
-          "month": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}$" },
-          "median_repeat": { "type": "number", "minimum": 0, "maximum": 1 },
-          "persona": { "enum": ["P1", "P2", "P3", "P4"] },
-          "note": { "type": "string" }
+          "month": {
+            "type": "string",
+            "pattern": "^[0-9]{4}-[0-9]{2}$"
+          },
+          "median_repeat": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "persona": {
+            "enum": [
+              "P1",
+              "P2",
+              "P3",
+              "P4"
+            ]
+          },
+          "note": {
+            "type": "string"
+          }
         }
       }
+    },
+    "headline": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "pure_refuted",
+        "grain_repeated"
+      ],
+      "properties": {
+        "pure_refuted": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "grain_repeated": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "run_label": {
+          "type": "string"
+        }
+      }
+    },
+    "in_progress_countries": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z]{2}$"
+      }
+    },
+    "completed_run_label": {
+      "type": "string"
     }
   }
 }

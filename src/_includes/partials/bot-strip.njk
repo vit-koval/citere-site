@@ -1,0 +1,9 @@
+<div class="strip">
+  <p class="cap">Assistants we test &middot; repeat-rate, {{ benchmarks.stripCaption }}</p>
+  <div class="bots">
+  {%- for row in benchmarks.strip %}
+    <a class="bot" href="{{ (row.href if navigation.has.chatbots else '/benchmarks/') | url }}" data-persona="{{ row.persona }}">
+      <span class="g {{ row.key | botClass }}">{{ row.key | botCode }}</span>{{ row.key | botName }}<span class="r num">{{ row.value | rate }}</span></a>
+  {%- endfor %}
+  </div>
+</div>

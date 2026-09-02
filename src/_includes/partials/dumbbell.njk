@@ -1,0 +1,20 @@
+{#- The grain-of-truth comparison from the mockup: one row per persona, a dot
+    for grain-of-truth claims and a dot for pure fabrications. -#}
+{%- set peak = dumbbellMax -%}
+<div class="gt">
+  {%- for row in dumbbellRows %}
+  {%- set aPos = 4 + (row.a / peak * 82) %}
+  {%- set bPos = 4 + (row.b / peak * 82) %}
+  <div class="gtrow" data-persona="{{ row.persona }}"><span class="p">{{ row.persona }} &middot; {{ row.persona | personaLabel }}</span>
+    <div class="gtline"><div class="axis"></div>
+      {%- if (aPos - bPos) | abs > 1 %}<div class="conn" style="left:{{ [aPos, bPos] | min | round(1) }}%;width:{{ (aPos - bPos) | abs | round(1) }}%"></div>{% endif %}
+      <div class="gtdot a" style="left:{{ aPos | round(1) }}%"></div>
+      {%- if row.b is not none %}<div class="gtdot b" style="left:{{ bPos | round(1) }}%"></div>{% endif %}</div>
+    <span class="v"><em>{{ row.a | rate }}</em>{% if row.b is not none %} <span>vs {{ row.b | rate }}</span>{% endif %}</span></div>
+  {%- endfor %}
+</div>
+{%- if dumbbellLegend %}
+<div class="gtlegend"><span><span class="sw" style="background:var(--false)"></span>Grain-of-truth claims</span>
+  <span><span class="sw" style="background:#b8bec9"></span>Pure fabrications</span>
+  <span>Wilson 95% CI</span></div>
+{%- endif %}
