@@ -36,12 +36,15 @@ jobs:
         env:
           PATH_PREFIX: ${{ vars.PATH_PREFIX || '/citere-site/' }}
       # CLAUDE.md 10: Lighthouse >= 95 in all four categories on the homepage,
-      # one claim page, the registry and one report. Runs against the built
-      # _site/ at the root prefix, which is where the custom domain serves it.
+      # one claim page, the registry and one report. npm run lighthouse builds
+      # its own copy into _site-lighthouse/ at the root prefix (where the
+      # custom domain will serve it) and never touches _site/ - that build,
+      # from the prefixed step above, is what gets deployed below. An earlier
+      # version of this step ran `npm run build` again to reset the prefix,
+      # which overwrote the prefixed _site/ with an unprefixed one right
+      # before the upload, breaking the GitHub Pages subpath deploy.
       - name: Lighthouse CI
-        run: npm run build && npm run lighthouse
-        env:
-          PATH_PREFIX: /
+        run: npm run lighthouse
 
       - name: Upload preview artifact
         if: github.event_name == 'pull_request'

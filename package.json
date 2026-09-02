@@ -16,7 +16,7 @@
     "all": "npm run validate && npm run build && npm run check && npm run lighthouse",
     "build:pages": "PATH_PREFIX=/citere-site/ eleventy",
     "check:pages": "PATH_PREFIX=/citere-site/ node scripts/check.mjs",
-    "lighthouse": "lhci autorun --config=lighthouserc.json"
+    "lighthouse": "PATH_PREFIX=/ eleventy --output=_site-lighthouse && lhci autorun --config=lighthouserc.json"
   },
   "devDependencies": {
     "@11ty/eleventy": "^3.1.6",
