@@ -1,0 +1,109 @@
+---
+layout: layouts/base.njk
+permalink: /
+lang: en
+title: Do AI chatbots repeat Russian disinformation about Ukraine?
+description: We test ChatGPT, Gemini, Grok, Claude, Copilot, Perplexity, DeepSeek and Le Chat for Russian disinformation about Ukraine, and report what we find.
+breadcrumbTrail:
+  - title: Home
+    url: /
+---
+{% set copyEn = copy.en.index %}
+{% set cycle = [
+  { key: 'detect', label: 'Detect', nav: 'methodology' },
+  { key: 'trace', label: 'Trace', nav: 'sources' },
+  { key: 'publish', label: 'Publish', nav: 'registry' },
+  { key: 'report', label: 'Report', nav: 'escalations' },
+  { key: 'confirm', label: 'Confirm', nav: 'about' },
+  { key: 're-measure', label: 'Re-measure', nav: 'reports' }
+] %}
+{% set trust = [
+  { key: 'trust-method', nav: 'methodology', label: 'Methodology' },
+  { key: 'trust-data', nav: 'data', label: 'Data' },
+  { key: 'trust-actions', nav: 'escalations', label: 'Escalation log' },
+  { key: 'trust-corrections', nav: 'corrections', label: 'Corrections' }
+] %}
+{% set latest = claims | default([]) %}
+
+<h1>Do AI chatbots repeat Russian disinformation about Ukraine?</h1>
+
+<p class="lede">Sometimes — and we measure exactly when. We test ChatGPT, Gemini, Grok, Claude, Copilot, Perplexity, DeepSeek and Le Chat with the questions people actually ask, record every time they repeat a known false claim, report it, and check whether it changes.</p>
+
+{% if site.counters.claims %}
+<ul class="counters">
+  <li><b>{{ site.counters.claims }}</b><span>false claims documented</span></li>
+  <li><b>{{ site.counters.responses }}</b><span>chatbot answers analysed</span></li>
+  <li><b>{{ site.counters.escalations_sent }}</b><span>reports sent to platforms</span></li>
+</ul>
+{% endif %}
+{% include "partials/updated.njk" %}
+
+{% if navigation.has.registry or navigation.has.reports %}
+<p class="actions">
+  {% if navigation.has.registry %}<a href="/registry/">Browse the registry</a>{% endif %}
+  {% if navigation.has.reports %}<a href="/monitor/">Read the latest report</a>{% endif %}
+</p>
+{% endif %}
+
+<h2 id="the-problem">{{ copyEn.sections['the-audience-is-the-model'].title }}</h2>
+{{ copyEn.sections['the-audience-is-the-model'].html | safe }}
+
+<h2 id="what-we-do">{{ copyEn.sections['what-we-do'].title }}</h2>
+{{ copyEn.sections['what-we-do'].html | safe }}
+
+<ol class="cycle">
+{% for step in cycle %}
+  <li>
+    <b>{{ loop.index }}. {{ step.label }}</b>
+    {{ copyEn.sections[step.key].html | safe }}
+    {% if navigation.byKey[step.nav] %}<p><a href="{{ navigation.byKey[step.nav].url }}">{{ navigation.byKey[step.nav].label }}</a></p>{% endif %}
+  </li>
+{% endfor %}
+</ol>
+<p class="note">We report the change in repeat-rate before and after, per chatbot, and per persona.</p>
+
+{% if latest | length %}
+<h2 id="findings">What we have found so far</h2>
+<div class="table-wrap">
+<table>
+  <caption>The five most recently updated claims. <a href="/registry/">All claims</a>.</caption>
+  <thead>
+    <tr><th scope="col">Claim</th><th scope="col">Verdict</th><th scope="col">Repeated by</th><th scope="col">Updated</th></tr>
+  </thead>
+  <tbody>
+  {% for claim in latest | take(5) %}
+    <tr>
+      <td><a href="{{ claim.url }}">{{ claim.title }}</a></td>
+      <td><span class="badge badge-verdict badge-{{ claim.verdict }}">{{ claim.verdict | verdictLabel }}</span></td>
+      <td>{{ claim.repeatedBy | length }} of 8</td>
+      <td><time datetime="{{ claim.updated | isoDate }}">{{ claim.updated | displayDate }}</time></td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+</div>
+{% if navigation.has.escalations and site.counters.escalations_sent %}
+<p>Escalations: {{ site.counters.escalations_sent }} reports sent · {{ site.counters.escalations_answered }} responses · {{ site.counters.escalations_actioned }} confirmed changes. <a href="/escalations/">See the escalation log</a></p>
+{% endif %}
+{% endif %}
+
+{% if site.used_by | length %}
+<h2 id="used-by">Where our data is used</h2>
+<ul>
+{% for item in site.used_by %}
+  <li><a href="{{ item.url }}">{{ item.org }} — {{ item.title }}</a>, <time datetime="{{ item.date | isoDate }}">{{ item.date | displayDate }}</time></li>
+{% endfor %}
+</ul>
+{% endif %}
+
+<h2 id="why-trust-this">Why trust this</h2>
+<ul class="trust">
+{% for item in trust %}
+  <li>
+    {{ copyEn.sections[item.key].html | safe }}
+    {% if navigation.byKey[item.nav] %}<a href="{{ navigation.byKey[item.nav].url }}">{{ item.label }}</a>{% endif %}
+  </li>
+{% endfor %}
+</ul>
+{{ copyEn.sections['independence'].html | safe }}
+{% if navigation.has.about %}<p><a href="/about/">Who we are</a></p>{% endif %}

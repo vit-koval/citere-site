@@ -1,0 +1,54 @@
+---
+layout: layouts/page.njk
+permalink: /data/
+lang: en
+title: Open data on AI chatbots and Russian disinformation
+description: Download the Sitera claim registry, chatbot observations, domain watchlist and escalation log as CSV and JSON under CC BY 4.0, with citation.
+h1: Data
+schemas:
+  - datacatalog
+breadcrumbTrail:
+  - title: Home
+    url: /
+  - title: Data
+    url: /data/
+---
+{% set doc = copy.en.data %}
+<p class="lede">{{ doc.introText }}</p>
+
+{% if datasets.all | length %}
+<h2 id="downloads">Downloads</h2>
+<div class="table-wrap">
+<table>
+  <caption>Every dataset published from this site. All under CC BY 4.0.</caption>
+  <thead>
+    <tr><th scope="col">Dataset</th><th scope="col">Format</th><th scope="col">What it contains</th></tr>
+  </thead>
+  <tbody>
+  {% for item in datasets.all %}
+    <tr>
+      <th scope="row"><a href="{{ item.url }}">{{ item.name }}</a></th>
+      <td>{{ item.format }}</td>
+      <td>{{ item.description }}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+</div>
+{% endif %}
+
+{% for id in doc.order %}
+{% set section = doc.sections[id] %}
+<h2 id="{{ section.id }}">{{ section.title }}</h2>
+{{ section.html | safe }}
+{% endfor %}
+
+<h2 id="cite">How to cite</h2>
+<p class="cite-block">{{ site.org.name }} ({{ site.last_update | year }}). Registry of Russian disinformation in AI chatbot answers. Version {{ site.watchlist_version }}. {{ site.url }}/data/</p>
+<p class="cite-block">@misc{ {{- site.org.name | lower }}{{ site.last_update | year }},
+  author = { {{- site.org.name -}} },
+  title  = {Registry of Russian disinformation in AI chatbot answers},
+  year   = { {{- site.last_update | year -}} },
+  url    = { {{- site.url }}/data/}
+}</p>
+<p>Questions about the data, or a request for extended access: <a href="mailto:{{ site.org.email.research }}">{{ site.org.email.research }}</a></p>

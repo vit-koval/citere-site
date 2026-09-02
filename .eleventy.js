@@ -67,6 +67,7 @@ module.exports = function (eleventyConfig) {
     return `${n > 0 ? "+" : ""}${n} pp`;
   });
 
+  eleventyConfig.addFilter("take", (arr, n) => (arr || []).slice(0, n));
   eleventyConfig.addFilter("unique", (arr) => [...new Set([].concat(arr || []))]);
   eleventyConfig.addFilter("sortBy", (arr, key, dir) => {
     const out = [...(arr || [])];

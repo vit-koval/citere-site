@@ -1,5 +1,5 @@
 {%- set catalogItems = [] -%}
-{%- for item in datasets -%}
+{%- for item in datasets.all -%}
 {%- set catalogItems = (catalogItems.push({ "@type": "Dataset", "name": item.name, "description": item.description, "url": site.url + item.url, "license": "https://creativecommons.org/licenses/by/4.0/" }), catalogItems) -%}
 {%- endfor -%}
 {%- set jsonldCatalog = {

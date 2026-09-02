@@ -26,6 +26,7 @@ const ENTRIES = [
 const live = ENTRIES.filter((e) => built(e.template));
 
 module.exports = {
+  byKey: Object.fromEntries(live.map((e) => [e.key, e])),
   menu: live.filter((e) => e.menu),
   footer: live,
   has: Object.fromEntries(ENTRIES.map((e) => [e.key, built(e.template)]))

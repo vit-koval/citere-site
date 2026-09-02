@@ -15,5 +15,5 @@
     {% endfor %}
     </ul>
   </nav>
-  <p class="fine">{{ site.org.name }} · {{ site.org.city }}, {{ site.org.country }} · Data under <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a> · Updated <time datetime="{{ site.last_update | isoDate }}">{{ site.last_update | displayDate }}</time></p>
+  <p class="fine">{{ site.org.name }} · {% if site.org.city | isReal %}{{ site.org.city }}, {% endif %}{{ site.org.country }} · Data under <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a> · Updated <time datetime="{{ site.last_update | isoDate }}">{{ site.last_update | displayDate }}</time></p>
 </footer>

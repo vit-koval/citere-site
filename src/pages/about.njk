@@ -1,0 +1,58 @@
+---
+layout: layouts/page.njk
+permalink: /about/
+lang: en
+title: About Sitera
+description: Sitera is an independent Ukrainian research team testing public AI chatbots for Russian disinformation about Ukraine, and getting what it finds corrected.
+h1: About Sitera
+breadcrumbTrail:
+  - title: Home
+    url: /
+  - title: About
+    url: /about/
+---
+{% set doc = copy.en.about %}
+<p class="lede">{{ doc.introText }}</p>
+
+<h2 id="the-organisation">The organisation</h2>
+<div class="table-wrap">
+<table>
+  <caption>Registration and status.</caption>
+  <tbody>
+    <tr><th scope="row">Name</th><td>{{ site.org.name }}</td></tr>
+    {% if site.org.legal_name | isReal %}<tr><th scope="row">Legal entity</th><td>{{ site.org.legal_name }}</td></tr>{% endif %}
+    {% if site.org.city | isReal %}<tr><th scope="row">Registered in</th><td>{{ site.org.city }}, {{ site.org.country }}</td></tr>{% endif %}
+    {% if site.org.founded | isReal %}<tr><th scope="row">Founded</th><td><time datetime="{{ site.org.founded }}">{{ site.org.founded }}</time></td></tr>{% endif %}
+    <tr><th scope="row">Diia.City resident</th><td>since <time datetime="{{ site.org.diia_city_since }}">May 2026</time></td></tr>
+    <tr><th scope="row">Funding</th><td>{{ site.org.funding }}, with no commercial relationship to any platform we test</td></tr>
+  </tbody>
+</table>
+</div>
+
+{% if site.org.team | length %}
+<h2 id="team">Who we are</h2>
+<ul>
+{% for member in site.org.team %}
+  <li><b>{{ member.name }}</b> — {{ member.role }}</li>
+{% endfor %}
+</ul>
+{% endif %}
+
+{% for id in doc.order %}
+{% set section = doc.sections[id] %}
+<h2 id="{{ section.id }}">{{ section.title }}</h2>
+{{ section.html | safe }}
+{% if section.id == 'contact' %}
+<div class="table-wrap">
+<table>
+  <caption>Where to write.</caption>
+  <tbody>
+    <tr><th scope="row">Research and data</th><td><a href="mailto:{{ site.org.email.research }}">{{ site.org.email.research }}</a></td></tr>
+    <tr><th scope="row">Platforms and trust &amp; safety</th><td><a href="mailto:{{ site.org.email.platforms }}">{{ site.org.email.platforms }}</a></td></tr>
+    <tr><th scope="row">Press</th><td><a href="mailto:{{ site.org.email.press }}">{{ site.org.email.press }}</a></td></tr>
+    <tr><th scope="row">Corrections</th><td><a href="mailto:{{ site.org.email.corrections }}">{{ site.org.email.corrections }}</a></td></tr>
+  </tbody>
+</table>
+</div>
+{% endif %}
+{% endfor %}
