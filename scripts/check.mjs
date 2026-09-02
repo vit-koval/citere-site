@@ -50,6 +50,8 @@ const sitePaths = new Set(
 );
 
 const guards = JSON.parse(readFileSync(join(ROOT, "scripts/guards.json"), "utf8"));
+const site = JSON.parse(readFileSync(join(ROOT, "data/site.json"), "utf8"));
+const SITE_URL = `https://${site.domain}`;
 const sources = JSON.parse(readFileSync(join(ROOT, "data/sources.json"), "utf8"));
 const claims = existsSync(join(ROOT, "data/claims"))
   ? readdirSync(join(ROOT, "data/claims"))
@@ -159,6 +161,27 @@ for (const file of htmlFiles) {
     if (!resolveLink(href, page)) err(page, `dead internal link: ${href}`);
   }
 
+  for (const re of PERSONA_AVERAGE_PATTERNS) {
+    if (re.test(text)) err(page, `persona-averaged figure in page text: ${re}`);
+  }
+
+  // The declared language must match where the page is served from, or the
+  // hreflang cluster points readers and crawlers at the wrong document.
+  const declaredLang = (html.match(/<html[^>]+lang="([a-z-]+)"/i) || [])[1];
+  const pathLang = page.startsWith("/uk/") ? "uk" : "en";
+  if (declaredLang !== pathLang) {
+    err(page, `lang="${declaredLang}" but the page is served under /${pathLang === "en" ? "" : pathLang}`);
+  }
+
+  // Every hreflang alternate must resolve to a page that exists.
+  for (const [, code, href] of html.matchAll(/<link rel="alternate" hreflang="([^"]+)" href="([^"]+)"/g)) {
+    const altPath = href.startsWith(SITE_URL) ? href.slice(SITE_URL.length) || "/" : null;
+    if (altPath === null) err(page, `hreflang ${code} is not on the canonical host: ${href}`);
+    else if (!altPath.endsWith("/") ? !sitePaths.has(altPath) : !sitePaths.has(altPath + "index.html")) {
+      err(page, `hreflang ${code} points at a missing page: ${altPath}`);
+    }
+  }
+
   // --- claim pages ---------------------------------------------------------
   const claimMatch = page.match(/^(?:\/([a-z]{2}))?\/registry\/([^/]+)\/index\.html$/);
   if (claimMatch && claimsBySlug.has(claimMatch[2])) {
@@ -179,10 +202,6 @@ for (const file of htmlFiles) {
     if (hasBeforeAfter && !dataHasBeforeAfter) err(page, "before/after section rendered with no before_after data");
     if (!hasBeforeAfter && dataHasBeforeAfter) err(page, "before_after data present but section missing");
 
-    for (const re of PERSONA_AVERAGE_PATTERNS) {
-      if (re.test(text)) err(page, `persona-averaged figure in page text: ${re}`);
-    }
-
     // Every observations row must carry its own persona cell.
     const table = (html.match(/<table[^>]*class="[^"]*observations[^"]*"[\s\S]*?<\/table>/i) || [])[0];
     if (table) {
@@ -202,9 +221,6 @@ for (const file of htmlFiles) {
 if (!htmlFiles.length) {
   console.log("check: no HTML pages yet");
 }
-
-const site = JSON.parse(readFileSync(join(ROOT, "data/site.json"), "utf8"));
-const SITE_URL = `https://${site.domain}`;
 
 // A canonical URL points at the document, not at this build's mount point, so
 // machine outputs are checked against unprefixed _site paths.

@@ -13,6 +13,11 @@
   --accent-visited: #5a3a91;
   --false: #b3261e;
   --misleading: #b26a00;
+  /* CLAUDE.md 12 sets MISLEADING to #B26A00 and CLAUDE.md 6 requires 4.5:1.
+     At badge size #B26A00 reaches only 4.24:1 on white and 3.92:1 on a zebra
+     row, so text uses a darker shade of the same hue (4.97:1 on zebra) and
+     #B26A00 stays as the badge border. */
+  --misleading-text: #9a5c00;
   --unsupported: #5f6368;
   --neutral: #4a4f57;
   --measure: 70ch;
@@ -30,6 +35,7 @@
     --accent-visited: #c3a9f0;
     --false: #f2837b;
     --misleading: #e0a453;
+    --misleading-text: #e0a453;
     --unsupported: #b0b6bd;
     --neutral: #b9bec6;
   }
@@ -153,10 +159,10 @@ a:focus-visible, summary:focus-visible {
   white-space: nowrap;
 }
 .badge-false { color: var(--false); }
-.badge-misleading { color: var(--misleading); }
+.badge-misleading { color: var(--misleading-text); border-color: var(--misleading); }
 .badge-unsupported { color: var(--unsupported); }
 .badge-repeated { color: var(--false); }
-.badge-contextualised { color: var(--misleading); }
+.badge-contextualised { color: var(--misleading-text); border-color: var(--misleading); }
 .badge-refuted { color: var(--unsupported); }
 .badge-dodged { color: var(--neutral); }
 

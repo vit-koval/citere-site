@@ -35,6 +35,14 @@ jobs:
       - run: npm run check
         env:
           PATH_PREFIX: ${{ vars.PATH_PREFIX || '/citere-site/' }}
+      # CLAUDE.md 10: Lighthouse >= 95 in all four categories on the homepage,
+      # one claim page, the registry and one report. Runs against the built
+      # _site/ at the root prefix, which is where the custom domain serves it.
+      - name: Lighthouse CI
+        run: npm run build && npm run lighthouse
+        env:
+          PATH_PREFIX: /
+
       - name: Upload preview artifact
         if: github.event_name == 'pull_request'
         uses: actions/upload-artifact@v4
