@@ -1,0 +1,13 @@
+{%- set listItems = [] -%}
+{%- for item in collectionItems -%}
+{%- set listItems = (listItems.push({ "@type": "ListItem", "position": loop.index, "url": site.url + item.url, "name": item.title }), listItems) -%}
+{%- endfor -%}
+{%- set jsonldCollection = {
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": title,
+  "url": site.url + page.url,
+  "inLanguage": lang | default("en"),
+  "mainEntity": { "@type": "ItemList", "numberOfItems": collectionItems | length, "itemListElement": listItems }
+} -%}
+<script type="application/ld+json">{{ jsonldCollection | compact | jsonld | safe }}</script>

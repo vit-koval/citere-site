@@ -1,0 +1,14 @@
+{%- set jsonldSite = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": site.org.name,
+  "url": site.url,
+  "inLanguage": lang | default("en"),
+  "publisher": { "@type": "Organization", "name": site.org.name, "url": site.url },
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": { "@type": "EntryPoint", "urlTemplate": site.url + "/registry/?q={search_term_string}" },
+    "query-input": "required name=search_term_string"
+  } if navigation.has.registry
+} -%}
+<script type="application/ld+json">{{ jsonldSite | compact | jsonld | safe }}</script>

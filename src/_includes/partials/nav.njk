@@ -1,0 +1,13 @@
+<header class="site-header">
+  <p class="wordmark"><a href="/">{{ site.org.name }}</a></p>
+  <nav aria-label="Main">
+    <details class="menu">
+      <summary>Menu</summary>
+      <ul>
+      {% for item in navigation.menu %}
+        <li><a href="{{ item.url }}"{% if page.url == item.url %} aria-current="page"{% endif %}>{{ item.label }}</a></li>
+      {% endfor %}
+      </ul>
+    </details>
+  </nav>
+</header>

@@ -1,0 +1,14 @@
+{%- set catalogItems = [] -%}
+{%- for item in datasets -%}
+{%- set catalogItems = (catalogItems.push({ "@type": "Dataset", "name": item.name, "description": item.description, "url": site.url + item.url, "license": "https://creativecommons.org/licenses/by/4.0/" }), catalogItems) -%}
+{%- endfor -%}
+{%- set jsonldCatalog = {
+  "@context": "https://schema.org",
+  "@type": "DataCatalog",
+  "name": site.org.name + " open data",
+  "url": site.url + page.url,
+  "license": "https://creativecommons.org/licenses/by/4.0/",
+  "publisher": { "@type": "Organization", "name": site.org.name, "url": site.url },
+  "dataset": catalogItems
+} -%}
+<script type="application/ld+json">{{ jsonldCatalog | compact | jsonld | safe }}</script>

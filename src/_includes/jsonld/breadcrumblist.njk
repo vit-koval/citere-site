@@ -1,0 +1,6 @@
+{%- set crumbItems = [] -%}
+{%- for crumb in breadcrumbTrail -%}
+{%- set crumbItems = (crumbItems.push({ "@type": "ListItem", "position": loop.index, "name": crumb.title, "item": site.url + crumb.url }), crumbItems) -%}
+{%- endfor -%}
+{%- set jsonldCrumbs = { "@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": crumbItems } -%}
+<script type="application/ld+json">{{ jsonldCrumbs | compact | jsonld | safe }}</script>

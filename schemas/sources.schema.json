@@ -1,0 +1,44 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://sitera.ai/schemas/sources.schema.json",
+  "title": "Sitera domain watchlist (public subset)",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": ["domain", "slug", "network", "first_seen"],
+    "additionalProperties": false,
+    "properties": {
+      "domain": { "type": "string", "pattern": "^[a-z0-9.-]+\\.[a-z]{2,}$" },
+      "slug": { "type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$" },
+      "network": { "enum": ["pravda", "doppelganger", "matryoshka", "storm-1516", "state-media", "other"] },
+      "first_seen": { "type": "string", "format": "date" },
+      "attribution": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": ["org", "date"],
+          "additionalProperties": false,
+          "properties": {
+            "org": { "type": "string" },
+            "url": { "type": "string" },
+            "date": { "type": "string", "format": "date" }
+          }
+        }
+      },
+      "cited_in": { "type": "array", "items": { "type": "string", "pattern": "^C[0-9]+-[0-9]{3}$" } },
+      "complaints": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": ["target", "date", "status"],
+          "additionalProperties": false,
+          "properties": {
+            "target": { "type": "string" },
+            "date": { "type": "string", "format": "date" },
+            "status": { "enum": ["submitted", "acknowledged", "actioned", "no_response", "declined", "completed"] }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "name": "sitera-site",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Sitera public website - public evidence base for AI chatbot monitoring",
+  "license": "CC-BY-4.0",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "validate": "node scripts/validate.mjs",
+    "build": "eleventy",
+    "check": "node scripts/check.mjs",
+    "serve": "eleventy --serve",
+    "import": "node scripts/import-citere.mjs",
+    "all": "npm run validate && npm run build && npm run check"
+  },
+  "devDependencies": {
+    "@11ty/eleventy": "^3.1.6",
+    "ajv": "^8.20.0",
+    "ajv-formats": "^3.0.1",
+    "gray-matter": "^4.0.3",
+    "markdown-it": "^14.1.0"
+  }
+}

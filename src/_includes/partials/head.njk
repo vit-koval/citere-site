@@ -1,0 +1,15 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ title }}</title>
+<meta name="description" content="{{ description }}">
+<link rel="canonical" href="{{ site.url }}{{ page.url }}">
+{% for code in build.languages %}
+<link rel="alternate" hreflang="{{ code }}" href="{{ site.url }}{% if code == 'uk' %}/uk{% endif %}{{ page.url }}">
+{% endfor %}
+<link rel="alternate" hreflang="x-default" href="{{ site.url }}{{ page.url }}">
+{% if navigation.has.rss %}<link rel="alternate" type="application/rss+xml" title="{{ site.org.name }}" href="/feed.xml">{% endif %}
+<link rel="stylesheet" href="/css/site.css">
+{% include "jsonld/organization.njk" %}
+{% include "jsonld/website.njk" %}
+{% include "jsonld/breadcrumblist.njk" %}
+{% for type in schemas | default([]) %}{% include "jsonld/" + type + ".njk" %}{% endfor %}

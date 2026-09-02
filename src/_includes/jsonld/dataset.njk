@@ -1,0 +1,16 @@
+{%- set jsonldDataset = {
+  "@context": "https://schema.org",
+  "@type": "Dataset",
+  "name": dataset.name,
+  "description": dataset.description,
+  "url": site.url + page.url,
+  "license": "https://creativecommons.org/licenses/by/4.0/",
+  "creator": { "@type": "Organization", "name": site.org.name, "url": site.url },
+  "isAccessibleForFree": true,
+  "dateModified": site.last_update,
+  "temporalCoverage": dataset.temporalCoverage,
+  "spatialCoverage": dataset.spatialCoverage,
+  "keywords": dataset.keywords,
+  "distribution": dataset.distribution
+} -%}
+<script type="application/ld+json">{{ jsonldDataset | compact | jsonld | safe }}</script>

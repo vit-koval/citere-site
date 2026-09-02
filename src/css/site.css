@@ -1,0 +1,206 @@
+/* Sitera. One stylesheet, no framework, system fonts, no icons.
+   Selectors avoid "element :pseudo" descendant forms: the build minifier
+   collapses whitespace and that pattern would change meaning. */
+
+:root {
+  --ink: #16181c;
+  --ink-soft: #4a4f57;
+  --ink-faint: #6b7078;
+  --paper: #ffffff;
+  --paper-soft: #f6f6f4;
+  --rule: #d9d9d4;
+  --accent: #1a4fa0;
+  --accent-visited: #5a3a91;
+  --false: #b3261e;
+  --misleading: #b26a00;
+  --unsupported: #5f6368;
+  --neutral: #4a4f57;
+  --measure: 70ch;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ink: #eceef1;
+    --ink-soft: #b9bec6;
+    --ink-faint: #9aa0a8;
+    --paper: #14161a;
+    --paper-soft: #1c1f24;
+    --rule: #343941;
+    --accent: #8fb6f5;
+    --accent-visited: #c3a9f0;
+    --false: #f2837b;
+    --misleading: #e0a453;
+    --unsupported: #b0b6bd;
+    --neutral: #b9bec6;
+  }
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font: 17px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-variant-numeric: tabular-nums;
+}
+
+main {
+  display: block;
+  max-width: var(--measure);
+  margin: 0 auto;
+  padding: 0 1.1rem 4rem;
+}
+
+h1, h2, h3 { line-height: 1.2; font-weight: 650; margin: 2.2rem 0 0.6rem; text-wrap: balance; }
+h1 { font-size: 1.85rem; margin-top: 1.2rem; }
+h2 { font-size: 1.3rem; margin-top: 2.6rem; }
+h3 { font-size: 1.05rem; }
+p, ul, ol, dl { margin: 0 0 1rem; }
+li { margin-bottom: 0.3rem; }
+strong { font-weight: 650; }
+small { font-size: 0.86rem; }
+
+a { color: var(--accent); text-underline-offset: 0.15em; }
+a:visited { color: var(--accent-visited); }
+a:focus-visible, summary:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  background: var(--paper);
+  color: var(--ink);
+  padding: 0.6rem 1rem;
+  z-index: 10;
+}
+.skip-link:focus { left: 0; }
+
+/* header + nav */
+.site-header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem 1.4rem;
+  align-items: baseline;
+  max-width: var(--measure);
+  margin: 0 auto;
+  padding: 1rem 1.1rem;
+  border-bottom: 1px solid var(--rule);
+}
+.wordmark { margin: 0; font-weight: 700; letter-spacing: 0.02em; }
+.wordmark a { color: var(--ink); text-decoration: none; }
+.site-header nav { margin-left: auto; }
+.menu summary { cursor: pointer; color: var(--accent); }
+.menu ul, .site-footer ul {
+  list-style: none;
+  margin: 0.5rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem 1rem;
+}
+.menu li, .site-footer li { margin: 0; }
+
+@media (min-width: 46rem) {
+  .menu summary { display: none; }
+  .menu ul { margin-top: 0; }
+  .menu[open] ul { display: flex; }
+}
+
+/* breadcrumbs + update line */
+.breadcrumb { font-size: 0.85rem; color: var(--ink-faint); margin-top: 1rem; }
+.breadcrumb ol { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.breadcrumb li::after { content: "/"; margin-left: 0.4rem; color: var(--rule); }
+.breadcrumb li:last-child::after { content: ""; }
+.updated { font-size: 0.85rem; color: var(--ink-faint); margin-top: -0.3rem; }
+
+/* lede + key numbers */
+.lede { font-size: 1.15rem; color: var(--ink-soft); }
+.counters { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 1.6rem; margin: 1.4rem 0; }
+.counters li { margin: 0; }
+.counters b { display: block; font-size: 1.7rem; line-height: 1.1; font-weight: 650; }
+.counters span { font-size: 0.85rem; color: var(--ink-faint); }
+
+.actions { display: flex; flex-wrap: wrap; gap: 0.7rem; margin: 1.4rem 0 2rem; }
+.actions a {
+  display: inline-block;
+  padding: 0.5rem 0.9rem;
+  border: 1px solid var(--accent);
+  border-radius: 3px;
+  text-decoration: none;
+}
+.actions a:first-child { background: var(--accent); color: var(--paper); }
+
+/* badges */
+.badge {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 0.1rem 0.4rem;
+  border: 1px solid currentColor;
+  border-radius: 2px;
+  white-space: nowrap;
+}
+.badge-false { color: var(--false); }
+.badge-misleading { color: var(--misleading); }
+.badge-unsupported { color: var(--unsupported); }
+.badge-repeated { color: var(--false); }
+.badge-contextualised { color: var(--misleading); }
+.badge-refuted { color: var(--unsupported); }
+.badge-dodged { color: var(--neutral); }
+
+.verdict-line { margin: 0.4rem 0 0.2rem; }
+.verdict-line span { color: var(--ink-faint); }
+
+/* tables */
+.table-wrap { overflow-x: auto; margin: 0 0 1.4rem; }
+@media (max-width: 46rem) {
+  .table-wrap { box-shadow: inset -8px 0 8px -8px rgba(0, 0, 0, 0.35); }
+}
+table { border-collapse: collapse; width: 100%; font-size: 0.9rem; }
+caption { text-align: left; font-size: 0.85rem; color: var(--ink-faint); padding-bottom: 0.4rem; }
+th, td { text-align: left; padding: 0.45rem 0.6rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-weight: 650; white-space: nowrap; }
+thead th { border-bottom: 2px solid var(--rule); background: var(--paper); }
+tbody tr:nth-child(even) { background: var(--paper-soft); }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+@media (min-width: 46rem) {
+  thead th { position: sticky; top: 0; }
+}
+
+/* blocks */
+.cycle { list-style: none; padding: 0; }
+.cycle li { border-bottom: 1px solid var(--rule); padding: 0.7rem 0; }
+.cycle b { display: inline-block; min-width: 8.5rem; }
+.note { color: var(--ink-soft); font-size: 0.92rem; border-left: 2px solid var(--rule); padding-left: 0.9rem; }
+.trust { list-style: none; padding: 0; }
+.trust li { padding: 0.6rem 0; border-bottom: 1px solid var(--rule); }
+.domain { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.92em; }
+.cite-block {
+  background: var(--paper-soft);
+  border: 1px solid var(--rule);
+  padding: 0.8rem 1rem;
+  overflow-x: auto;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.82rem;
+  white-space: pre-wrap;
+}
+
+/* footer */
+.site-footer {
+  border-top: 1px solid var(--rule);
+  max-width: var(--measure);
+  margin: 0 auto;
+  padding: 1.4rem 1.1rem 3rem;
+  font-size: 0.88rem;
+  color: var(--ink-soft);
+}
+.site-footer ul { margin: 0 0 0.9rem; }
+.fine { color: var(--ink-faint); font-size: 0.82rem; margin: 0; }

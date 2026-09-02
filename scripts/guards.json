@@ -1,0 +1,4 @@
+{
+  "_note": "Strings that must never reach the built site. P4 is the hostile persona; its prompt text is never published (CLAUDE.md 11.7). Add each P4 prompt fragment here as it enters the run protocol.",
+  "forbidden_strings": []
+}

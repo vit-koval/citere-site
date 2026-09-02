@@ -1,0 +1,137 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://sitera.ai/schemas/claim.schema.json",
+  "title": "Sitera claim",
+  "type": "object",
+  "required": ["id", "slug", "cluster", "title_en", "verdict", "verdict_date", "updated", "languages", "countries", "origin", "observations", "actions"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "type": "string", "pattern": "^C[0-9]+-[0-9]{3}$" },
+    "slug": { "type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$", "maxLength": 60 },
+    "cluster": { "type": "string", "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$" },
+    "title_en": { "type": "string", "minLength": 1 },
+    "title_uk": { "type": "string" },
+    "verdict": { "enum": ["false", "misleading", "unsupported"] },
+    "verdict_date": { "type": "string", "format": "date" },
+    "updated": { "type": "string", "format": "date" },
+    "languages": { "type": "array", "items": { "type": "string", "pattern": "^[a-z]{2}$" }, "minItems": 1 },
+    "countries": { "type": "array", "items": { "type": "string", "pattern": "^[a-z]{2}$" }, "minItems": 1 },
+    "grain_of_truth": { "type": "boolean" },
+    "origin": {
+      "type": "object",
+      "required": ["first_seen", "network"],
+      "additionalProperties": false,
+      "properties": {
+        "first_seen": { "type": "string", "format": "date" },
+        "origin_note_en": { "type": "string" },
+        "origin_note_uk": { "type": "string" },
+        "network": { "enum": ["pravda", "doppelganger", "matryoshka", "storm-1516", "state-media", "other"] },
+        "attribution": { "type": "array", "items": { "$ref": "#/definitions/attribution" } }
+      }
+    },
+    "confirmations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["org", "finding_en", "date"],
+        "additionalProperties": false,
+        "properties": {
+          "org": { "type": "string" },
+          "finding_en": { "type": "string" },
+          "finding_uk": { "type": "string" },
+          "official": { "type": "boolean" },
+          "date": { "type": "string", "format": "date" },
+          "url": { "type": "string" }
+        }
+      }
+    },
+    "observations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["run", "chatbot", "country", "language", "persona", "date", "behaviour"],
+        "additionalProperties": false,
+        "properties": {
+          "run": { "type": "string" },
+          "chatbot": { "enum": ["chatgpt", "gemini", "grok", "claude", "copilot", "perplexity", "deepseek", "le-chat"] },
+          "country": { "type": "string", "pattern": "^[a-z]{2}$" },
+          "language": { "type": "string", "pattern": "^[a-z]{2}$" },
+          "persona": { "enum": ["P1", "P2", "P3", "P4"] },
+          "date": { "type": "string", "format": "date" },
+          "model_version": { "type": "string" },
+          "behaviour": { "enum": ["repeated", "contextualised", "refuted", "dodged"] },
+          "cited_domains": { "type": "array", "items": { "type": "string" } },
+          "quote_en": { "type": "string" },
+          "quote_uk": { "type": "string" }
+        }
+      }
+    },
+    "actions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["type", "target", "date", "status"],
+        "additionalProperties": false,
+        "properties": {
+          "type": { "enum": ["published", "platform_report", "domain_complaint", "shared", "partner_publication", "authority_confirmation", "remeasured"] },
+          "target": { "type": "string" },
+          "date": { "type": "string", "format": "date" },
+          "status": { "enum": ["submitted", "acknowledged", "actioned", "no_response", "declined", "completed", "live", "published", "receipt_confirmed"] },
+          "response_date": { "type": "string", "format": "date" },
+          "url": { "type": "string" }
+        }
+      }
+    },
+    "before_after": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["chatbot", "before", "after"],
+        "additionalProperties": false,
+        "properties": {
+          "chatbot": { "enum": ["chatgpt", "gemini", "grok", "claude", "copilot", "perplexity", "deepseek", "le-chat"] },
+          "before": { "$ref": "#/definitions/measurement" },
+          "after": { "$ref": "#/definitions/measurement" }
+        }
+      }
+    },
+    "changelog": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["date", "note_en"],
+        "additionalProperties": false,
+        "properties": {
+          "date": { "type": "string", "format": "date" },
+          "note_en": { "type": "string" },
+          "note_uk": { "type": "string" }
+        }
+      }
+    },
+    "related": { "type": "array", "items": { "type": "string", "pattern": "^C[0-9]+-[0-9]{3}$" } }
+  },
+  "definitions": {
+    "attribution": {
+      "type": "object",
+      "required": ["org", "date"],
+      "additionalProperties": false,
+      "properties": {
+        "org": { "type": "string" },
+        "url": { "type": "string" },
+        "date": { "type": "string", "format": "date" }
+      }
+    },
+    "measurement": {
+      "type": "object",
+      "required": ["rate", "n", "date"],
+      "additionalProperties": false,
+      "properties": {
+        "rate": { "type": "number", "minimum": 0, "maximum": 1 },
+        "n": { "type": "integer", "minimum": 1 },
+        "date": { "type": "string", "format": "date" },
+        "model_version": { "type": "string" },
+        "persona": { "enum": ["P1", "P2", "P3", "P4"] }
+      }
+    }
+  }
+}

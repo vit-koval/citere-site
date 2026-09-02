@@ -1,0 +1,13 @@
+{%- set jsonldOrg = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": site.org.name,
+  "legalName": site.org.legal_name,
+  "url": site.url,
+  "foundingDate": site.org.founded,
+  "address": { "@type": "PostalAddress", "addressLocality": site.org.city, "addressCountry": site.org.country },
+  "email": site.org.email.press,
+  "sameAs": site.org.sameAs,
+  "member": orgMembers
+} -%}
+<script type="application/ld+json">{{ jsonldOrg | compact | jsonld | safe }}</script>
