@@ -26,6 +26,9 @@ const STOP_WORDS = [
   "empower", "innovative"
 ];
 
+// A rate that claims to average personas is a defect; a sentence promising we
+// never do is the opposite, so "never/not averaged" is not a match.
+const NEGATED = /\b(never|not|without|refuse to|rather than)\s+(?:be\s+)?$/i;
 const PERSONA_AVERAGE_PATTERNS = [
   /averag\w*\s+(?:across|over|of)\s+persona/i,
   /mean\s+(?:across|over)\s+persona/i,
@@ -33,6 +36,17 @@ const PERSONA_AVERAGE_PATTERNS = [
   /average\s+repeat[- ]rate/i,
   /overall\s+repeat[- ]rate/i
 ];
+
+function personaAveraged(text) {
+  for (const re of PERSONA_AVERAGE_PATTERNS) {
+    const global = new RegExp(re.source, "gi");
+    let match;
+    while ((match = global.exec(text)) !== null) {
+      if (!NEGATED.test(text.slice(Math.max(0, match.index - 40), match.index))) return re;
+    }
+  }
+  return null;
+}
 
 function walk(dir, out = []) {
   for (const entry of readdirSync(dir)) {
@@ -164,9 +178,8 @@ for (const file of htmlFiles) {
     if (!resolveLink(href, page)) err(page, `dead internal link: ${href}`);
   }
 
-  for (const re of PERSONA_AVERAGE_PATTERNS) {
-    if (re.test(text)) err(page, `persona-averaged figure in page text: ${re}`);
-  }
+  const averaged = personaAveraged(text);
+  if (averaged) err(page, `persona-averaged figure in page text: ${averaged}`);
 
   // The declared language must match where the page is served from, or the
   // hreflang cluster points readers and crawlers at the wrong document.

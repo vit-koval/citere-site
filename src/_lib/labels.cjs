@@ -28,6 +28,13 @@ const NETWORKS = {
   "storm-1516": "storm_1516", "state-media": "state_media", laundering: "laundering", other: "other"
 };
 
+// Prose form. NETWORKS is the machine label the mockup prints inside a chip.
+const NETWORK_NAMES = {
+  pravda: "Pravda", doppelganger: "Doppelganger", matryoshka: "Matryoshka",
+  "storm-1516": "Storm-1516", "state-media": "state media", laundering: "laundering",
+  other: "other"
+};
+
 // The mockup tints a network chip only for these three.
 const NETWORK_CLASS = { pravda: "pravda", doppelganger: "doppel", "storm-1516": "storm" };
 
@@ -48,6 +55,6 @@ const PERSONAS = { P1: "neutral", P2: "topical", P3: "leading", P4: "malicious" 
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 module.exports = {
-  VERDICTS, BEHAVIOURS, STATUSES, ACTION_TYPES, NETWORKS, NETWORK_CLASS,
+  VERDICTS, BEHAVIOURS, STATUSES, ACTION_TYPES, NETWORKS, NETWORK_NAMES, NETWORK_CLASS,
   CHATBOTS, PERSONAS, MONTHS
 };

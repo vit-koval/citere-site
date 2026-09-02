@@ -1,52 +1,24 @@
-// Facet pages are the no-JS filter UI required by CLAUDE.md 6: every filter
-// combination that exists in the data is also a static URL. One page per facet
-// value with at least one claim.
+// Facet pages are the no-JS filter UI CLAUDE.md 2 requires: every filter state
+// is also a static URL. One page per facet value with at least one claim.
 const claims = require("./claims.js");
 const clusters = require("./clusters.js");
+const { CHATBOTS, VERDICTS } = require("../_lib/labels.cjs");
 
-const CHATBOTS = {
-  chatgpt: "ChatGPT", gemini: "Gemini", grok: "Grok", claude: "Claude",
-  copilot: "Copilot", perplexity: "Perplexity", deepseek: "DeepSeek", "le-chat": "Le Chat"
-};
-const VERDICTS = { false: "FALSE", misleading: "MISLEADING", unsupported: "UNSUPPORTED" };
 const region = new Intl.DisplayNames(["en"], { type: "region" });
 const language = new Intl.DisplayNames(["en"], { type: "language" });
+const safe = (fn, v) => { try { return fn(v) || v; } catch { return v; } };
 
 const TYPES = [
-  {
-    type: "cluster",
-    heading: "Cluster",
-    values: (claim) => [claim.cluster],
-    label: (v) => (clusters[v] && clusters[v].name_en) || v.replace(/-/g, " ")
-  },
-  {
-    type: "country",
-    heading: "Country",
-    values: (claim) => claim.countries,
-    label: (v) => {
-      try { return region.of(v.toUpperCase()) || v.toUpperCase(); } catch { return v.toUpperCase(); }
-    }
-  },
-  {
-    type: "language",
-    heading: "Language",
-    values: (claim) => claim.languages,
-    label: (v) => {
-      try { return language.of(v) || v; } catch { return v; }
-    }
-  },
-  {
-    type: "chatbot",
-    heading: "Chatbot",
-    values: (claim) => claim.chatbots,
-    label: (v) => CHATBOTS[v] || v
-  },
-  {
-    type: "verdict",
-    heading: "Verdict",
-    values: (claim) => [claim.verdict],
-    label: (v) => VERDICTS[v] || v
-  }
+  { type: "cluster", heading: "Cluster", values: (c) => [c.cluster],
+    label: (v) => (clusters[v] && clusters[v].name_en) || v.replace(/-/g, " ") },
+  { type: "country", heading: "Country", values: (c) => c.countries,
+    label: (v) => safe((x) => region.of(x.toUpperCase()), v) },
+  { type: "language", heading: "Language", values: (c) => c.languages,
+    label: (v) => safe((x) => language.of(x), v) },
+  { type: "chatbot", heading: "Chatbot", values: (c) => c.chatbots,
+    label: (v) => (CHATBOTS[v] || {}).name || v },
+  { type: "verdict", heading: "Verdict", values: (c) => [c.verdict],
+    label: (v) => VERDICTS[v] || v }
 ];
 
 const facets = [];

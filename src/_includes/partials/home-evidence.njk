@@ -1,1 +1,35 @@
-{#- Blocks that need live data. Each renders only when its data exists. -#}
+{#- Homepage evidence blocks. Each renders only when its data exists, so the
+    page fills in as claims and benchmarks land rather than showing a
+    placeholder (CLAUDE.md 11.6). -#}
+
+{%- if claims | length %}
+<section>
+  <div class="shead"><h2>Latest findings</h2>
+    <a href="{{ '/registry/' | url }}">All {{ claims | length }} {{ claims | length | plural("claim", "claims") }} &rarr;</a></div>
+  {%- set tableClaims = claims | take(5) %}
+  {%- set tableCaption = "The most recently updated claims" %}
+  {%- set stackTotalOverride = (claims | first).botsTested %}
+  {% include "partials/claims-table.njk" %}
+</section>
+{%- endif %}
+
+{%- if clusterTiles | length %}
+<section>
+  <div class="shead"><h2>Markets we monitor</h2>
+    {%- if navigation.has.countries %}<a href="{{ '/countries/' | url }}">All countries &rarr;</a>{% endif %}</div>
+  {%- if countryCards | length %}
+  <div class="grid4">
+  {%- for c in countryCards %}
+    <a class="cc {{ c.iso }}" href="{{ c.url | url }}"><div><div class="rank-n">#{{ loop.index }} by claims recorded</div><span class="flag">{{ c.iso | flag }}</span>
+      <h4>{{ c.name }}</h4><div class="stat">{{ c.claims }} {{ c.claims | plural("claim", "claims") }} &middot; {{ c.answers }} answers &middot; {{ c.languages }}</div></div>
+      <div class="bots-mini">{% for b in c.bots %}<span>{{ b | botCode }}</span>{% endfor %}</div></a>
+  {%- endfor %}
+  </div>
+  {%- endif %}
+  <div class="tiles" style="margin-top:14px">
+  {%- for tile in clusterTiles %}
+    <a class="tile" href="{{ tile.url | url }}"><b>{{ tile.name }}</b> — {{ tile.count }} {{ tile.count | plural("claim", "claims") }}</a>
+  {%- endfor %}
+  </div>
+</section>
+{%- endif %}

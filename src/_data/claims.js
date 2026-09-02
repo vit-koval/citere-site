@@ -1,51 +1,56 @@
 // Claim records joined to their prose. data/ holds every number, content/ holds
-// every sentence; this is the only place the two meet (CLAUDE.md section 3).
+// every sentence; this is the only place the two meet (CLAUDE.md 3).
 const fs = require("node:fs");
 const path = require("node:path");
-const { loadDoc, ROOT } = require("../_lib/markdown.cjs");
+const { ROOT } = require("../_lib/markdown.cjs");
+const { CHATBOTS } = require("../_lib/labels.cjs");
 
 const dir = path.join(ROOT, "data/claims");
-if (!fs.existsSync(dir)) module.exports = [];
-else {
-  const claims = fs
-    .readdirSync(dir)
-    .filter((f) => f.endsWith(".json"))
-    .map((f) => JSON.parse(fs.readFileSync(path.join(dir, f), "utf8")))
-    .map((claim) => {
-      const prose = {};
-      for (const lang of ["en", "uk"]) {
-        const file = path.join(ROOT, "content", lang, "claims", `${claim.id}.md`);
-        if (fs.existsSync(file)) prose[lang] = loadDoc(file);
-      }
-      const behaviours = (claim.observations || []).map((o) => o.behaviour);
-      return {
-        ...claim,
-        raw: claim,
-        prose,
-        url: `/registry/${claim.slug}/`,
-        title: claim.title_en,
-        chatbots: [...new Set((claim.observations || []).map((o) => o.chatbot))].sort(),
-        repeatedBy: [
-          ...new Set((claim.observations || []).filter((o) => o.behaviour === "repeated").map((o) => o.chatbot))
-        ].sort(),
-        citedDomains: [
-          ...new Set((claim.observations || []).flatMap((o) => o.cited_domains || []))
-        ].sort(),
-        counts: {
-          observations: behaviours.length,
-          repeated: behaviours.filter((b) => b === "repeated").length,
-          actions: (claim.actions || []).length,
-          responses: (claim.actions || []).filter((a) => a.response_date).length
-        },
-        nonEvasive: behaviours.filter((b) => b !== "dodged").length,
-        escalationStatus: (claim.actions || [])
-          .filter((a) => a.type === "platform_report")
-          .map((a) => a.status)
-          .pop() || null,
-        remeasuredOn: (claim.actions || []).filter((a) => a.type === "remeasured").map((a) => a.date).pop() || null
-      };
-    });
+const files = fs.existsSync(dir) ? fs.readdirSync(dir).filter((f) => f.endsWith(".json")) : [];
 
-  claims.sort((a, b) => (a.updated < b.updated ? 1 : a.updated > b.updated ? -1 : 0));
-  module.exports = claims;
+// The registry status chip in the mockup, derived from what we actually did.
+function escalationStatus(actions) {
+  const reports = actions.filter((a) => a.type === "platform_report");
+  if (actions.some((a) => a.type === "remeasured" && a.status === "completed")) {
+    return { label: "Re-measured", cls: "ok" };
+  }
+  if (reports.length && reports.some((a) => !a.response_date && a.status !== "declined")) {
+    return { label: "Awaiting response", cls: "wait" };
+  }
+  if (reports.length) return { label: "Reported", cls: "" };
+  if (actions.some((a) => a.type === "published")) return { label: "Published", cls: "" };
+  return null;
 }
+
+const claims = files
+  .map((f) => JSON.parse(fs.readFileSync(path.join(dir, f), "utf8")))
+  .map((claim) => {
+    const proseFile = path.join(ROOT, "content/en/claims", `${claim.id}.md`);
+    const observations = claim.observations || [];
+    const actions = claim.actions || [];
+    const repeatedBy = [...new Set(observations.filter((o) => o.behaviour === "repeated").map((o) => o.chatbot))];
+    return {
+      ...claim,
+      raw: claim,
+      url: `/registry/${claim.slug}/`,
+      hasProse: fs.existsSync(proseFile),
+      chatbots: [...new Set(observations.map((o) => o.chatbot))],
+      repeatedBy,
+      // The mockup shows "3 / 8": repeated by, out of every assistant we test.
+      botsTested: Object.keys(CHATBOTS).length,
+      citedDomains: [...new Set(observations.flatMap((o) => o.cited_domains || []))].sort(),
+      langLabel: (claim.languages || []).map((l) => l.toUpperCase()).join(" "),
+      counts: {
+        observations: observations.length,
+        repeated: observations.filter((o) => o.behaviour === "repeated").length,
+        actions: actions.length,
+        responses: actions.filter((a) => a.response_date).length
+      },
+      remeasuredOn: actions.filter((a) => a.type === "remeasured").map((a) => a.date).pop() || null,
+      status: escalationStatus(actions)
+    };
+  });
+
+claims.sort((a, b) => (a.updated < b.updated ? 1 : a.updated > b.updated ? -1 : 0));
+
+module.exports = claims;

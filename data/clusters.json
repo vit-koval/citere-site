@@ -1,1 +1,7 @@
-{}
+{
+  "corruption-diverted-aid": { "name_en": "Corruption / diverted aid" },
+  "delegitimisation": { "name_en": "Delegitimisation" },
+  "weapons-diversion": { "name_en": "Weapons diversion" },
+  "mobilisation": { "name_en": "Mobilisation" },
+  "energy-panic": { "name_en": "Energy panic" }
+}

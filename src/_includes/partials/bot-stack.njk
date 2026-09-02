@@ -1,0 +1,3 @@
+{#- The overlapping assistant avatars from the mockup. -#}
+<div class="stack">{% for key in stackBots %}<span class="mini {{ key | botClass }}" title="{{ key | botName }}">{{ key | botCode }}</span>{% endfor %}
+{%- if stackTotal %}<span class="rmeta" style="margin-left:7px">{{ stackBots | length }} / {{ stackTotal }}</span>{% endif %}</div>

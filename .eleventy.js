@@ -1,6 +1,6 @@
 const { md: markdown } = require("./src/_lib/markdown.cjs");
 const {
-  VERDICTS, BEHAVIOURS, STATUSES, ACTION_TYPES, NETWORKS, NETWORK_CLASS,
+  VERDICTS, BEHAVIOURS, STATUSES, ACTION_TYPES, NETWORKS, NETWORK_NAMES, NETWORK_CLASS,
   CHATBOTS, PERSONAS, MONTHS
 } = require("./src/_lib/labels.cjs");
 
@@ -64,6 +64,7 @@ module.exports = function (eleventyConfig) {
   eleventyConfig.addFilter("statusLabel", (v) => STATUSES[v] || v);
   eleventyConfig.addFilter("actionTypeLabel", (v) => ACTION_TYPES[v] || v);
   eleventyConfig.addFilter("networkLabel", (v) => NETWORKS[v] || v);
+  eleventyConfig.addFilter("networkName", (v) => NETWORK_NAMES[v] || v);
   eleventyConfig.addFilter("networkClass", (v) => NETWORK_CLASS[v] || "");
   eleventyConfig.addFilter("personaLabel", (v) => PERSONAS[v] || "");
 

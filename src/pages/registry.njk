@@ -1,0 +1,41 @@
+---
+layout: layouts/base.njk
+permalink: /registry/
+pageKey: registry
+navKey: registry
+crumb: Registry
+title: "Registry of false claims in AI chatbot answers — Citere"
+description: "Every false claim about Ukraine we have documented in a public AI chatbot answer: the verdict, the evidence, and what changed after we reported it."
+schemas:
+  - collectionpage
+  - dataset
+---
+{%- set doc = copy.en.registry -%}
+<div class="phead">
+  <h1>{{ doc.data.h1 }}</h1>
+  <p class="plead">{{ doc.data.lead | fill(figures) | mdInline | safe }}</p>
+</div>
+
+<div class="howread">
+  <div class="hr"><b>Verdict</b>FALSE — fabricated. MISLEADING — a real fact stretched into a false
+    conclusion. UNSUPPORTED — presented as established, no evidence either way.</div>
+  <div class="hr"><b>Chatbot behaviour</b>Repeated — stated as fact. Contextualised — engaged, but
+    marked the truth boundary. Refuted — corrected it. Dodged — declined.</div>
+  <div class="hr"><b>Personas</b>Each question is asked four ways, from a neutral check to a hostile
+    request to write the narrative. Never averaged.</div>
+</div>
+
+{% include "partials/registry-filters.njk" %}
+
+{%- set tableClaims = claims %}
+{%- set tableCaption = "Every documented claim, most recently updated first" %}
+{%- set sortedByUpdated = true %}
+{%- set tableFoot = "Showing all " + (claims | length) + " " + (claims | length | plural("claim", "claims")) %}
+{% include "partials/claims-table.njk" %}
+
+<div class="exports">
+  {%- if datasets.has['registry-json'] %}<a href="{{ '/registry.json' | url }}">Get the JSON</a><span>&middot;</span>{% endif %}
+  {%- if datasets.has['registry-csv'] %}<a href="{{ '/registry.csv' | url }}">Download CSV</a><span>&middot;</span>{% endif %}
+  {%- if navigation.has.rss %}<a href="{{ '/feed.xml' | url }}">RSS</a><span>&middot;</span>{% endif %}
+  <a href="{{ '/data/#cite' | url }}">Cite the registry</a>
+</div>

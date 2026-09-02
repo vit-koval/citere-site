@@ -1,0 +1,19 @@
+{#- The mockup's filter chips. A chevron chip is a <details> disclosure, so
+    every filter is reachable without JS and each value is also its own URL
+    (CLAUDE.md 2). -#}
+<div class="filters">
+  <a class="f{% if not activeFacet %} active{% endif %}" href="{{ '/registry/' | url }}">All claims</a>
+  {%- for group in ['cluster','country','language','chatbot','verdict'] %}
+  {%- set items = facets | whereEq('type', group) %}
+  {%- if items | length %}
+  <details class="fdrop"{% if activeFacet and activeFacet.type == group %} open{% endif %}>
+    <summary class="f{% if activeFacet and activeFacet.type == group %} active{% endif %}">{{ items[0].heading }} &#8964;</summary>
+    <div class="fmenu">
+      {%- for facet in items %}
+      <a href="{{ facet.url | url }}"{% if activeFacet and activeFacet.url == facet.url %} aria-current="page"{% endif %}>{{ facet.label }} <span>{{ facet.claims | length }}</span></a>
+      {%- endfor %}
+    </div>
+  </details>
+  {%- endif %}
+  {%- endfor %}
+</div>

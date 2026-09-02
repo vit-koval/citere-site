@@ -3,7 +3,7 @@
 {%- for observation in claim.observations -%}
 {%- set appearances = (appearances.push({
   "@type": "CreativeWork",
-  "name": (observation.chatbot | chatbotLabel) + " answer, " + (observation.country | countryName) + ", " + (observation.date | displayDate),
+  "name": (observation.chatbot | botName) + " answer, " + (observation.country | countryName) + ", " + (observation.date | displayDate),
   "datePublished": observation.date,
   "inLanguage": observation.language
 }), appearances) -%}

@@ -1,0 +1,12 @@
+<div class="panel">
+  <div class="summary-line"><b>{{ claim.counts.actions }}</b> actions taken<span>&middot;</span><b>{{ claim.counts.responses }}</b> platform {{ claim.counts.responses | plural("response", "responses") }}{% if claim.remeasuredOn %}<span>&middot;</span>re-measured <b><time datetime="{{ claim.remeasuredOn | isoDate }}">{{ claim.remeasuredOn | displayDate }}</time></b>{% endif %}</div>
+  {%- for a in claim.actions %}
+  <div class="actrow">
+    <div class="what">{{ a.type | actionTypeLabel }}<small>{{ a.target }}</small></div>
+    <span class="chip {{ 'ok' if a.status in ['live','acknowledged','published','receipt_confirmed','completed','actioned'] else ('wait' if a.status == 'submitted' else '') }}"><span class="dot"></span>{{ a.status | statusLabel }}{% if a.response_date %} <time datetime="{{ a.response_date | isoDate }}">{{ a.response_date | shortDate }}</time>{% endif %}</span>
+    <div class="when"><time datetime="{{ a.date | isoDate }}">{{ a.date | shortDate }}</time></div>
+  </div>
+  {%- endfor %}
+</div>
+<p class="note">We publish the fact, date and status of each action. We do not publish correspondence
+  with platforms or the names of individuals.</p>
