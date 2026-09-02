@@ -34,7 +34,7 @@ breadcrumbTrail:
   <h3>{{ items[0].heading }}</h3>
   <ul class="menu-list">
   {% for facet in items %}
-    <li><a href="{{ facet.url }}">{{ facet.label }}</a> ({{ facet.claims | length }})</li>
+    <li><a href="{{ facet.url | url }}">{{ facet.label }}</a> ({{ facet.claims | length }})</li>
   {% endfor %}
   </ul>
   {% endif %}

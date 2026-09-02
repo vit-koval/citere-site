@@ -2,16 +2,16 @@
   {% if pageExports and pageExports.length %}
   <nav aria-label="This page as data">
     <p>This page as data:
-    {%- for item in pageExports %} <a href="{{ item.url }}">{{ item.label }}</a>{% if not loop.last %} ·{% endif %}{% endfor %}</p>
+    {%- for item in pageExports %} <a href="{{ item.url | url }}">{{ item.label }}</a>{% if not loop.last %} ·{% endif %}{% endfor %}</p>
   </nav>
   {% endif %}
   <nav aria-label="Footer">
     <ul>
     {% for item in navigation.footer %}
-      <li><a href="{{ item.url }}">{{ item.label }}</a></li>
+      <li><a href="{{ item.url | url }}">{{ item.label }}</a></li>
     {% endfor %}
     {% for item in site.org.links %}
-      <li><a href="{{ item.url }}">{{ item.label }}</a></li>
+      <li><a href="{{ item.url | url }}">{{ item.label }}</a></li>
     {% endfor %}
     </ul>
   </nav>

@@ -34,7 +34,7 @@ breadcrumbTrail:
   <tbody>
   {% for source in items %}
     <tr>
-      <th scope="row"><a href="{{ source.url }}"><span class="domain">{{ source.defanged }}</span></a></th>
+      <th scope="row"><a href="{{ source.url | url }}"><span class="domain">{{ source.defanged }}</span></a></th>
       <td><time datetime="{{ source.first_seen | isoDate }}">{{ source.first_seen | displayDate }}</time></td>
       <td class="num">{{ source.citedCount }}</td>
       <td>{% if source.citedBy | length %}{% for bot in source.citedBy %}{{ bot | chatbotLabel }}{% if not loop.last %}, {% endif %}{% endfor %}{% else %}not recorded{% endif %}</td>

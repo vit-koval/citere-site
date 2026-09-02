@@ -57,8 +57,8 @@ breadcrumbTrail:
     <tr>
       <td><time datetime="{{ item.date | isoDate }}">{{ item.date | displayDate }}</time></td>
       <th scope="row">{{ item.type | actionTypeLabel }}</th>
-      <td>{% if item.url %}<a href="{{ item.url }}">{{ item.target }}</a>{% else %}{{ item.target }}{% endif %}</td>
-      <td>{% if claim %}<a href="{{ claim.url }}">{{ item.claim_id }}</a>{% else %}{{ item.claim_id }}{% endif %}</td>
+      <td>{% if item.url %}<a href="{{ item.url | url }}">{{ item.target }}</a>{% else %}{{ item.target }}{% endif %}</td>
+      <td>{% if claim %}<a href="{{ claim.url | url }}">{{ item.claim_id }}</a>{% else %}{{ item.claim_id }}{% endif %}</td>
       <td>{{ item.status | statusLabel }}</td>
       <td>{% if item.response_date %}<time datetime="{{ item.response_date | isoDate }}">{{ item.response_date | displayDate }}</time>{% else %}—{% endif %}</td>
     </tr>

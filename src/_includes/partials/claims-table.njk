@@ -14,7 +14,7 @@
   <tbody>
   {% for item in tableClaims %}
     <tr>
-      <th scope="row"><a href="{{ item.url }}">{{ item.title_en }}</a></th>
+      <th scope="row"><a href="{{ item.url | url }}">{{ item.title_en }}</a></th>
       <td><span class="badge badge-verdict badge-{{ item.verdict }}">{{ item.verdict | verdictLabel }}</span></td>
       <td>{% if item.repeatedBy | length %}{% for bot in item.repeatedBy %}{{ bot | chatbotLabel }}{% if not loop.last %}, {% endif %}{% endfor %}{% else %}none{% endif %}</td>
       <td>{% for code in item.countries %}{{ code | upper }}{% if not loop.last %}, {% endif %}{% endfor %}</td>

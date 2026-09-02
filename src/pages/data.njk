@@ -27,7 +27,7 @@ breadcrumbTrail:
   <tbody>
   {% for item in datasets.all %}
     <tr>
-      <th scope="row"><a href="{{ item.url }}">{{ item.name }}</a></th>
+      <th scope="row"><a href="{{ item.url | url }}">{{ item.name }}</a></th>
       <td>{{ item.format }}</td>
       <td>{{ item.description }}</td>
     </tr>

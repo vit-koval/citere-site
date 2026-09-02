@@ -40,8 +40,8 @@ breadcrumbTrail:
 
 {% if navigation.has.registry or navigation.has.reports %}
 <p class="actions">
-  {% if navigation.has.registry %}<a href="/registry/">Browse the registry</a>{% endif %}
-  {% if navigation.has.reports %}<a href="/monitor/">Read the latest report</a>{% endif %}
+  {% if navigation.has.registry %}<a href="{{ '/registry/' | url }}">Browse the registry</a>{% endif %}
+  {% if navigation.has.reports %}<a href="{{ '/monitor/' | url }}">Read the latest report</a>{% endif %}
 </p>
 {% endif %}
 
@@ -56,7 +56,7 @@ breadcrumbTrail:
   <li>
     <b>{{ loop.index }}. {{ step.label }}</b>
     {{ copyEn.sections[step.key].html | safe }}
-    {% if navigation.byKey[step.nav] %}<p><a href="{{ navigation.byKey[step.nav].url }}">{{ navigation.byKey[step.nav].label }}</a></p>{% endif %}
+    {% if navigation.byKey[step.nav] %}<p><a href="{{ navigation.byKey[step.nav].url | url }}">{{ navigation.byKey[step.nav].label }}</a></p>{% endif %}
   </li>
 {% endfor %}
 </ol>
@@ -66,14 +66,14 @@ breadcrumbTrail:
 <h2 id="findings">What we have found so far</h2>
 <div class="table-wrap">
 <table>
-  <caption>The five most recently updated claims. <a href="/registry/">All claims</a>.</caption>
+  <caption>The five most recently updated claims. <a href="{{ '/registry/' | url }}">All claims</a>.</caption>
   <thead>
     <tr><th scope="col">Claim</th><th scope="col">Verdict</th><th scope="col">Repeated by</th><th scope="col">Updated</th></tr>
   </thead>
   <tbody>
   {% for claim in latest | take(5) %}
     <tr>
-      <td><a href="{{ claim.url }}">{{ claim.title }}</a></td>
+      <td><a href="{{ claim.url | url }}">{{ claim.title }}</a></td>
       <td><span class="badge badge-verdict badge-{{ claim.verdict }}">{{ claim.verdict | verdictLabel }}</span></td>
       <td>{{ claim.repeatedBy | length }} of 8</td>
       <td><time datetime="{{ claim.updated | isoDate }}">{{ claim.updated | displayDate }}</time></td>
@@ -83,7 +83,7 @@ breadcrumbTrail:
 </table>
 </div>
 {% if navigation.has.escalations and site.counters.escalations_sent %}
-<p>Escalations: {{ site.counters.escalations_sent }} report{{ "" if site.counters.escalations_sent == 1 else "s" }} sent · {{ site.counters.escalations_answered }} response{{ "" if site.counters.escalations_answered == 1 else "s" }} · {{ site.counters.escalations_actioned }} confirmed change{{ "" if site.counters.escalations_actioned == 1 else "s" }}. <a href="/escalations/">See the escalation log</a></p>
+<p>Escalations: {{ site.counters.escalations_sent }} report{{ "" if site.counters.escalations_sent == 1 else "s" }} sent · {{ site.counters.escalations_answered }} response{{ "" if site.counters.escalations_answered == 1 else "s" }} · {{ site.counters.escalations_actioned }} confirmed change{{ "" if site.counters.escalations_actioned == 1 else "s" }}. <a href="{{ '/escalations/' | url }}">See the escalation log</a></p>
 {% endif %}
 {% endif %}
 
@@ -91,7 +91,7 @@ breadcrumbTrail:
 <h2 id="used-by">Where our data is used</h2>
 <ul>
 {% for item in site.used_by %}
-  <li><a href="{{ item.url }}">{{ item.org }} — {{ item.title }}</a>, <time datetime="{{ item.date | isoDate }}">{{ item.date | displayDate }}</time></li>
+  <li><a href="{{ item.url | url }}">{{ item.org }} — {{ item.title }}</a>, <time datetime="{{ item.date | isoDate }}">{{ item.date | displayDate }}</time></li>
 {% endfor %}
 </ul>
 {% endif %}
@@ -101,9 +101,9 @@ breadcrumbTrail:
 {% for item in trust %}
   <li>
     {{ copyEn.sections[item.key].html | safe }}
-    {% if navigation.byKey[item.nav] %}<a href="{{ navigation.byKey[item.nav].url }}">{{ item.label }}</a>{% endif %}
+    {% if navigation.byKey[item.nav] %}<a href="{{ navigation.byKey[item.nav].url | url }}">{{ item.label }}</a>{% endif %}
   </li>
 {% endfor %}
 </ul>
 {{ copyEn.sections['independence'].html | safe }}
-{% if navigation.has.about %}<p><a href="/about/">Who we are</a></p>{% endif %}
+{% if navigation.has.about %}<p><a href="{{ '/about/' | url }}">Who we are</a></p>{% endif %}

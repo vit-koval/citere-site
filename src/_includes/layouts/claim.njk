@@ -8,9 +8,9 @@ layout: layouts/base.njk
   <span>· Verdict <time datetime="{{ claim.verdict_date | isoDate }}">{{ claim.verdict_date | displayDate }}</time>
   · Updated <time datetime="{{ claim.updated | isoDate }}">{{ claim.updated | displayDate }}</time>
   · ID {{ claim.id }}
-  · Cluster: <a href="/registry/cluster/{{ claim.cluster }}/">{{ clusters[claim.cluster].name_en | default(claim.cluster) }}</a></span>
+  · Cluster: <a href="{{ ('/registry/cluster/' + claim.cluster + '/') | url }}">{{ clusters[claim.cluster].name_en | default(claim.cluster) }}</a></span>
 </p>
-<p>Recorded in {{ claim.observations | length }} chatbot answers across {% for code in claim.countries %}<a href="/registry/country/{{ code }}/">{{ code | countryName }}</a>{% if not loop.last %}, {% endif %}{% endfor %}, in {% for code in claim.languages %}<a href="/registry/language/{{ code }}/">{{ code | languageName }}</a>{% if not loop.last %}, {% endif %}{% endfor %}.</p>
+<p>Recorded in {{ claim.observations | length }} chatbot answers across {% for code in claim.countries %}<a href="{{ ('/registry/country/' + code + '/') | url }}">{{ code | countryName }}</a>{% if not loop.last %}, {% endif %}{% endfor %}, in {% for code in claim.languages %}<a href="{{ ('/registry/language/' + code + '/') | url }}">{{ code | languageName }}</a>{% if not loop.last %}, {% endif %}{% endfor %}.</p>
 {% include "partials/updated.njk" %}
 
 <h2 id="the-verdict">The verdict</h2>
@@ -21,7 +21,7 @@ layout: layouts/base.njk
 
 <h2 id="where-the-claim-comes-from">Where the claim comes from</h2>
 {{ prose.sections['where-the-claim-comes-from'].html | safe }}
-<p>First recorded <time datetime="{{ claim.origin.first_seen | isoDate }}">{{ claim.origin.first_seen | displayDate }}</time>; spread through the {{ claim.origin.network | networkLabel }} network{% if claim.origin.attribution | length %}, attributed by {% for item in claim.origin.attribution %}{% if item.url %}<a href="{{ item.url }}">{{ item.org }}</a>{% else %}{{ item.org }}{% endif %} (<time datetime="{{ item.date | isoDate }}">{{ item.date | displayDate }}</time>){% if not loop.last %}, {% endif %}{% endfor %}{% endif %}.</p>
+<p>First recorded <time datetime="{{ claim.origin.first_seen | isoDate }}">{{ claim.origin.first_seen | displayDate }}</time>; spread through the {{ claim.origin.network | networkLabel }} network{% if claim.origin.attribution | length %}, attributed by {% for item in claim.origin.attribution %}{% if item.url %}<a href="{{ item.url | url }}">{{ item.org }}</a>{% else %}{{ item.org }}{% endif %} (<time datetime="{{ item.date | isoDate }}">{{ item.date | displayDate }}</time>){% if not loop.last %}, {% endif %}{% endfor %}{% endif %}.</p>
 
 {% if claim.confirmations | length %}
 <h2 id="who-else-has-checked-this">Who else has checked this</h2>
@@ -34,7 +34,7 @@ layout: layouts/base.njk
   <tbody>
   {% for item in claim.confirmations %}
     <tr>
-      <th scope="row">{% if item.url %}<a href="{{ item.url }}">{{ item.org }}</a>{% else %}{{ item.org }}{% endif %}{% if item.official %} <small>(official)</small>{% endif %}</th>
+      <th scope="row">{% if item.url %}<a href="{{ item.url | url }}">{{ item.org }}</a>{% else %}{{ item.org }}{% endif %}{% if item.official %} <small>(official)</small>{% endif %}</th>
       <td>{{ item.finding_en }}</td>
       <td><time datetime="{{ item.date | isoDate }}">{{ item.date | displayDate }}</time></td>
     </tr>
@@ -52,7 +52,7 @@ layout: layouts/base.njk
 <p>Domains are printed defanged and never linked, so this page passes them no authority.</p>
 <ul>
 {% for domain in claim.citedDomains %}
-  <li><span class="domain">{{ domain | defang }}</span>{% if navigation.has.sources %} — <a href="/sources/{{ domain | domainSlug }}/">what this domain is</a>{% endif %}</li>
+  <li><span class="domain">{{ domain | defang }}</span>{% if navigation.has.sources %} — <a href="{{ ('/sources/' + (domain | domainSlug) + '/') | url }}">what this domain is</a>{% endif %}</li>
 {% endfor %}
 </ul>
 {% endif %}
@@ -82,7 +82,7 @@ layout: layouts/base.njk
 <ul>
 {% for id in claim.related %}
   {% set other = claims | whereEq('id', id) | first %}
-  {% if other %}<li><a href="{{ other.url }}">{{ other.title_en }}</a></li>{% endif %}
+  {% if other %}<li><a href="{{ other.url | url }}">{{ other.title_en }}</a></li>{% endif %}
 {% endfor %}
 </ul>
 {% endif %}

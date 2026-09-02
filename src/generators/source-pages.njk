@@ -21,7 +21,7 @@ permalink: "{{ source.url }}"
   <tbody>
   {% for item in source.attribution %}
     <tr>
-      <th scope="row">{% if item.url %}<a href="{{ item.url }}">{{ item.org }}</a>{% else %}{{ item.org }}{% endif %}</th>
+      <th scope="row">{% if item.url %}<a href="{{ item.url | url }}">{{ item.org }}</a>{% else %}{{ item.org }}{% endif %}</th>
       <td><time datetime="{{ item.date | isoDate }}">{{ item.date | displayDate }}</time></td>
     </tr>
   {% endfor %}
@@ -41,7 +41,7 @@ permalink: "{{ source.url }}"
   <tbody>
   {% for item in source.claims %}
     <tr>
-      <th scope="row"><a href="{{ item.url }}">{{ item.title_en }}</a></th>
+      <th scope="row"><a href="{{ item.url | url }}">{{ item.title_en }}</a></th>
       <td><span class="badge badge-verdict badge-{{ item.verdict }}">{{ item.verdict | verdictLabel }}</span></td>
       <td>{% for o in item.observations %}{% if source.domain in o.cited_domains %}{{ o.chatbot | chatbotLabel }} ({{ o.country | upper }}){% if not loop.last %}, {% endif %}{% endif %}{% endfor %}</td>
       <td><time datetime="{{ item.updated | isoDate }}">{{ item.updated | displayDate }}</time></td>
@@ -74,4 +74,4 @@ permalink: "{{ source.url }}"
 <p>We have filed no abuse complaint about this domain.</p>
 {% endif %}
 
-<p><a href="/sources/">All {{ sources | length }} domains on the watchlist</a></p>
+<p><a href="{{ '/sources/' | url }}">All {{ sources | length }} domains on the watchlist</a></p>

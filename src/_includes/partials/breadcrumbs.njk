@@ -1,7 +1,7 @@
 <nav aria-label="Breadcrumb" class="breadcrumb">
   <ol>
   {% for crumb in breadcrumbTrail %}
-    <li>{% if loop.last %}<span aria-current="page">{{ crumb.title }}</span>{% else %}<a href="{{ crumb.url }}">{{ crumb.title }}</a>{% endif %}</li>
+    <li>{% if loop.last %}<span aria-current="page">{{ crumb.title }}</span>{% else %}<a href="{{ crumb.url | url }}">{{ crumb.title }}</a>{% endif %}</li>
   {% endfor %}
   </ol>
 </nav>

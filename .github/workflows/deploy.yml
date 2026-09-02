@@ -26,8 +26,15 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run validate
+      # GitHub Pages serves this repo from https://<user>.github.io/citere-site/
+      # until the custom domain is switched on. Set the repository variable
+      # PATH_PREFIX to "/" once sitera.ai serves the site from its root.
       - run: npm run build
+        env:
+          PATH_PREFIX: ${{ vars.PATH_PREFIX || '/citere-site/' }}
       - run: npm run check
+        env:
+          PATH_PREFIX: ${{ vars.PATH_PREFIX || '/citere-site/' }}
       - name: Upload preview artifact
         if: github.event_name == 'pull_request'
         uses: actions/upload-artifact@v4

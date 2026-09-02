@@ -7,6 +7,8 @@ import { join, relative, posix } from "node:path";
 const ROOT = new URL("..", import.meta.url).pathname;
 const SITE = join(ROOT, "_site");
 
+const PATH_PREFIX = (process.env.PATH_PREFIX || "/").replace(/\/*$/, "/");
+
 const errors = [];
 const warnings = [];
 const err = (page, msg) => errors.push(`${page}: ${msg}`);
@@ -63,13 +65,23 @@ const stripTags = (html) =>
     .replace(/&[a-z]+;/gi, " ")
     .replace(/\s+/g, " ");
 
+// Built links carry the path prefix; _site paths do not. Strip it before
+// resolving, and treat a prefixed link that escapes the prefix as dead.
+function stripPrefix(path) {
+  if (PATH_PREFIX === "/") return path;
+  if (path === PATH_PREFIX.slice(0, -1)) return "/";
+  return path.startsWith(PATH_PREFIX) ? "/" + path.slice(PATH_PREFIX.length) : null;
+}
+
 function resolveLink(href, fromPage) {
   const clean = href.split("#")[0].split("?")[0];
   if (!clean) return true;
   if (/^(https?:|mailto:|tel:)/i.test(clean)) return true;
-  const base = clean.startsWith("/")
+  const absolute = clean.startsWith("/")
     ? clean
     : posix.resolve(posix.dirname(fromPage), clean);
+  const base = stripPrefix(absolute);
+  if (base === null) return false;
   if (base.endsWith("/")) return sitePaths.has(base + "index.html");
   return sitePaths.has(base) || sitePaths.has(base + "/index.html");
 }

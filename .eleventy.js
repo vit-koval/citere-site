@@ -161,6 +161,9 @@ module.exports = function (eleventyConfig) {
     templateFormats: ["njk", "md", "css"],
     markdownTemplateEngine: "njk",
     htmlTemplateEngine: "njk",
-    pathPrefix: "/"
+    // Where the built site is mounted. GitHub Pages serves this repo from
+    // /citere-site/; the custom domain serves it from /. Canonical URLs and
+    // JSON-LD always point at site.url and ignore this.
+    pathPrefix: process.env.PATH_PREFIX || "/"
   };
 };

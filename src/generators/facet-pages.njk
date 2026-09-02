@@ -15,4 +15,4 @@ permalink: "{{ facet.url }}"
 {% set tableClaims = facet.claims %}
 {% set tableCaption = "Claims in this view, most recently updated first." %}
 {% include "partials/claims-table.njk" %}
-<p><a href="/registry/">All {{ claims | length }} claims in the registry</a></p>
+<p><a href="{{ '/registry/' | url }}">All {{ claims | length }} claims in the registry</a></p>
