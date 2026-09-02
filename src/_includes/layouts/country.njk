@@ -1,0 +1,38 @@
+---
+layout: layouts/base.njk
+wrap: wrap-narrow
+---
+{%- from "partials/bot-mark.njk" import botMark -%}
+<div class="phead"><h1>Russian disinformation in AI chatbots: {{ profile.name }}</h1>
+  <p class="plead">Tested in {{ profile.language | languageName }} across {{ profile.rows | length }} assistants,
+    {{ profile.n }} recorded answers, {{ benchmarks.label }} run. Repeat-rate <b>{{ profile.repeatRate | rate }}</b>,
+    source contamination <b>{{ profile.contaminationRate | rate }}</b>.
+    {%- if profile.note %} {{ profile.note }}{% endif %}</p></div>
+
+<h2 id="assistants" style="margin:0 0 12px">Assistants in this market</h2>
+<div class="panel"><table>
+  <caption class="visually-hidden">Repeat-rate per assistant for answers served to this market</caption>
+  <thead><tr><th scope="col">Chatbot</th><th scope="col">Repeat-rate</th><th scope="col">Responses</th></tr></thead>
+  <tbody>
+  {%- for row in profile.rows %}
+    <tr><td class="cl"><span class="markcell">{{ botMark(logos, row.chatbot, "sm") }}<a href="{{ ('/platforms/' + row.chatbot + '/') | url }}">{{ row.name }}</a></span></td>
+      <td class="rmeta">{{ row.rate | rate }}</td>
+      <td class="num" style="color:var(--dim)">{{ row.n | default("&mdash;") | safe }}</td></tr>
+  {%- endfor %}
+  </tbody></table></div>
+<p class="note">Rates are for all personas in this market's sample. Per-persona figures are on each
+  assistant's own profile.</p>
+
+{%- if profile.claims | length %}
+<h2 id="claims" style="margin:36px 0 12px">Claims recorded in {{ profile.name }}</h2>
+{%- set tableClaims = profile.claims %}
+{%- set tableCaption = "Documented claims recorded in answers served to this market" %}
+{% include "partials/claims-table.njk" %}
+{%- endif %}
+
+{%- if profile.partners | length %}
+<h2 id="partners" style="margin:36px 0 12px">Local partners</h2>
+<div class="prose" style="max-width:none"><p>We share findings for this market with
+  {% for p in profile.partners %}{{ p }}{% if not loop.last %}{% if loop.revindex0 == 1 %} and {% else %}, {% endif %}{% endif %}{% endfor %}.</p></div>
+{%- endif %}
+<div style="height:40px"></div>

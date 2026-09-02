@@ -42,7 +42,7 @@ module.exports = {
           moreLabel: "All chatbots" });
       }
       if ((lb.most_repeated_claims || []).length) {
-        cards.push({ rows: lb.most_repeated_claims, title: "Most-repeated claims", sub: "all runs",
+        cards.push({ rows: lb.most_repeated_claims, title: "Most-repeated claims", sub: "all runs, all personas pooled",
           idx: true, bar: false, more: "/registry/", moreLabel: "Full registry" });
       }
       if ((lb.biggest_change || []).length) {
@@ -78,24 +78,17 @@ module.exports = {
           url: `/registry/cluster/${key}/`
         }));
     },
-    countryCards: (data) => {
-      if (!data.navigation.has.countries) return [];
-      const rows = new Map();
-      for (const claim of data.claims) {
-        for (const iso of claim.countries) {
-          if (!rows.has(iso)) rows.set(iso, { iso, claims: 0, answers: 0, bots: new Set(), langs: new Set() });
-          const row = rows.get(iso);
-          row.claims += 1;
-          for (const o of claim.observations || []) {
-            if (o.country !== iso) continue;
-            row.answers += 1;
-            row.bots.add(o.chatbot);
-            row.langs.add(o.language);
-          }
-        }
-      }
-      return [...rows.values()].sort((a, b) => b.claims - a.claims).slice(0, 4);
-    },
+    // The four market cards, straight from the country profiles.
+    countryCards: (data) =>
+      (data.navigation.has.countries ? data.profiles.countries : []).slice(0, 4).map((c) => ({
+        iso: c.key,
+        name: c.name,
+        url: c.url,
+        claims: c.claims.length,
+        answers: c.n,
+        languages: c.language,
+        bots: c.bots
+      })),
     trustCards: (data) => [
       { key: "trust-method", href: "/methodology/", label: "Methodology", on: data.navigation.has.methodology },
       { key: "trust-data", href: "/data/", label: "Data", on: data.navigation.has.data },

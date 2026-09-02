@@ -1,0 +1,57 @@
+---
+layout: layouts/base.njk
+permalink: /countries/
+pageKey: countries
+title: "Country benchmark — Citere"
+description: "The same documented false claims about Ukraine, asked in the local language, across the markets Russia targets. Repeat-rate per assistant and per market."
+---
+{%- from "partials/bot-mark.njk" import botMark -%}
+{%- set doc = copy.en.countries -%}
+<nav class="crumbs" aria-label="Breadcrumb"><a href="{{ '/' | url }}">Home</a> /
+  {%- if navigation.has.benchmarks %} <a href="{{ '/benchmarks/' | url }}">Benchmarks</a> / {% endif %}
+  <span aria-current="page">Countries</span></nav>
+<div class="phead"><h1>{{ doc.data.h1 }}</h1>
+  <p class="plead">{{ doc.data.lead | mdInline | safe }}</p></div>
+
+<div class="grid4" style="margin-bottom:26px">
+{%- for c in profiles.countries %}
+  <a class="cc {{ c.key }}" href="{{ c.url | url }}"><div><div class="rank-n">#{{ loop.index }} by repeat-rate</div>
+    <span class="flag">{{ c.key | flag }}</span>
+    <h3>{{ c.name }}</h3><div class="stat">{{ c.repeatRate | rate }} repeat &middot; {{ c.n }} answers &middot; {{ c.language | languageName }}</div></div>
+    <div class="bots-mini">{% for b in c.bots %}{{ botMark(logos, b, "sm") }}{% endfor %}</div></a>
+{%- endfor %}
+</div>
+
+<div class="shead"><h2>Same claim, four markets</h2><span style="font-size:13px;color:var(--dimmer)">all personas in each market's sample</span></div>
+<div class="panel"><table>
+  <caption class="visually-hidden">Repeat-rate per assistant in each market, with the spread between its best and worst</caption>
+  <thead><tr><th scope="col">Chatbot</th>
+    {%- for c in profiles.countries %}<th scope="col">{{ c.key | flag }} {{ c.key | upper }}</th>{% endfor %}
+    <th scope="col">Spread</th></tr></thead>
+  <tbody>
+  {%- for row in profiles.matrix.rows %}
+    <tr><td class="cl"><span class="markcell">{{ botMark(logos, row.chatbot, "sm") }}{{ row.name }}</span></td>
+      {%- for cell in row.cells %}<td class="rmeta">{% if cell %}{{ cell.rate | rate }}{% else %}<span style="color:var(--dimmer)">&mdash;</span>{% endif %}</td>{% endfor %}
+      <td class="rmeta" style="color:var({{ '--false' if row.spread > 0.025 else ('--mislead' if row.spread > 0.015 else '--dim') }})">{{ row.spread | pp | replace("+","") }}</td></tr>
+  {%- endfor %}
+  </tbody></table></div>
+<p class="note" style="margin-bottom:34px">Spread is the gap between an assistant's best and worst market.
+  A wide spread means the safeguards do not travel across languages equally.</p>
+
+{%- if profiles.clusterGrid | length %}
+<div class="shead"><h2>Which clusters are active where</h2></div>
+<div class="panel"><table>
+  <caption class="visually-hidden">Repeat-rate per narrative cluster in each market</caption>
+  <thead><tr><th scope="col">Cluster</th>
+    {%- for c in profiles.countries %}<th scope="col">{{ c.key | flag }} {{ c.key | upper }}</th>{% endfor %}</tr></thead>
+  <tbody>
+  {%- for row in profiles.clusterGrid %}
+    <tr><td>{{ clusters[row.cluster].name_en | default(row.cluster) }}</td>
+      {%- for c in profiles.countries %}
+      <td class="rmeta">{% if row.cells[c.key] is defined %}{{ row.cells[c.key] | rate }}{% else %}<span style="color:var(--dimmer)">&mdash;</span>{% endif %}</td>
+      {%- endfor %}</tr>
+  {%- endfor %}
+  </tbody></table></div>
+<p class="note" style="margin-bottom:44px">A cluster that registers in one market and not another shows
+  the operation localising its themes, not just its language.</p>
+{%- endif %}

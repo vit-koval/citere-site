@@ -1,0 +1,45 @@
+---
+layout: layouts/base.njk
+permalink: /platforms/
+pageKey: platforms
+navKey: chatbots
+title: "Chatbot benchmark — Citere"
+description: "How eight public AI assistants handle documented false claims about Ukraine: repeat-rate and source contamination per assistant, with the claims each repeated."
+---
+{%- from "partials/bot-mark.njk" import botMark -%}
+{%- set doc = copy.en.platforms -%}
+<nav class="crumbs" aria-label="Breadcrumb"><a href="{{ '/' | url }}">Home</a> /
+  {%- if navigation.has.benchmarks %} <a href="{{ '/benchmarks/' | url }}">Benchmarks</a> / {% endif %}
+  <span aria-current="page">Chatbots</span></nav>
+<div class="phead"><h1>{{ doc.data.h1 }}</h1>
+  <p class="plead">{{ doc.data.lead | fill(figures) | mdInline | safe }}</p></div>
+
+<div class="panel"><table>
+  <caption class="visually-hidden">Assistants ranked by repeat-rate on the P2 topical-news persona</caption>
+  <thead><tr><th scope="col">#</th><th scope="col">Chatbot</th><th scope="col">Company</th>
+    <th scope="col">Repeat-rate</th><th scope="col">Contamination</th>
+    <th scope="col">Claims repeated</th><th scope="col">Escalations</th><th scope="col">Change</th></tr></thead>
+  <tbody>
+  {%- for bot in profiles.chatbots %}
+    <tr data-persona="{{ bot.repeatPersona }}">
+      <td class="num" style="color:var(--dimmer)">{{ loop.index }}</td>
+      <td class="cl"><span class="markcell">{{ botMark(logos, bot.key, "sm") }}<a href="{{ bot.url | url }}">{{ bot.name }}</a></span></td>
+      <td style="color:var(--dim)">{{ bot.company }}</td>
+      <td><div style="display:flex;align-items:center;gap:9px"><span class="barm"><i style="width:{{ bot.repeatRate | barWidth(profiles.chatbots[0].repeatRate) }}%"></i></span><span class="rmeta">{{ bot.repeatRate | rate }}</span></div></td>
+      <td class="rmeta">{{ bot.contaminationRate | rate }}</td>
+      <td class="num">{{ bot.claimsRepeated }}</td>
+      <td class="num">{{ bot.escalationClaims | length }}</td>
+      <td class="rmeta" style="color:var({{ '--false' if bot.repeatDelta > 0.0005 else ('--ok' if bot.repeatDelta < -0.0005 else '--dim') }})">
+        {%- if bot.repeatDelta > 0.0005 %}&uarr; {% elif bot.repeatDelta < -0.0005 %}&darr; {% else %}&ndash; {% endif %}{{ (bot.repeatDelta | abs * 100) | round(1) }}</td>
+    </tr>
+  {%- endfor %}
+  </tbody></table></div>
+
+<p class="note">Repeat-rate is measured on the P2 topical-news persona; contamination is the share of
+  this assistant's answers that cited a watchlisted domain, across all personas. They measure different
+  failures and do not move together. We test the public consumer interface, not the API; results
+  describe that product at that date and model version.</p>
+
+<div class="exports" style="margin-bottom:44px">
+  {%- if navigation.has.benchmarks %}<a href="{{ '/benchmarks/' | url }}">All benchmarks</a><span>&middot;</span>{% endif %}
+  <a href="{{ '/methodology/' | url }}">How repeat-rate is computed</a></div>

@@ -25,12 +25,14 @@ const label = (type, key, given) => {
   return key;
 };
 
+const BOARD_PERSONA = { chatbot_repeat: "P2" };
 const leaderboards = {};
 for (const [name, rows] of Object.entries(raw.leaderboards || {})) {
   const max = rows.reduce((m, r) => Math.max(m, Math.abs(r.value || 0)), 0);
   leaderboards[name] = rows.map((row) => ({
     ...row,
     key: row.key || row.claim || row.chatbot,
+    persona: row.persona || BOARD_PERSONA[name] || null,
     label: row.claim
       ? `${row.claim} · ${(CHATBOTS[row.chatbot] || {}).name || row.chatbot}`
       : label(name, row.key, row.label),

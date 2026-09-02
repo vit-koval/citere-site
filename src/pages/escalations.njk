@@ -1,0 +1,49 @@
+---
+layout: layouts/base.njk
+permalink: /escalations/
+pageKey: escalations
+navKey: escalations
+crumb: Escalations
+title: "Escalation log — Citere"
+description: "Every report Citere sent to a platform or registrar about disinformation in AI chatbot answers: the fact, the date and the status, never the correspondence."
+schemas:
+  - dataset
+---
+{%- set doc = copy.en.escalations -%}
+<div class="phead"><h1>{{ doc.data.h1 }}</h1>
+  <p class="plead">{{ doc.data.lead | fill(figures) | mdInline | safe }}</p></div>
+
+<div class="callout"><b>How we disclose.</b> We notify the platform first and privately. The fact, date
+  and status of a report are published immediately; the content of the exchange is not published at all.
+  We never publish prompts designed to bypass model safeguards.</div>
+
+<div class="filters" style="margin-top:22px">
+  <span class="f active">All actions <span style="color:var(--dimmer)">{{ escalations.actions | length }}</span></span>
+  {%- for t in actionTypes %}<span class="f">{{ t.type | actionTypeLabel }} <span style="color:var(--dimmer)">{{ t.count }}</span></span>{% endfor %}
+</div>
+
+<div class="panel"><table>
+  <caption class="visually-hidden">Every logged action, newest first</caption>
+  <thead><tr><th scope="col">Date</th><th scope="col">Type</th><th scope="col">Target</th>
+    <th scope="col">Claim</th><th scope="col">Status</th><th scope="col">Response</th></tr></thead>
+  <tbody>
+  {%- for e in escalations.actions | take(60) %}
+    {%- set claim = claims | whereEq('id', e.claim_id) | first %}
+    <tr><td class="num" style="color:var(--dim)"><time datetime="{{ e.date | isoDate }}">{{ e.date | shortDate }}</time></td>
+      <td>{{ e.type | actionTypeLabel }}</td>
+      <td>{{ e.target | defangCopy }}</td>
+      <td>{% if claim %}<a href="{{ claim.url | url }}" style="color:var(--accent);font-weight:600">{{ e.claim_id }}</a>{% else %}<span style="color:var(--dimmer)">{{ e.claim_id }}</span>{% endif %}</td>
+      <td><span class="chip {{ 'ok' if e.status in ['acknowledged','actioned','completed','receipt_confirmed','published','live'] else ('wait' if e.status == 'submitted' else '') }}"><span class="dot"></span>{{ e.status | statusLabel }}</span></td>
+      <td class="num" style="color:var(--dimmer)">{% if e.response_date %}<time datetime="{{ e.response_date | isoDate }}">{{ e.response_date | shortDate }}</time>{% else %}&mdash;{% endif %}</td></tr>
+  {%- endfor %}
+  </tbody></table>
+  {%- if escalations.actions | length > 60 %}
+  <div class="summary-line" style="border-bottom:0;border-top:1px solid var(--line2)">
+    Showing 60 of {{ escalations.actions | length }} actions
+    {%- if datasets.has['escalations-csv'] %}<a style="margin-left:auto;color:var(--accent);font-weight:600" href="{{ '/escalations.csv' | url }}">The full log as CSV &rarr;</a>{% endif %}</div>
+  {%- endif %}
+</div>
+
+<div class="exports" style="margin:18px 0 40px">
+  {%- if datasets.has['escalations-csv'] %}<a href="{{ '/escalations.csv' | url }}">Download the log (CSV)</a><span>&middot;</span>{% endif %}
+  <a href="{{ '/methodology/' | url }}">What we do not publish</a></div>

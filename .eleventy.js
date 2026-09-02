@@ -82,6 +82,10 @@ module.exports = function (eleventyConfig) {
   eleventyConfig.addFilter("actionTypeLabel", (v) => ACTION_TYPES[v] || v);
   eleventyConfig.addFilter("networkLabel", (v) => NETWORKS[v] || v);
   eleventyConfig.addFilter("networkName", (v) => NETWORK_NAMES[v] || v);
+  eleventyConfig.addFilter("networkCount", function (net) {
+    const list = (this.ctx && this.ctx.sources) || [];
+    return list.filter((s) => s.network === net).length;
+  });
   eleventyConfig.addFilter("networkClass", (v) => NETWORK_CLASS[v] || "");
   eleventyConfig.addFilter("personaLabel", (v) => PERSONAS[v] || "");
 

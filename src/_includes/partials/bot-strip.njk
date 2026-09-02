@@ -3,7 +3,7 @@
   <p class="cap">Assistants we test &middot; repeat-rate, {{ benchmarks.stripCaption }}</p>
   <div class="bots">
   {%- for row in benchmarks.strip %}
-    <a class="bot" href="{{ (row.href if navigation.has.chatbots else '/benchmarks/') | url }}" data-persona="{{ row.persona }}">
+    <a class="bot" href="{{ (('/platforms/' + row.key + '/') if navigation.has.chatbots else '/benchmarks/') | url }}" data-persona="{{ row.persona }}">
       {{ botMark(logos, row.key, "md") }}{{ row.key | botName }}<span class="r num">{{ row.value | rate }}</span></a>
   {%- endfor %}
   </div>

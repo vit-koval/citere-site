@@ -46,8 +46,8 @@
   {%- if countryCards | length %}
   <div class="grid4">
   {%- for c in countryCards %}
-    <a class="cc {{ c.iso }}" href="{{ c.url | url }}"><div><div class="rank-n">#{{ loop.index }} by claims recorded</div><span class="flag">{{ c.iso | flag }}</span>
-      <h3>{{ c.name }}</h3><div class="stat">{{ c.claims }} {{ c.claims | plural("claim", "claims") }} &middot; {{ c.answers }} answers &middot; {{ c.languages }}</div></div>
+    <a class="cc {{ c.iso }}" href="{{ c.url | url }}"><div><div class="rank-n">#{{ loop.index }} by repeat-rate</div><span class="flag">{{ c.iso | flag }}</span>
+      <h3>{{ c.name }}</h3><div class="stat">{{ c.claims }} {{ c.claims | plural("claim", "claims") }} &middot; {{ c.answers }} answers &middot; {{ c.languages | languageName }}</div></div>
       <div class="bots-mini">{% for b in c.bots %}{{ botMark(logos, b, "sm") }}{% endfor %}</div></a>
   {%- endfor %}
   </div>

@@ -1,0 +1,58 @@
+---
+pagination:
+  data: sources
+  size: 1
+  alias: source
+layout: layouts/base.njk
+wrap: wrap-narrow
+permalink: "{{ source.url }}"
+---
+{%- from "partials/bot-mark.njk" import botMark -%}
+<div class="phead"><h1 style="font-family:ui-monospace,monospace;font-size:26px">{{ source.defanged }}</h1>
+  <p class="plead">{% if source.label %}<b>{{ source.label }}</b>. {% endif %}Part of the
+    <b>{{ source.network | networkName }}</b> network
+    {%- if source.attribution | length %}, publicly attributed by
+    {% for a in source.attribution %}{% if a.url %}<a href="{{ a.url }}" style="color:var(--accent);font-weight:600">{{ a.org }}</a>{% else %}{{ a.org }}{% endif %}
+    ({{ a.date | displayDate }}){% if not loop.last %} and {% endif %}{% endfor %}{% endif %}.
+    We first observed it cited in a chatbot answer on
+    <time datetime="{{ source.first_seen | isoDate }}">{{ source.first_seen | displayDate }}</time>.
+    {%- if source.note_en %} {{ source.note_en | defangCopy }}{% endif %}</p></div>
+
+<div class="metrics" style="grid-template-columns:repeat(3,1fr);margin:0 0 34px">
+  <div class="m"><div class="n num">{{ source.citedCount }}</div><div class="l">citations in chatbot answers</div>
+    <div class="s">across {{ source.claims | length }} {{ source.claims | length | plural("claim", "claims") }}</div></div>
+  <div class="m"><div class="n num">{{ source.claims | length }}</div><div class="l">claims involved</div>
+    <div class="s">{{ source.cited_in | take(3) | join(", ") }}{% if source.cited_in | length > 3 %} +{{ source.cited_in | length - 3 }}{% endif %}</div></div>
+  <div class="m"><div class="n num">{{ source.citedBy | length }}</div><div class="l">assistants cited it</div>
+    <div class="s">{% for b in source.citedBy | take(3) %}{{ b | botName }}{% if not loop.last %}, {% endif %}{% endfor %}</div></div>
+</div>
+
+{%- if source.claims | length %}
+<h2 id="where-cited" style="margin:0 0 12px">Where it was cited</h2>
+<div class="panel"><table>
+  <caption class="visually-hidden">Claims whose recorded answers cited this domain</caption>
+  <thead><tr><th scope="col">Claim</th><th scope="col">Verdict</th><th scope="col">Cited by</th></tr></thead>
+  <tbody>
+  {%- for c in source.claims %}
+    <tr><td class="cl"><a href="{{ c.url | url }}">&ldquo;{{ c.title_en }}&rdquo;</a></td>
+      <td><span class="badge {{ c.verdict | verdictClass }}">{{ c.verdict | verdictLabel }}</span></td>
+      <td>{% for o in c.observations %}{% if source.domain in (o.cited_domains | default([])) %}{{ o.chatbot | botName }}{% if not loop.last %} {% endif %}{% endif %}{% endfor %}</td></tr>
+  {%- endfor %}
+  </tbody></table></div>
+{%- endif %}
+
+<h2 id="complaints" style="margin:36px 0 12px">Complaints filed</h2>
+{%- if source.complaints | length %}
+<div class="panel">
+  {%- for c in source.complaints %}
+  <div class="actrow"><div class="what">{{ c.target | defangCopy }}<small>via public abuse contact</small></div>
+    <span class="chip {{ 'ok' if c.status in ['acknowledged','actioned','completed'] else ('wait' if c.status == 'submitted' else '') }}"><span class="dot"></span>{{ c.status | statusLabel }}</span>
+    <div class="when"><time datetime="{{ c.date | isoDate }}">{{ c.date | shortDate }}</time></div></div>
+  {%- endfor %}
+</div>
+<p class="note">We publish the fact, the recipient, the date and the status. We do not publish the
+  content of a complaint.</p>
+{%- else %}
+<p class="note">We have filed no abuse complaint about this domain.</p>
+{%- endif %}
+<div style="height:40px"></div>

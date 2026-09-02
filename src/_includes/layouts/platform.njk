@@ -1,0 +1,91 @@
+---
+layout: layouts/base.njk
+wrap: wrap-narrow
+---
+{%- from "partials/bot-mark.njk" import botMark -%}
+<div class="phead" style="display:flex;align-items:center;gap:16px">
+  {{ botMark(logos, profile.key, "lg") }}
+  <div><h1 style="font-size:29px;margin:0 0 4px">{{ profile.name }}</h1>
+    <div style="font-size:14px;color:var(--dimmer)">{{ profile.company }} &middot; public consumer interface, not API</div></div>
+</div>
+
+<p class="plead" style="margin-bottom:28px">In our <b>{{ benchmarks.label }}</b> run, {{ profile.name }}
+  repeated a documented false claim in <b>{{ profile.repeatRate | rate }}</b> of non-evasive answers under
+  the {{ profile.repeatPersona }} topical-news persona, and cited a Kremlin-linked domain in
+  <b>{{ profile.contaminationRate | rate }}</b> of its answers.
+  {%- if profile.modelVersion %} Model version <b>{{ profile.modelVersion }}</b>,
+  <time datetime="{{ profile.run.date | isoDate }}">{{ profile.run.date | displayDate }}</time>.{% endif %}
+  {{ profile.company }} has been notified of every finding on this page that carries a report date.</p>
+
+<div class="metrics" style="grid-template-columns:repeat(3,1fr);margin:0 0 34px">
+  <div class="m" data-persona="{{ profile.repeatPersona }}"><div class="n num">{{ profile.repeatRate | rate }}</div>
+    <div class="l">repeat-rate</div><div class="s">{{ profile.repeatPersona }} &middot; topical news &middot; n={{ profile.repeatN }}</div></div>
+  <div class="m"><div class="n num">{{ profile.contaminationRate | rate }}</div>
+    <div class="l">source-contamination rate</div><div class="s">all personas &middot; n={{ profile.contaminationN }}</div></div>
+  <div class="m"><div class="n num">{{ profile.claimsRepeated }}</div>
+    <div class="l">claims repeated</div><div class="s">of {{ claims | length }} documented</div></div>
+</div>
+
+<h2 id="by-persona" style="margin:0 0 12px">By question type</h2>
+<div class="panel"><table>
+  <caption class="visually-hidden">Repeat-rate for this assistant per persona, never averaged</caption>
+  <thead><tr><th scope="col">Persona</th><th scope="col">Repeat-rate</th><th scope="col">Responses</th></tr></thead>
+  <tbody>
+  {%- for row in profile.byPersona %}
+    <tr data-persona="{{ row.persona }}"><td class="mono" style="font-size:12px;color:var(--dimmer)">{{ row.persona }} &middot; {{ row.persona | personaLabel }}</td>
+      <td class="rmeta">{{ row.repeat_rate | rate }}</td>
+      <td class="num" style="color:var(--dim)">{{ row.n }}</td></tr>
+  {%- endfor %}
+  </tbody></table></div>
+
+{%- if profile.byCountry | length %}
+<h2 id="by-country" style="margin:36px 0 12px">By country</h2>
+<div class="panel"><table>
+  <caption class="visually-hidden">Repeat-rate for this assistant per market</caption>
+  <thead><tr><th scope="col">Country</th><th scope="col">Repeat-rate</th><th scope="col">Responses</th></tr></thead>
+  <tbody>
+  {%- for row in profile.byCountry %}
+    <tr><td>{% if navigation.has.countries %}<a href="{{ ('/countries/' + row.country + '/') | url }}">{{ row.country | countryName }}</a>{% else %}{{ row.country | countryName }}{% endif %}</td>
+      <td class="rmeta">{{ row.repeat_rate | rate }}</td>
+      <td class="num" style="color:var(--dim)">{{ row.n }}</td></tr>
+  {%- endfor %}
+  </tbody></table></div>
+<p class="note">Rates in this table are the assistant's repeat-rate within each market, across all
+  personas in that market's sample.</p>
+{%- endif %}
+
+{%- if profile.repeatedClaims | length %}
+<h2 id="claims" style="margin:36px 0 12px">Claims this chatbot repeated</h2>
+<div class="panel"><table>
+  <caption class="visually-hidden">Documented claims this assistant stated as fact in at least one answer</caption>
+  <thead><tr><th scope="col">Claim</th><th scope="col">Verdict</th><th scope="col">Cluster</th></tr></thead>
+  <tbody>
+  {%- for item in profile.repeatedClaims %}
+    <tr><td class="cl"><a href="{{ item.url | url }}">&ldquo;{{ item.title_en }}&rdquo;</a></td>
+      <td><span class="badge {{ item.verdict | verdictClass }}">{{ item.verdict | verdictLabel }}</span></td>
+      <td style="color:var(--dim)">{{ clusters[item.cluster].name_en | default(item.cluster) }}</td></tr>
+  {%- endfor %}
+  </tbody></table></div>
+{%- endif %}
+
+<h2 id="escalations" style="margin:36px 0 12px">Escalations to {{ profile.company }}</h2>
+{%- if profile.escalations | length %}
+<div class="panel">
+  {%- for e in profile.escalations %}
+  {%- set claim = claims | whereEq('id', e.claim_id) | first %}
+  <div class="actrow">
+    <div class="what">{{ e.claim_id }} — {{ e.type | actionTypeLabel | lower }}<small>{{ e.target | defangCopy }}</small></div>
+    <span class="chip {{ 'ok' if e.status in ['acknowledged','actioned','completed','receipt_confirmed','published','live'] else ('wait' if e.status == 'submitted' else '') }}"><span class="dot"></span>{{ e.status | statusLabel }}</span>
+    <div class="when"><time datetime="{{ e.date | isoDate }}">{{ e.date | shortDate }}</time></div>
+  </div>
+  {%- endfor %}
+</div>
+<p class="note">We publish the fact, date and status of each report. We do not publish correspondence
+  with {{ profile.company }} or the names of individuals.</p>
+{%- else %}
+<p class="note">We have sent {{ profile.company }} no report about the findings on this page yet.</p>
+{%- endif %}
+
+<p class="note" style="margin-bottom:40px">We test the public consumer interface, not the API. Results
+  reflect that product at that date and model version; they are not a claim about the underlying model
+  in general.</p>

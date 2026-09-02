@@ -1,0 +1,11 @@
+---
+pagination:
+  data: profiles.countries
+  size: 1
+  alias: profile
+layout: layouts/country.njk
+schemas:
+  - article
+  - dataset
+permalink: "{{ profile.url }}"
+---

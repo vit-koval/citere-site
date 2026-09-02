@@ -1,0 +1,56 @@
+---
+layout: layouts/base.njk
+permalink: /sources/
+pageKey: sources
+navKey: sources
+crumb: Sources
+title: "Kremlin-linked domains cited by AI chatbots — Citere"
+description: "The domains from Russian influence infrastructure we have observed cited in public AI chatbot answers, with their published attribution. CSV and STIX 2.1."
+schemas:
+  - dataset
+---
+{%- set doc = copy.en.sources -%}
+<div class="phead"><h1>{{ doc.data.h1 }}</h1>
+  <p class="plead">{{ doc.data.lead | fill(figures) | mdInline | safe }}</p></div>
+<p class="note" style="margin:-14px 0 22px">Attribution is not ours alone: each entry records the public
+  attribution by Viginum, DFRLab, NewsGuard or EU DisinfoLab. Domains are written in defanged form and
+  never hyperlinked, so this page never sends traffic to them.</p>
+
+<div class="filters">
+  <span class="f active">All networks</span>
+  {%- for net in networkList %}<span class="f">{{ net | networkLabel }} <span style="color:var(--dimmer)">{{ net | networkCount }}</span></span>{% endfor %}
+</div>
+
+<div class="panel"><table>
+  <caption class="visually-hidden">Watchlisted domains, most cited first</caption>
+  <thead><tr><th scope="col">Domain</th><th scope="col">Network</th><th scope="col">First seen</th>
+    <th scope="col">Cited in</th><th scope="col">Citations</th></tr></thead>
+  <tbody>
+  {%- for s in sources %}
+    <tr><td><a href="{{ s.url | url }}"><span class="domain">{{ s.defanged }}</span></a></td>
+      <td><span class="netchip {{ s.network | networkClass }}">{{ s.network | networkLabel }}</span></td>
+      <td style="color:var(--dimmer)"><time datetime="{{ s.first_seen | isoDate }}">{{ s.first_seen | displayDate }}</time></td>
+      <td>{% for id in s.cited_in | take(3) %}{% set c = claims | whereEq('id', id) | first %}{% if c %}<a href="{{ c.url | url }}" style="color:var(--accent);font-weight:600;font-size:13px">{{ id }}</a>{% if not loop.last %}, {% endif %}{% endif %}{% endfor %}{% if s.cited_in | length > 3 %} <span style="color:var(--dimmer)">+{{ s.cited_in | length - 3 }}</span>{% endif %}</td>
+      <td class="rmeta">{{ s.citedCount }}</td></tr>
+  {%- endfor %}
+  </tbody></table></div>
+
+{%- if articleEvidence | length %}
+<h2 id="article-evidence" style="margin:36px 0 8px">Article evidence
+  <span style="font-weight:500;color:var(--dimmer);font-size:13px">clean host, dirty article</span></h2>
+<div class="callout">These are specific URLs on an otherwise allowlisted domain that were cited in a
+  REPEAT answer. A log of evidence, not a rule — the host itself is never blacklisted for one bad article.</div>
+<div class="panel">
+  {%- for item in articleEvidence %}
+  <div class="actrow">
+    <div class="what mono" style="font-size:12.6px;color:var(--dim);font-weight:400">{{ item.url | defangCopy }}</div>
+    <span class="chip {{ 'ok' if item.status == 'confirmed' else 'wait' }}"><span class="dot"></span>{{ item.status | replace("_", " ") }}</span>
+  </div>
+  {%- endfor %}
+</div>
+{%- endif %}
+
+<div class="exports" style="margin:18px 0 44px">
+  {%- if datasets.has['sources-csv'] %}<a href="{{ '/sources.csv' | url }}">Download CSV</a><span>&middot;</span>{% endif %}
+  {%- if datasets.has['sources-stix'] %}<a href="{{ '/sources.stix.json' | url }}">STIX 2.1</a><span>&middot;</span>{% endif %}
+  <a href="{{ '/methodology/' | url }}">How the watchlist is built</a></div>
