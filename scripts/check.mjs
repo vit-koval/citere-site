@@ -206,6 +206,14 @@ for (const name of ["robots.txt", "llms.txt"]) {
   }
 }
 
+// The methodology forbids attributing a domain to a network ourselves, so a
+// watchlist entry without a published attribution is a launch blocker.
+for (const source of sources) {
+  if (!(source.attribution || []).length) {
+    warn("data/sources.json", `${source.domain} is on the watchlist with no published attribution`);
+  }
+}
+
 const css = join(SITE, "css/site.css");
 if (existsSync(css)) {
   const kb = statSync(css).size / 1024;

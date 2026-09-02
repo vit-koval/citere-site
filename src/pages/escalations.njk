@@ -1,0 +1,74 @@
+---
+layout: layouts/base.njk
+permalink: /escalations/
+lang: en
+h1: Escalation log
+schemas:
+  - dataset
+breadcrumbTrail:
+  - title: Home
+    url: /
+  - title: Escalations
+    url: /escalations/
+---
+{% set doc = copy.en.escalations %}
+<h1>{{ h1 }}</h1>
+<p class="lede">{{ doc.introText }} {{ escalations | length }} actions, {{ site.counters.escalations_sent }} of them reports to platforms and registrars, {{ site.counters.escalations_answered }} answered{% if site.counters.median_response_days %}, median response time {{ site.counters.median_response_days }} days{% endif %}.</p>
+{% include "partials/updated.njk" %}
+
+<h2 id="summary">Summary</h2>
+<ul class="counters">
+  <li><b>{{ escalations | length }}</b><span>actions logged</span></li>
+  <li><b>{{ site.counters.escalations_sent }}</b><span>reports sent</span></li>
+  <li><b>{{ site.counters.escalations_answered }}</b><span>answered</span></li>
+  <li><b>{{ site.counters.escalations_actioned }}</b><span>confirmed changes</span></li>
+</ul>
+
+<h2 id="by-type">Actions by type</h2>
+<div class="table-wrap">
+<table>
+  <caption>What kind of action we took, and how often.</caption>
+  <thead><tr><th scope="col">Action</th><th scope="col" class="num">Count</th></tr></thead>
+  <tbody>
+  {% for type, items in escalations | groupby("type") %}
+    <tr><th scope="row">{{ type | actionTypeLabel }}</th><td class="num">{{ items | length }}</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+</div>
+
+<h2 id="log">The log</h2>
+<div class="table-wrap">
+<table>
+  <caption>Every action, newest first. Status wording is fixed; nothing is logged as in progress without a date.</caption>
+  <thead>
+    <tr>
+      <th scope="col">Date</th>
+      <th scope="col">Action</th>
+      <th scope="col">To</th>
+      <th scope="col">Claim</th>
+      <th scope="col">Status</th>
+      <th scope="col">Response</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for item in escalations %}
+    {% set claim = claims | whereEq('id', item.claim_id) | first %}
+    <tr>
+      <td><time datetime="{{ item.date | isoDate }}">{{ item.date | displayDate }}</time></td>
+      <th scope="row">{{ item.type | actionTypeLabel }}</th>
+      <td>{% if item.url %}<a href="{{ item.url }}">{{ item.target }}</a>{% else %}{{ item.target }}{% endif %}</td>
+      <td>{% if claim %}<a href="{{ claim.url }}">{{ item.claim_id }}</a>{% else %}{{ item.claim_id }}{% endif %}</td>
+      <td>{{ item.status | statusLabel }}</td>
+      <td>{% if item.response_date %}<time datetime="{{ item.response_date | isoDate }}">{{ item.response_date | displayDate }}</time>{% else %}—{% endif %}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+</div>
+
+{% for id in doc.order %}
+{% set section = doc.sections[id] %}
+<h2 id="{{ section.id }}">{{ section.title }}</h2>
+{{ section.html | safe }}
+{% endfor %}

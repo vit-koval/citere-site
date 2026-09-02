@@ -83,6 +83,7 @@ module.exports = function (eleventyConfig) {
     return `${n > 0 ? "+" : ""}${n} pp`;
   });
 
+  eleventyConfig.addFilter("plural", (count, one, many) => (Number(count) === 1 ? one : many));
   eleventyConfig.addFilter("take", (arr, n) => (arr || []).slice(0, n));
   eleventyConfig.addFilter("unique", (arr) => [...new Set([].concat(arr || []))]);
   eleventyConfig.addFilter("sortBy", (arr, key, dir) => {
@@ -131,6 +132,20 @@ module.exports = function (eleventyConfig) {
   eleventyConfig.addFilter("jsonld", (value) =>
     JSON.stringify(value, null, 0).replace(/</g, "\\u003c").replace(/>/g, "\\u003e")
   );
+  // Deterministic STIX ids: the same domain yields the same indicator id on
+  // every build, so consumers can diff bundles between releases.
+  eleventyConfig.addFilter("stixId", (domain) => {
+    const hash = require("node:crypto").createHash("sha256").update(String(domain)).digest("hex");
+    const uuid = [
+      hash.slice(0, 8),
+      hash.slice(8, 12),
+      "5" + hash.slice(13, 16),
+      ((parseInt(hash.slice(16, 17), 16) & 0x3) | 0x8).toString(16) + hash.slice(17, 20),
+      hash.slice(20, 32)
+    ].join("-");
+    return `indicator--${uuid}`;
+  });
+
   eleventyConfig.addFilter("csvCell", (value) => {
     const s = value === null || value === undefined ? "" : String(value);
     return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;

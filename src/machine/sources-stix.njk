@@ -1,0 +1,5 @@
+---
+permalink: /sources.stix.json
+eleventyExcludeFromCollections: true
+---
+{"type":"bundle","id":"bundle--{{ site.domain | stixId | replace("indicator--", "") }}","objects":[{% for source in sources %}{"type":"indicator","spec_version":"2.1","id":"{{ source.domain | stixId }}","created":"{{ source.first_seen | isoDate }}T00:00:00.000Z","modified":"{{ site.last_update | isoDate }}T00:00:00.000Z","name":{{ source.domain | dump | safe }},"description":{{ ("Domain from the " + (source.network | networkLabel) + " network, recorded in AI chatbot citations by Sitera.") | dump | safe }},"indicator_types":["misinformation"],"pattern":{{ ("[domain-name:value = '" + source.domain + "']") | dump | safe }},"pattern_type":"stix","valid_from":"{{ source.first_seen | isoDate }}T00:00:00.000Z","x_sitera_network":{{ source.network | dump | safe }},"x_sitera_cited_in":{{ source.cited_in | default([]) | dump | safe }},"external_references":[{"source_name":"sitera","url":{{ (site.url + source.url) | dump | safe }}}]}{% if not loop.last %},{% endif %}{% endfor %}]}

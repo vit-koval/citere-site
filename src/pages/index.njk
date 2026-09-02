@@ -31,9 +31,9 @@ breadcrumbTrail:
 
 {% if site.counters.claims %}
 <ul class="counters">
-  <li><b>{{ site.counters.claims }}</b><span>false claims documented</span></li>
-  <li><b>{{ site.counters.responses }}</b><span>chatbot answers analysed</span></li>
-  <li><b>{{ site.counters.escalations_sent }}</b><span>reports sent to platforms</span></li>
+  <li><b>{{ site.counters.claims }}</b><span>false {{ site.counters.claims | plural("claim", "claims") }} documented</span></li>
+  <li><b>{{ site.counters.responses }}</b><span>chatbot {{ site.counters.responses | plural("answer", "answers") }} analysed</span></li>
+  <li><b>{{ site.counters.escalations_sent }}</b><span>{{ site.counters.escalations_sent | plural("report", "reports") }} sent to platforms</span></li>
 </ul>
 {% endif %}
 {% include "partials/updated.njk" %}
@@ -83,7 +83,7 @@ breadcrumbTrail:
 </table>
 </div>
 {% if navigation.has.escalations and site.counters.escalations_sent %}
-<p>Escalations: {{ site.counters.escalations_sent }} reports sent · {{ site.counters.escalations_answered }} responses · {{ site.counters.escalations_actioned }} confirmed changes. <a href="/escalations/">See the escalation log</a></p>
+<p>Escalations: {{ site.counters.escalations_sent }} report{{ "" if site.counters.escalations_sent == 1 else "s" }} sent · {{ site.counters.escalations_answered }} response{{ "" if site.counters.escalations_answered == 1 else "s" }} · {{ site.counters.escalations_actioned }} confirmed change{{ "" if site.counters.escalations_actioned == 1 else "s" }}. <a href="/escalations/">See the escalation log</a></p>
 {% endif %}
 {% endif %}
 

@@ -1,1 +1,19 @@
-[]
+[
+  {
+    "domain": "example.com",
+    "slug": "example-com",
+    "network": "pravda",
+    "first_seen": "2026-09-10",
+    "cited_in": ["C1-003"],
+    "complaints": [
+      { "target": "Registrar", "date": "2026-10-09", "status": "submitted" }
+    ]
+  },
+  {
+    "domain": "example.org",
+    "slug": "example-org",
+    "network": "doppelganger",
+    "first_seen": "2026-09-11",
+    "cited_in": ["C1-003"]
+  }
+]

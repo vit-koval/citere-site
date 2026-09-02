@@ -1,0 +1,53 @@
+---
+layout: layouts/base.njk
+permalink: /sources/
+lang: en
+h1: Domains from Russian influence networks cited by AI chatbots
+schemas:
+  - dataset
+breadcrumbTrail:
+  - title: Home
+    url: /
+  - title: Sources
+    url: /sources/
+---
+{% set doc = copy.en.sources %}
+<h1>{{ h1 }}</h1>
+<p class="lede">{{ doc.introText }} {{ sources | length }} domains, list version {{ site.watchlist_version }}.</p>
+{% include "partials/updated.njk" %}
+
+{% set networks = sources | groupby("network") %}
+{% for network, items in networks %}
+<h2 id="network-{{ network }}">{{ network | networkLabel }}</h2>
+<div class="table-wrap">
+<table>
+  <caption>Domains attributed to the {{ network | networkLabel }} network, most cited first.</caption>
+  <thead>
+    <tr>
+      <th scope="col">Domain</th>
+      <th scope="col">First seen cited</th>
+      <th scope="col" class="num">Claims</th>
+      <th scope="col">Cited by</th>
+      <th scope="col">Complaint</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for source in items %}
+    <tr>
+      <th scope="row"><a href="{{ source.url }}"><span class="domain">{{ source.defanged }}</span></a></th>
+      <td><time datetime="{{ source.first_seen | isoDate }}">{{ source.first_seen | displayDate }}</time></td>
+      <td class="num">{{ source.citedCount }}</td>
+      <td>{% if source.citedBy | length %}{% for bot in source.citedBy %}{{ bot | chatbotLabel }}{% if not loop.last %}, {% endif %}{% endfor %}{% else %}not recorded{% endif %}</td>
+      <td>{% if source.complaintStatus %}{{ source.complaintStatus | statusLabel }}{% else %}none filed{% endif %}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+</div>
+{% endfor %}
+
+{% for id in doc.order %}
+{% set section = doc.sections[id] %}
+<h2 id="{{ section.id }}">{{ section.title }}</h2>
+{{ section.html | safe }}
+{% endfor %}
