@@ -1,6 +1,6 @@
 {%- set listItems = [] -%}
 {%- for item in collectionItems -%}
-{%- set listItems = (listItems.push({ "@type": "ListItem", "position": loop.index, "url": site.url + item.url, "name": item.title }), listItems) -%}
+{%- set listItems = (listItems.push({ "@type": "ListItem", "position": loop.index, "url": site.url + (item.url | loc(lang)), "name": item.title }), listItems) -%}
 {%- endfor -%}
 {%- set jsonldCollection = {
   "@context": "https://schema.org",

@@ -1,15 +1,15 @@
-<p>{{ claim.counts.actions }} actions · {{ claim.counts.responses }} responses{% if claim.remeasuredOn %} · re-measured <time datetime="{{ claim.remeasuredOn | isoDate }}">{{ claim.remeasuredOn | displayDate }}</time>{% endif %}</p>
+<p>{{ claim.counts.actions }} {{ 'col.action' | t | lower }} · {{ claim.counts.responses }} {{ 'col.response' | t | lower }}{% if claim.remeasuredOn %} · {{ 'col.remeasured' | t | lower }} <time datetime="{{ claim.remeasuredOn | isoDate }}">{{ claim.remeasuredOn | displayDate }}</time>{% endif %}</p>
 <div class="table-wrap">
 <table>
-  <caption>Everything we did about this claim, with dates.</caption>
+  <caption>{{ 'caption.actions' | t }}</caption>
   <thead>
-    <tr><th scope="col">Action</th><th scope="col">To</th><th scope="col">Date</th><th scope="col">Status</th></tr>
+    <tr><th scope="col">{{ 'col.action' | t }}</th><th scope="col">{{ 'col.to' | t }}</th><th scope="col">{{ 'col.date' | t }}</th><th scope="col">{{ 'col.status' | t }}</th></tr>
   </thead>
   <tbody>
   {% for action in claim.actions %}
     <tr>
       <th scope="row">{{ action.type | actionTypeLabel }}</th>
-      <td>{% if action.url %}<a href="{{ action.url | url }}">{{ action.target }}</a>{% else %}{{ action.target }}{% endif %}</td>
+      <td>{% if action.url %}<a href="{{ action.url }}">{{ action.target }}</a>{% else %}{{ action.target }}{% endif %}</td>
       <td><time datetime="{{ action.date | isoDate }}">{{ action.date | displayDate }}</time></td>
       <td>{{ action.status | statusLabel }}{% if action.response_date %} <time datetime="{{ action.response_date | isoDate }}">{{ action.response_date | displayDate }}</time>{% endif %}</td>
     </tr>
@@ -17,4 +17,4 @@
   </tbody>
 </table>
 </div>
-<p class="note">We publish what we did, to whom, and when. We do not publish correspondence or the names of individuals at platforms.</p>
+<p class="note">{{ 'note.disclosure' | t }}</p>

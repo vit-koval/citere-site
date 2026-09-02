@@ -1,35 +1,36 @@
 ---
 layout: layouts/base.njk
-permalink: /platforms/
-lang: en
-h1: How each AI chatbot handles Russian disinformation about Ukraine
-breadcrumbTrail:
-  - title: Home
-    url: /
-  - title: Chatbots
+pageKey: platforms
+pagination:
+  data: build.languages
+  alias: lang
+  size: 1
+permalink: "{{ '/platforms/' | loc(lang) }}"
+crumbs:
+  - key: crumb.chatbots
     url: /platforms/
 ---
-{% set doc = copy.en.platforms %}
 <h1>{{ h1 }}</h1>
+{% include "partials/translation-notice.njk" %}
 <p class="lede">{{ doc.introText }}</p>
 {% include "partials/updated.njk" %}
 
-<h2 id="chatbots">The chatbots we test</h2>
+<h2 id="chatbots">{{ 'section.chatbotsWeTest' | t }}</h2>
 <div class="table-wrap">
 <table>
-  <caption>Every chatbot with recorded answers. Counts, not averaged rates: per-persona rates are on each profile.</caption>
+  <caption>{{ 'caption.platformIndex' | t }}</caption>
   <thead>
     <tr>
-      <th scope="col">Chatbot</th><th scope="col">Company</th>
-      <th scope="col" class="num">Answers</th><th scope="col" class="num">Repeated</th>
-      <th scope="col" class="num">Refuted</th><th scope="col" class="num">Dodged</th>
-      <th scope="col" class="num">Cited a watchlisted domain</th>
+      <th scope="col">{{ 'col.chatbot' | t }}</th><th scope="col">{{ 'col.company' | t }}</th>
+      <th scope="col" class="num">{{ 'col.answers' | t }}</th><th scope="col" class="num">{{ 'col.repeated' | t }}</th>
+      <th scope="col" class="num">{{ 'col.refuted' | t }}</th><th scope="col" class="num">{{ 'col.dodged' | t }}</th>
+      <th scope="col" class="num">{{ 'col.citedWatchlisted' | t }}</th>
     </tr>
   </thead>
   <tbody>
   {% for item in profiles.chatbots %}
     <tr>
-      <th scope="row"><a href="{{ item.url | url }}">{{ item.name }}</a></th>
+      <th scope="row"><a href="{{ item.url | loc(lang) | url }}">{{ item.name }}</a></th>
       <td>{{ item.company }}</td>
       <td class="num">{{ item.stats.answers }}</td>
       <td class="num">{{ item.stats.repeated }}</td>

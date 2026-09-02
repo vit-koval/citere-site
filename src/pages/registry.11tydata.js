@@ -1,18 +1,5 @@
-const { fitDescription } = require("../_lib/meta.cjs");
-
 module.exports = {
   eleventyComputed: {
-    title: "Registry of false claims in AI chatbot answers",
-    description: (data) =>
-      fitDescription(
-        [
-          `Every false claim about Ukraine we have documented in a public AI chatbot answer: ${data.claims.length} claims,`,
-          `${data.site.counters.responses} recorded answers.`,
-          "Verdict, evidence, sources cited and what changed after we reported it.",
-          "Open data under CC BY 4.0."
-        ],
-        "/registry/"
-      ),
     collectionItems: (data) => data.claims.map((c) => ({ url: c.url, title: c.title_en })),
     dataset: (data) => ({
       name: "Sitera claim registry",

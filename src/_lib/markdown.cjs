@@ -14,6 +14,10 @@ const slugify = (s) =>
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-|-$/g, "");
 
+// A heading may carry an explicit id: "## Key findings {#key-findings}".
+// Translations use the same id, so templates address a section by one key in
+// every language. Without one, the id is slugified from the title, and a title
+// that slugifies to nothing (any non-Latin script) falls back to its position.
 function loadDoc(file) {
   const raw = fs.readFileSync(file, "utf8");
   const { data, content } = matter(raw);
@@ -21,11 +25,13 @@ function loadDoc(file) {
   const intro = parts.shift() || "";
   const sections = {};
   const order = [];
-  for (const part of parts) {
+  for (const [index, part] of parts.entries()) {
     const nl = part.indexOf("\n");
-    const title = (nl === -1 ? part : part.slice(0, nl)).trim();
+    let title = (nl === -1 ? part : part.slice(0, nl)).trim();
     const body = nl === -1 ? "" : part.slice(nl + 1);
-    const id = slugify(title);
+    const explicit = title.match(/\s*\{#([a-z0-9-]+)\}$/);
+    if (explicit) title = title.slice(0, explicit.index).trim();
+    const id = explicit ? explicit[1] : slugify(title) || `section-${index + 1}`;
     sections[id] = { id, title, html: md.render(body).trim(), text: body.trim() };
     order.push(id);
   }

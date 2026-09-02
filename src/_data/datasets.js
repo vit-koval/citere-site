@@ -49,7 +49,7 @@ const ENTRIES = [
   }
 ];
 
-const live = ENTRIES.filter((e) => built(e.template));
+const live = ENTRIES.filter((e) => built(e.template)).map((e) => ({ ...e, shared: true }));
 
 module.exports = {
   all: live,

@@ -1,17 +1,5 @@
-const { fitDescription } = require("../_lib/meta.cjs");
-
 module.exports = {
   eleventyComputed: {
-    title: "Domains cited by AI chatbots, by network",
-    description: (data) =>
-      fitDescription(
-        [
-          `The ${data.sources.length} domains from Russian influence networks that we have recorded in public AI chatbot answers,`,
-          "with the published attribution for each one.",
-          "Download as CSV or STIX 2.1 under CC BY 4.0."
-        ],
-        "/sources/"
-      ),
     dataset: (data) => ({
       name: "Sitera domain watchlist",
       description:

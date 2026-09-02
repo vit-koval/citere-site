@@ -1,19 +1,19 @@
 <footer class="site-footer">
   {% if pageExports and pageExports.length %}
-  <nav aria-label="This page as data">
-    <p>This page as data:
+  <nav aria-label="{{ 'nav.pageData' | t }}">
+    <p>{{ 'footer.pageData' | t }}
     {%- for item in pageExports %} <a href="{{ item.url | url }}">{{ item.label }}</a>{% if not loop.last %} ·{% endif %}{% endfor %}</p>
   </nav>
   {% endif %}
-  <nav aria-label="Footer">
+  <nav aria-label="{{ 'nav.footer' | t }}">
     <ul>
     {% for item in navigation.footer %}
-      <li><a href="{{ item.url | url }}">{{ item.label }}</a></li>
+      <li><a href="{{ (item.url if item.shared else (item.url | loc(lang))) | url }}">{{ item.label[lang] | default(item.label.en) }}</a></li>
     {% endfor %}
     {% for item in site.org.links %}
-      <li><a href="{{ item.url | url }}">{{ item.label }}</a></li>
+      <li><a href="{{ item.url }}">{{ item.label }}</a></li>
     {% endfor %}
     </ul>
   </nav>
-  <p class="fine">{{ site.org.name }} · {% if site.org.city | isReal %}{{ site.org.city }}, {% endif %}{{ site.org.country }} · Data under <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a> · Updated <time datetime="{{ site.last_update | isoDate }}">{{ site.last_update | displayDate }}</time></p>
+  <p class="fine">{{ site.org.name }} · {% if site.org.city | isReal %}{{ site.org.city }}, {% endif %}{{ site.org.country }} · {{ 'footer.licence' | t }} <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a> · {{ 'updated.prefix' | t }} <time datetime="{{ site.last_update | isoDate }}">{{ site.last_update | displayDate }}</time></p>
 </footer>

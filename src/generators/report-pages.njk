@@ -1,12 +1,11 @@
 ---
 pagination:
-  data: reports
+  data: localised.reports
   size: 1
-  alias: report
+  alias: entry
 layout: layouts/report.njk
-lang: en
 schemas:
   - article
   - dataset
-permalink: "/monitor/{{ report.slug }}/"
+permalink: "{{ entry.url }}"
 ---

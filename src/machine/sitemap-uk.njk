@@ -1,0 +1,16 @@
+---
+permalink: "{{ '/sitemap-uk.xml' if build.ukEnabled else false }}"
+eleventyExcludeFromCollections: true
+---
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+{%- for entry in sitemapPages %}
+  <url><loc>{{ site.url }}{{ entry.url | loc('uk') }}</loc><lastmod>{{ entry.lastmod | isoDate }}</lastmod></url>
+{%- endfor %}
+{%- for claim in claims %}
+  <url><loc>{{ site.url }}{{ claim.url | loc('uk') }}</loc><lastmod>{{ claim.updated | isoDate }}</lastmod></url>
+{%- endfor %}
+{%- for facet in facets %}
+  <url><loc>{{ site.url }}{{ facet.url | loc('uk') }}</loc><lastmod>{{ facet.updated | isoDate }}</lastmod></url>
+{%- endfor %}
+</urlset>

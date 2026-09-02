@@ -3,6 +3,7 @@
 // Errors block the deploy. Warnings are printed and tolerated until launch.
 import { readFileSync, readdirSync, existsSync, statSync } from "node:fs";
 import { join, relative, posix } from "node:path";
+import labels from "../src/_lib/labels.cjs";
 
 const ROOT = new URL("..", import.meta.url).pathname;
 const SITE = join(ROOT, "_site");
@@ -115,7 +116,11 @@ for (const file of htmlFiles) {
     if (!/type="application\/ld\+json"/i.test(tag)) err(page, `inline <script> that is not JSON-LD: ${tag}`);
   }
 
-  if (!/<nav[^>]+aria-label="Breadcrumb"/i.test(html)) err(page, "no breadcrumb nav");
+  // The aria-label is translated, so the check keys on the class and requires
+  // the label to be present in whatever language the page is in.
+  const breadcrumbNav = html.match(/<nav[^>]*class="breadcrumb"[^>]*>/i);
+  if (!breadcrumbNav) err(page, "no breadcrumb nav");
+  else if (!/aria-label="[^"]+"/i.test(breadcrumbNav[0])) err(page, "breadcrumb nav has no aria-label");
   if (!/"@type":"BreadcrumbList"/.test(html)) err(page, "no BreadcrumbList JSON-LD");
 
   // --- JSON-LD validity ----------------------------------------------------
@@ -155,16 +160,18 @@ for (const file of htmlFiles) {
   }
 
   // --- claim pages ---------------------------------------------------------
-  const claimMatch = page.match(/^\/registry\/([^/]+)\/index\.html$/);
-  if (claimMatch && claimsBySlug.has(claimMatch[1])) {
-    const claim = claimsBySlug.get(claimMatch[1]);
+  const claimMatch = page.match(/^(?:\/([a-z]{2}))?\/registry\/([^/]+)\/index\.html$/);
+  if (claimMatch && claimsBySlug.has(claimMatch[2])) {
+    const pageLang = claimMatch[1] || "en";
+    const claim = claimsBySlug.get(claimMatch[2]);
     const reviews = (html.match(/"@type":"ClaimReview"/g) || []).length;
     if (reviews !== 1) err(page, `${reviews} ClaimReview blocks, expected exactly 1`);
 
     const badge = (html.match(/class="badge badge-verdict[^"]*">([^<]+)</) || [])[1];
+    const expectedBadge = labels.pick(labels.VERDICTS, pageLang, claim.verdict);
     if (!badge) err(page, "no verdict badge");
-    else if (badge.trim().toLowerCase() !== claim.verdict) {
-      err(page, `verdict badge "${badge.trim()}" does not match data "${claim.verdict}"`);
+    else if (badge.trim() !== expectedBadge) {
+      err(page, `verdict badge "${badge.trim()}" does not match data "${claim.verdict}" (expected "${expectedBadge}")`);
     }
 
     const hasBeforeAfter = /id="what-changed"/.test(html);

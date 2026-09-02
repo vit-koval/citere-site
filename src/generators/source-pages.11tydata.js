@@ -1,30 +1,19 @@
-const { fitTitle, fitDescription } = require("../_lib/meta.cjs");
+const meta = require("../_lib/meta-strings.cjs");
+const ui = require("../_data/ui.js");
 
-const NETWORKS = {
-  pravda: "Pravda", doppelganger: "Doppelganger", matryoshka: "Matryoshka",
-  "storm-1516": "Storm-1516", "state-media": "state media", other: "other"
-};
+const t = (lang, key) => ((ui[lang] || ui.en)[key] ?? ui.en[key]);
 
 module.exports = {
   eleventyComputed: {
-    title: (data) => fitTitle(`${data.source.defanged} — a domain cited by AI chatbots`),
-    description: (data) => {
-      const s = data.source;
-      return fitDescription(
-        [
-          `${s.defanged} is on the Sitera watchlist as part of the ${NETWORKS[s.network]} network.`,
-          `Recorded in ${s.citedCount} documented ${s.citedCount === 1 ? "claim" : "claims"} since ${s.first_seen}.`,
-          "Attribution, the answers that cited it, and the complaints we filed.",
-          "Open data under CC BY 4.0."
-        ],
-        s.url
-      );
-    },
+    lang: (data) => data.entry.lang,
+    source: (data) => data.entry.item,
+    title: (data) => meta.source(data.entry.item, data.entry.lang).title,
+    description: (data) => meta.source(data.entry.item, data.entry.lang).description,
     updated: (data) => data.site.last_update,
     breadcrumbTrail: (data) => [
-      { title: "Home", url: "/" },
-      { title: "Sources", url: "/sources/" },
-      { title: data.source.defanged, url: data.source.url }
+      { title: t(data.entry.lang, "crumb.home"), url: "/" },
+      { title: t(data.entry.lang, "crumb.sources"), url: "/sources/" },
+      { title: data.entry.item.defanged, url: data.entry.item.url }
     ]
   }
 };

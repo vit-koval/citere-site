@@ -1,64 +1,59 @@
-const { fitTitle, fitDescription } = require("../_lib/meta.cjs");
+const meta = require("../_lib/meta-strings.cjs");
 const runs = require("../_data/runs.js");
-const copy = require("../_data/copy.js");
+const ui = require("../_data/ui.js");
 
+const t = (lang, key) => ((ui[lang] || ui.en)[key] ?? ui.en[key]);
 // Recomputed across the report's runs from the raw observations, never by
 // adding pre-aggregated rows together.
 const statsFor = (report) => runs.summariseRuns(report.runs);
 
 module.exports = {
   eleventyComputed: {
-    stats: (data) => statsFor(data.report),
-    prose: (data) => copy.en.reports[data.report.slug],
-    title: (data) => fitTitle(`Monitor ${data.report.period}: AI chatbots on Ukraine`),
-    description: (data) => {
-      const s = statsFor(data.report);
-      return fitDescription(
-        [
-          `Sitera monitor ${data.report.period}:`,
-          `${s.answers} answers from ${s.chatbots.length} public AI chatbots in ${s.countries.length} countries,`,
-          "scored per persona for repeating documented false claims about Ukraine.",
-          "Open data, CC BY 4.0."
-        ],
-        `/monitor/${data.report.slug}/`
-      );
+    lang: (data) => data.entry.lang,
+    report: (data) => data.entry.item,
+    stats: (data) => statsFor(data.entry.item),
+    prose: (data) => {
+      const copy = data.copy || {};
+      const localised = copy[data.entry.lang] && copy[data.entry.lang].reports;
+      return (localised && localised[data.entry.item.slug]) || copy.en.reports[data.entry.item.slug];
     },
-    articleHeadline: (data) => data.report.title_en,
-    articlePublished: (data) => data.report.date,
-    articleModified: (data) => data.report.date,
-    updated: (data) => data.report.date,
+    translationMissing: (data) => {
+      const copy = data.copy || {};
+      const localised = copy[data.entry.lang] && copy[data.entry.lang].reports;
+      return !(localised && localised[data.entry.item.slug]);
+    },
+    title: (data) => meta.report(data.entry.item, statsFor(data.entry.item), data.entry.lang).title,
+    description: (data) => meta.report(data.entry.item, statsFor(data.entry.item), data.entry.lang).description,
+    articleHeadline: (data) => data.entry.item.title_en,
+    articlePublished: (data) => data.entry.item.date,
+    articleModified: (data) => data.entry.item.date,
+    updated: (data) => data.entry.item.date,
     dataset: (data) => {
-      const s = statsFor(data.report);
+      const s = statsFor(data.entry.item);
       return {
-        name: `Sitera monitor ${data.report.period}`,
-        description: `Chatbot answers recorded for the ${data.report.period} Sitera run, one row per answer.`,
+        name: `Sitera monitor ${data.entry.item.period}`,
+        description: `Chatbot answers recorded for the ${data.entry.item.period} Sitera run, one row per answer.`,
         temporalCoverage: s.firstDate && s.lastDate ? `${s.firstDate}/${s.lastDate}` : undefined,
         spatialCoverage: s.countries.map((c) => c.toUpperCase()).join(", ") || undefined,
         keywords: ["AI chatbots", "disinformation", "Ukraine", "monitoring"],
         distribution: (data.datasets.all || [])
           .filter((d) => d.key === "registry-csv" || d.key === "registry-json")
-          .map((d) => ({
-            "@type": "DataDownload",
-            encodingFormat: d.format,
-            contentUrl: `https://${data.site.domain}${d.url}`
-          }))
+          .map((d) => ({ "@type": "DataDownload", encodingFormat: d.format, contentUrl: `https://${data.site.domain}${d.url}` }))
       };
     },
     reportDownloads: (data) => {
       const out = (data.datasets.all || [])
         .filter((d) => d.key === "registry-csv" || d.key === "registry-json")
-        .map((d) => ({ label: `Observations as ${d.format}`, url: d.url }));
-      if (data.report.pdf_url) out.push({ label: "Report as PDF", url: data.report.pdf_url });
+        .map((d) => ({ label: t(data.entry.lang, "misc.observationsAs").replace("%s", d.format), url: d.url }));
+      if (data.entry.item.pdf_url) out.push({ label: t(data.entry.lang, "misc.reportPdf"), url: data.entry.item.pdf_url });
       return out;
     },
     pageExports: (data) =>
-      (data.datasets.all || [])
-        .filter((d) => d.key === "registry-csv")
-        .map((d) => ({ label: d.format, url: d.url })),
+      (data.datasets.all || []).filter((d) => d.key === "registry-csv").map((d) => ({ label: d.format, url: d.url })),
     breadcrumbTrail: (data) => [
-      { title: "Home", url: "/" },
-      { title: "Reports", url: "/monitor/" },
-      { title: data.report.period, url: `/monitor/${data.report.slug}/` }
+      { title: t(data.entry.lang, "crumb.home"), url: "/" },
+      { title: t(data.entry.lang, "crumb.reports"), url: "/monitor/" },
+      { title: data.entry.item.period, url: `/monitor/${data.entry.item.slug}/` }
     ]
   }
 };

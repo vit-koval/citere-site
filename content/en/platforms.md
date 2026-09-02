@@ -4,7 +4,7 @@ page: platforms
 
 One page per chatbot: how it handles Russian disinformation about Ukraine today, how that has changed month by month, which specific claims it repeated, and every report we sent to its maker with the response.
 
-## How to read these pages
+## How to read these pages {#how-to-read-these-pages}
 
 Behaviour is reported per persona, because a product can hold under a neutral question and give way under a leading one. A single number per chatbot would average that away, so we do not publish one.
 

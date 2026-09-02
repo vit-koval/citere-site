@@ -1,16 +1,16 @@
 ---
 layout: layouts/base.njk
 ---
-<h1>How {{ profile.name }} handles Russian disinformation about Ukraine</h1>
+<h1>{{ platformHeading }}</h1>
 <p class="lede">In the answers we have recorded, {{ profile.name }} repeated a documented false claim in {{ profile.stats.repeated }} of {{ profile.stats.nonEvasive }} non-evasive answers, declined {{ profile.stats.dodged }} times, and cited a domain on our watchlist in {{ profile.stats.contaminated }} of {{ profile.stats.answers }} answers. Rates are given per persona below, and never averaged across them. {{ profile.company }} has been notified of every finding on this page that carries a report date.</p>
 {% include "partials/updated.njk" %}
 
-<h2 id="by-month">Month by month</h2>
+<h2 id="by-month">{{ 'section.byMonth' | t }}</h2>
 <div class="table-wrap">
 <table>
-  <caption>Behaviour per month and persona. Repeat-rate is repeated over non-evasive answers.</caption>
+  <caption>{{ 'caption.byMonth' | t }}</caption>
   <thead>
-    <tr><th scope="col">Month</th><th scope="col">Persona</th><th scope="col" class="num">Answers</th><th scope="col" class="num">Repeated</th><th scope="col" class="num">Refuted</th><th scope="col" class="num">Dodged</th><th scope="col" class="num">Repeat-rate</th></tr>
+    <tr><th scope="col">{{ 'col.month' | t }}</th><th scope="col">{{ 'col.persona' | t }}</th><th scope="col" class="num">{{ 'col.answers' | t }}</th><th scope="col" class="num">{{ 'col.repeated' | t }}</th><th scope="col" class="num">{{ 'col.refuted' | t }}</th><th scope="col" class="num">{{ 'col.dodged' | t }}</th><th scope="col" class="num">{{ 'col.repeatRate' | t }}</th></tr>
   </thead>
   <tbody>
   {% for row in profile.stats.byMonthPersona %}
@@ -21,19 +21,19 @@ layout: layouts/base.njk
       <td class="num">{{ row.repeated }}</td>
       <td class="num">{{ row.refuted }}</td>
       <td class="num">{{ row.dodged }}</td>
-      <td class="num">{% if row.nonEvasive %}{{ row.repeatRate | rate }} <small>(n={{ row.nonEvasive }})</small>{% else %}n/a{% endif %}</td>
+      <td class="num">{% if row.nonEvasive %}{{ row.repeatRate | rate }} <small>(n={{ row.nonEvasive }})</small>{% else %}{{ 'value.na' | t }}{% endif %}</td>
     </tr>
   {% endfor %}
   </tbody>
 </table>
 </div>
 
-<h2 id="by-country">By country and persona</h2>
+<h2 id="by-country">{{ 'section.byCountry' | t }}</h2>
 <div class="table-wrap">
 <table>
-  <caption>The same answers grouped by the country the session was run from.</caption>
+  <caption>{{ 'caption.byCountryPersona' | t }}</caption>
   <thead>
-    <tr><th scope="col">Country</th><th scope="col">Persona</th><th scope="col" class="num">Answers</th><th scope="col" class="num">Repeated</th><th scope="col" class="num">Cited a watchlisted domain</th></tr>
+    <tr><th scope="col">{{ 'col.country' | t }}</th><th scope="col">{{ 'col.persona' | t }}</th><th scope="col" class="num">{{ 'col.answers' | t }}</th><th scope="col" class="num">{{ 'col.repeated' | t }}</th><th scope="col" class="num">{{ 'col.citedWatchlisted' | t }}</th></tr>
   </thead>
   <tbody>
   {% for row in profile.stats.byCountryPersona %}
@@ -50,47 +50,47 @@ layout: layouts/base.njk
 </div>
 
 {% if profile.repeatedClaims | length %}
-<h2 id="claims-repeated">Claims {{ profile.name }} repeated</h2>
+<h2 id="claims-repeated">{{ 'section.claimsRepeated' | t(profile.name) }}</h2>
 {% set tableClaims = profile.repeatedClaims %}
-{% set tableCaption = "Documented claims this chatbot stated as fact in at least one recorded answer." %}
+{% set tableCaption = 'caption.platformClaims' | t %}
 {% include "partials/claims-table.njk" %}
 {% endif %}
 
-<h2 id="escalations">Reports we sent to {{ profile.company }}</h2>
+<h2 id="escalations">{{ 'section.reportsSentTo' | t(profile.company) }}</h2>
 {% if profile.escalations | length %}
 <div class="table-wrap">
 <table>
-  <caption>Reports sent about findings on this product, with the response status.</caption>
-  <thead><tr><th scope="col">Date</th><th scope="col">Claim</th><th scope="col">Status</th><th scope="col">Response</th></tr></thead>
+  <caption>{{ 'caption.platformEscalations' | t }}</caption>
+  <thead><tr><th scope="col">{{ 'col.date' | t }}</th><th scope="col">{{ 'col.claim' | t }}</th><th scope="col">{{ 'col.status' | t }}</th><th scope="col">{{ 'col.response' | t }}</th></tr></thead>
   <tbody>
   {% for item in profile.escalations %}
     {% set claim = claims | whereEq('id', item.claim_id) | first %}
     <tr>
       <td><time datetime="{{ item.date | isoDate }}">{{ item.date | displayDate }}</time></td>
-      <td>{% if claim %}<a href="{{ claim.url | url }}">{{ item.claim_id }}</a>{% else %}{{ item.claim_id }}{% endif %}</td>
+      <td>{% if claim %}<a href="{{ claim.url | loc(lang) | url }}">{{ item.claim_id }}</a>{% else %}{{ item.claim_id }}{% endif %}</td>
       <td>{{ item.status | statusLabel }}</td>
-      <td>{% if item.response_date %}<time datetime="{{ item.response_date | isoDate }}">{{ item.response_date | displayDate }}</time>{% else %}—{% endif %}</td>
+      <td>{% if item.response_date %}<time datetime="{{ item.response_date | isoDate }}">{{ item.response_date | displayDate }}</time>{% else %}{{ 'value.dash' | t }}{% endif %}</td>
     </tr>
   {% endfor %}
   </tbody>
 </table>
 </div>
-<p class="note">We publish the fact, the date and the status. We do not publish correspondence or the names of individuals at {{ profile.company }}.</p>
+<p class="note">{{ 'misc.disclosureNamed' | t(profile.company) }}</p>
 {% else %}
-<p>We have sent {{ profile.company }} no report about the findings on this page yet.</p>
+<p>{{ 'misc.noEscalations' | t(profile.company) }}</p>
 {% endif %}
 
 {% if profile.beforeAfter | length %}
-<h2 id="what-changed">What changed after we reported</h2>
+<h2 id="what-changed">{{ 'section.whatChangedAfter' | t }}</h2>
 <div class="table-wrap">
 <table>
-  <caption>Repeat-rate before and after each report, with the model version at both measurements.</caption>
-  <thead><tr><th scope="col">Claim</th><th scope="col">Persona</th><th scope="col" class="num">Before</th><th scope="col" class="num">After</th><th scope="col" class="num">Change</th></tr></thead>
+  <caption>{{ 'caption.platformBeforeAfter' | t }}</caption>
+  <thead><tr><th scope="col">{{ 'col.claim' | t }}</th><th scope="col">{{ 'col.persona' | t }}</th><th scope="col" class="num">{{ 'col.before' | t }}</th><th scope="col" class="num">{{ 'col.after' | t }}</th><th scope="col" class="num">{{ 'col.change' | t }}</th></tr></thead>
   <tbody>
   {% for row in profile.beforeAfter %}
     <tr>
-      <th scope="row"><a href="{{ row.claim.url | url }}">{{ row.claim.id }}</a></th>
-      <td data-persona="{{ row.before.persona }}">{{ row.before.persona | default("not recorded") }}</td>
+      <th scope="row"><a href="{{ row.claim.url | loc(lang) | url }}">{{ row.claim.id }}</a></th>
+      <td data-persona="{{ row.before.persona }}">{{ row.before.persona | default('value.notRecorded' | t) }}</td>
       <td class="num">{{ row.before.rate | rate }} <small>(n={{ row.before.n }})</small></td>
       <td class="num">{{ row.after.rate | rate }} <small>(n={{ row.after.n }})</small></td>
       <td class="num">{{ (row.after.rate - row.before.rate) | pp }}</td>
@@ -99,7 +99,7 @@ layout: layouts/base.njk
   </tbody>
 </table>
 </div>
-<p class="note">Models are updated continuously and independently of our reports. We publish the change without claiming causation we cannot demonstrate.</p>
+<p class="note">{{ 'note.causation' | t }}</p>
 {% endif %}
 
-<p class="note">We test the public consumer interface, not the API. Versions are recorded as the product reported them, and results can change when the product is updated.</p>
+<p class="note">{{ 'note.publicInterface' | t }}</p>

@@ -1,11 +1,11 @@
 <header class="site-header">
-  <p class="wordmark"><a href="{{ '/' | url }}">{{ site.org.name }}</a></p>
-  <nav aria-label="Main">
+  <p class="wordmark"><a href="{{ '/' | loc(lang) | url }}">{{ site.org.name }}</a></p>
+  <nav aria-label="{{ 'nav.main' | t }}">
     <details class="menu">
-      <summary>Menu</summary>
+      <summary>{{ 'menu' | t }}</summary>
       <ul>
       {% for item in navigation.menu %}
-        <li><a href="{{ item.url | url }}"{% if page.url == item.url %} aria-current="page"{% endif %}>{{ item.label }}</a></li>
+        <li><a href="{{ item.url | loc(lang) | url }}"{% if basePath == item.url %} aria-current="page"{% endif %}>{{ item.label[lang] | default(item.label.en) }}</a></li>
       {% endfor %}
       </ul>
     </details>

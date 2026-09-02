@@ -4,7 +4,7 @@ page: escalations
 
 Every action we take is logged here: reports to platforms, complaints to registrars and hosts, data shared with state and fact-checking partners, and re-measurements.
 
-## How we disclose
+## How we disclose {#how-we-disclose}
 
 We tell the platform first and privately. The fact, date and status of a report are published immediately; the content of the exchange is not. We never publish prompts designed to bypass model safeguards, and we never publish the names of individuals at the companies we write to.
 

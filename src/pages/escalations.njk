@@ -1,34 +1,35 @@
 ---
 layout: layouts/base.njk
-permalink: /escalations/
-lang: en
-h1: Escalation log
 schemas:
   - dataset
-breadcrumbTrail:
-  - title: Home
-    url: /
-  - title: Escalations
+pageKey: escalations
+pagination:
+  data: build.languages
+  alias: lang
+  size: 1
+permalink: "{{ '/escalations/' | loc(lang) }}"
+crumbs:
+  - key: crumb.escalations
     url: /escalations/
 ---
-{% set doc = copy.en.escalations %}
 <h1>{{ h1 }}</h1>
-<p class="lede">{{ doc.introText }} {{ escalations | length }} actions, {{ site.counters.escalations_sent }} of them reports to platforms and registrars, {{ site.counters.escalations_answered }} answered{% if site.counters.median_response_days %}, median response time {{ site.counters.median_response_days }} days{% endif %}.</p>
+{% include "partials/translation-notice.njk" %}
+<p class="lede">{{ doc.introText }} {{ 'misc.escalationCounts' | t(escalations | length, site.counters.escalations_sent, site.counters.escalations_answered) }}{% if site.counters.median_response_days %} {{ 'misc.medianResponse' | t(site.counters.median_response_days) }}{% endif %}</p>
 {% include "partials/updated.njk" %}
 
-<h2 id="summary">Summary</h2>
+<h2 id="summary">{{ 'section.summary' | t }}</h2>
 <ul class="counters">
-  <li><b>{{ escalations | length }}</b><span>actions logged</span></li>
-  <li><b>{{ site.counters.escalations_sent }}</b><span>reports sent</span></li>
-  <li><b>{{ site.counters.escalations_answered }}</b><span>answered</span></li>
-  <li><b>{{ site.counters.escalations_actioned }}</b><span>confirmed changes</span></li>
+  <li><b>{{ escalations | length }}</b><span>{{ 'counter.actionsLogged' | t }}</span></li>
+  <li><b>{{ site.counters.escalations_sent }}</b><span>{{ 'counter.reportsSent' | t }}</span></li>
+  <li><b>{{ site.counters.escalations_answered }}</b><span>{{ 'counter.answered' | t }}</span></li>
+  <li><b>{{ site.counters.escalations_actioned }}</b><span>{{ 'counter.confirmedChanges' | t }}</span></li>
 </ul>
 
-<h2 id="by-type">Actions by type</h2>
+<h2 id="by-type">{{ 'section.byType' | t }}</h2>
 <div class="table-wrap">
 <table>
-  <caption>What kind of action we took, and how often.</caption>
-  <thead><tr><th scope="col">Action</th><th scope="col" class="num">Count</th></tr></thead>
+  <caption>{{ 'caption.actionsByType' | t }}</caption>
+  <thead><tr><th scope="col">{{ 'col.action' | t }}</th><th scope="col" class="num">{{ 'col.count' | t }}</th></tr></thead>
   <tbody>
   {% for type, items in escalations | groupby("type") %}
     <tr><th scope="row">{{ type | actionTypeLabel }}</th><td class="num">{{ items | length }}</td></tr>
@@ -37,18 +38,18 @@ breadcrumbTrail:
 </table>
 </div>
 
-<h2 id="log">The log</h2>
+<h2 id="log">{{ 'section.log' | t }}</h2>
 <div class="table-wrap">
 <table>
-  <caption>Every action, newest first. Status wording is fixed; nothing is logged as in progress without a date.</caption>
+  <caption>{{ 'caption.escalationLog' | t }}</caption>
   <thead>
     <tr>
-      <th scope="col">Date</th>
-      <th scope="col">Action</th>
-      <th scope="col">To</th>
-      <th scope="col">Claim</th>
-      <th scope="col">Status</th>
-      <th scope="col">Response</th>
+      <th scope="col">{{ 'col.date' | t }}</th>
+      <th scope="col">{{ 'col.action' | t }}</th>
+      <th scope="col">{{ 'col.to' | t }}</th>
+      <th scope="col">{{ 'col.claim' | t }}</th>
+      <th scope="col">{{ 'col.status' | t }}</th>
+      <th scope="col">{{ 'col.response' | t }}</th>
     </tr>
   </thead>
   <tbody>
@@ -58,9 +59,9 @@ breadcrumbTrail:
       <td><time datetime="{{ item.date | isoDate }}">{{ item.date | displayDate }}</time></td>
       <th scope="row">{{ item.type | actionTypeLabel }}</th>
       <td>{% if item.url %}<a href="{{ item.url | url }}">{{ item.target }}</a>{% else %}{{ item.target }}{% endif %}</td>
-      <td>{% if claim %}<a href="{{ claim.url | url }}">{{ item.claim_id }}</a>{% else %}{{ item.claim_id }}{% endif %}</td>
+      <td>{% if claim %}<a href="{{ claim.url | loc(lang) | url }}">{{ item.claim_id }}</a>{% else %}{{ item.claim_id }}{% endif %}</td>
       <td>{{ item.status | statusLabel }}</td>
-      <td>{% if item.response_date %}<time datetime="{{ item.response_date | isoDate }}">{{ item.response_date | displayDate }}</time>{% else %}—{% endif %}</td>
+      <td>{% if item.response_date %}<time datetime="{{ item.response_date | isoDate }}">{{ item.response_date | displayDate }}</time>{% else %}{{ 'value.dash' | t }}{% endif %}</td>
     </tr>
   {% endfor %}
   </tbody>

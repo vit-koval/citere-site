@@ -1,19 +1,20 @@
 ---
 layout: layouts/base.njk
-permalink: /sources/
-lang: en
-h1: Domains from Russian influence networks cited by AI chatbots
 schemas:
   - dataset
-breadcrumbTrail:
-  - title: Home
-    url: /
-  - title: Sources
+pageKey: sources
+pagination:
+  data: build.languages
+  alias: lang
+  size: 1
+permalink: "{{ '/sources/' | loc(lang) }}"
+crumbs:
+  - key: crumb.sources
     url: /sources/
 ---
-{% set doc = copy.en.sources %}
 <h1>{{ h1 }}</h1>
-<p class="lede">{{ doc.introText }} {{ sources | length }} domains, list version {{ site.watchlist_version }}.</p>
+{% include "partials/translation-notice.njk" %}
+<p class="lede">{{ doc.introText }} {{ 'misc.watchlistVersion' | t(sources | length, site.watchlist_version) }}</p>
 {% include "partials/updated.njk" %}
 
 {% set networks = sources | groupby("network") %}
@@ -21,24 +22,24 @@ breadcrumbTrail:
 <h2 id="network-{{ network }}">{{ network | networkLabel }}</h2>
 <div class="table-wrap">
 <table>
-  <caption>Domains attributed to the {{ network | networkLabel }} network, most cited first.</caption>
+  <caption>{{ 'caption.watchlist' | t(network | networkLabel) }}</caption>
   <thead>
     <tr>
-      <th scope="col">Domain</th>
-      <th scope="col">First seen cited</th>
-      <th scope="col" class="num">Claims</th>
-      <th scope="col">Cited by</th>
-      <th scope="col">Complaint</th>
+      <th scope="col">{{ 'col.domain' | t }}</th>
+      <th scope="col">{{ 'col.firstSeen' | t }}</th>
+      <th scope="col" class="num">{{ 'col.claims' | t }}</th>
+      <th scope="col">{{ 'col.citedBy' | t }}</th>
+      <th scope="col">{{ 'col.complaint' | t }}</th>
     </tr>
   </thead>
   <tbody>
   {% for source in items %}
     <tr>
-      <th scope="row"><a href="{{ source.url | url }}"><span class="domain">{{ source.defanged }}</span></a></th>
+      <th scope="row"><a href="{{ source.url | loc(lang) | url }}"><span class="domain">{{ source.defanged }}</span></a></th>
       <td><time datetime="{{ source.first_seen | isoDate }}">{{ source.first_seen | displayDate }}</time></td>
       <td class="num">{{ source.citedCount }}</td>
-      <td>{% if source.citedBy | length %}{% for bot in source.citedBy %}{{ bot | chatbotLabel }}{% if not loop.last %}, {% endif %}{% endfor %}{% else %}not recorded{% endif %}</td>
-      <td>{% if source.complaintStatus %}{{ source.complaintStatus | statusLabel }}{% else %}none filed{% endif %}</td>
+      <td>{% if source.citedBy | length %}{% for bot in source.citedBy %}{{ bot | chatbotLabel }}{% if not loop.last %}, {% endif %}{% endfor %}{% else %}{{ 'value.notRecorded' | t }}{% endif %}</td>
+      <td>{% if source.complaintStatus %}{{ source.complaintStatus | statusLabel }}{% else %}{{ 'value.noneFiled' | t }}{% endif %}</td>
     </tr>
   {% endfor %}
   </tbody>

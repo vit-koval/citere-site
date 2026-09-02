@@ -1,22 +1,22 @@
 <div class="table-wrap">
 <table>
-  <caption>Repeat-rate before and after we reported this claim, per chatbot and per persona.</caption>
+  <caption>{{ 'caption.beforeAfter' | t }}</caption>
   <thead>
     <tr>
-      <th scope="col">Chatbot</th>
-      <th scope="col">Persona</th>
-      <th scope="col" class="num">Before</th>
-      <th scope="col">Measured</th>
-      <th scope="col" class="num">After</th>
-      <th scope="col">Re-measured</th>
-      <th scope="col" class="num">Change</th>
+      <th scope="col">{{ 'col.chatbot' | t }}</th>
+      <th scope="col">{{ 'col.persona' | t }}</th>
+      <th scope="col" class="num">{{ 'col.before' | t }}</th>
+      <th scope="col">{{ 'col.measured' | t }}</th>
+      <th scope="col" class="num">{{ 'col.after' | t }}</th>
+      <th scope="col">{{ 'col.remeasured' | t }}</th>
+      <th scope="col" class="num">{{ 'col.change' | t }}</th>
     </tr>
   </thead>
   <tbody>
   {% for row in claim.before_after %}
     <tr>
       <th scope="row">{{ row.chatbot | chatbotLabel }}</th>
-      <td data-persona="{{ row.before.persona }}">{{ row.before.persona | default("not recorded") }}</td>
+      <td data-persona="{{ row.before.persona }}">{{ row.before.persona | default('value.notRecorded' | t) }}</td>
       <td class="num">{{ row.before.rate | rate }} <small>(n={{ row.before.n }})</small></td>
       <td><time datetime="{{ row.before.date | isoDate }}">{{ row.before.date | displayDate }}</time>{% if row.before.model_version %}, {{ row.before.model_version }}{% endif %}</td>
       <td class="num">{{ row.after.rate | rate }} <small>(n={{ row.after.n }})</small></td>
@@ -27,4 +27,4 @@
   </tbody>
 </table>
 </div>
-<p class="note">Models are updated continuously and independently of our reports. We record the version at both measurements and publish the change without claiming causation we cannot demonstrate.</p>
+<p class="note">{{ 'note.causation' | t }}</p>

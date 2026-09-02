@@ -1,109 +1,93 @@
 ---
 layout: layouts/base.njk
-permalink: /
-lang: en
-title: Do AI chatbots repeat Russian disinformation about Ukraine?
-description: We test ChatGPT, Gemini, Grok, Claude, Copilot, Perplexity, DeepSeek and Le Chat for Russian disinformation about Ukraine, and report what we find.
-breadcrumbTrail:
-  - title: Home
-    url: /
+pageKey: index
+pagination:
+  data: build.languages
+  alias: lang
+  size: 1
+permalink: "{{ '/' | loc(lang) }}"
 ---
-{% set copyEn = copy.en.index %}
+{% set copyDoc = doc %}
 {% set cycle = [
-  { key: 'detect', label: 'Detect', nav: 'methodology' },
-  { key: 'trace', label: 'Trace', nav: 'sources' },
-  { key: 'publish', label: 'Publish', nav: 'registry' },
-  { key: 'report', label: 'Report', nav: 'escalations' },
-  { key: 'confirm', label: 'Confirm', nav: 'about' },
-  { key: 're-measure', label: 'Re-measure', nav: 'reports' }
+  { key: 'detect', nav: 'methodology' },
+  { key: 'trace', nav: 'sources' },
+  { key: 'publish', nav: 'registry' },
+  { key: 'report', nav: 'escalations' },
+  { key: 'confirm', nav: 'about' },
+  { key: 're-measure', nav: 'reports' }
 ] %}
 {% set trust = [
-  { key: 'trust-method', nav: 'methodology', label: 'Methodology' },
-  { key: 'trust-data', nav: 'data', label: 'Data' },
-  { key: 'trust-actions', nav: 'escalations', label: 'Escalation log' },
-  { key: 'trust-corrections', nav: 'corrections', label: 'Corrections' }
+  { key: 'trust-method', nav: 'methodology' },
+  { key: 'trust-data', nav: 'data' },
+  { key: 'trust-actions', nav: 'escalations' },
+  { key: 'trust-corrections', nav: 'corrections' }
 ] %}
 {% set latest = claims | default([]) %}
 
-<h1>Do AI chatbots repeat Russian disinformation about Ukraine?</h1>
-
-<p class="lede">Sometimes — and we measure exactly when. We test ChatGPT, Gemini, Grok, Claude, Copilot, Perplexity, DeepSeek and Le Chat with the questions people actually ask, record every time they repeat a known false claim, report it, and check whether it changes.</p>
+<h1>{{ h1 }}</h1>
+{% include "partials/translation-notice.njk" %}
+<p class="lede">{{ copyDoc.introText }}</p>
 
 {% if site.counters.claims %}
 <ul class="counters">
-  <li><b>{{ site.counters.claims }}</b><span>false {{ site.counters.claims | plural("claim", "claims") }} documented</span></li>
-  <li><b>{{ site.counters.responses }}</b><span>chatbot {{ site.counters.responses | plural("answer", "answers") }} analysed</span></li>
-  <li><b>{{ site.counters.escalations_sent }}</b><span>{{ site.counters.escalations_sent | plural("report", "reports") }} sent to platforms</span></li>
+  <li><b>{{ site.counters.claims }}</b><span>{{ (site.counters.claims | plural('counter.claim', 'counter.claims', 'counter.claimsFew')) | t }}</span></li>
+  <li><b>{{ site.counters.responses }}</b><span>{{ (site.counters.responses | plural('counter.answer', 'counter.answers', 'counter.answersFew')) | t }}</span></li>
+  <li><b>{{ site.counters.escalations_sent }}</b><span>{{ (site.counters.escalations_sent | plural('counter.report', 'counter.reports', 'counter.reportsFew')) | t }}</span></li>
 </ul>
 {% endif %}
 {% include "partials/updated.njk" %}
 
 {% if navigation.has.registry or navigation.has.reports %}
 <p class="actions">
-  {% if navigation.has.registry %}<a href="{{ '/registry/' | url }}">Browse the registry</a>{% endif %}
-  {% if navigation.has.reports %}<a href="{{ '/monitor/' | url }}">Read the latest report</a>{% endif %}
+  {% if navigation.has.registry %}<a href="{{ '/registry/' | loc(lang) | url }}">{{ 'action.browseRegistry' | t }}</a>{% endif %}
+  {% if navigation.has.reports %}<a href="{{ '/monitor/' | loc(lang) | url }}">{{ 'action.readReport' | t }}</a>{% endif %}
 </p>
 {% endif %}
 
-<h2 id="the-problem">{{ copyEn.sections['the-audience-is-the-model'].title }}</h2>
-{{ copyEn.sections['the-audience-is-the-model'].html | safe }}
+<h2 id="the-problem">{{ copyDoc.sections['the-audience-is-the-model'].title }}</h2>
+{{ copyDoc.sections['the-audience-is-the-model'].html | safe }}
 
-<h2 id="what-we-do">{{ copyEn.sections['what-we-do'].title }}</h2>
-{{ copyEn.sections['what-we-do'].html | safe }}
+<h2 id="what-we-do">{{ copyDoc.sections['what-we-do'].title }}</h2>
+{{ copyDoc.sections['what-we-do'].html | safe }}
 
 <ol class="cycle">
 {% for step in cycle %}
   <li>
-    <b>{{ loop.index }}. {{ step.label }}</b>
-    {{ copyEn.sections[step.key].html | safe }}
-    {% if navigation.byKey[step.nav] %}<p><a href="{{ navigation.byKey[step.nav].url | url }}">{{ navigation.byKey[step.nav].label }}</a></p>{% endif %}
+    <b>{{ loop.index }}. {{ copyDoc.sections[step.key].title }}</b>
+    {{ copyDoc.sections[step.key].html | safe }}
+    {% if navigation.byKey[step.nav] %}<p><a href="{{ navigation.byKey[step.nav].url | loc(lang) | url }}">{{ navigation.byKey[step.nav].label[lang] | default(navigation.byKey[step.nav].label.en) }}</a></p>{% endif %}
   </li>
 {% endfor %}
 </ol>
-<p class="note">We report the change in repeat-rate before and after, per chatbot, and per persona.</p>
+<p class="note">{{ 'note.metric' | t }}</p>
 
 {% if latest | length %}
-<h2 id="findings">What we have found so far</h2>
-<div class="table-wrap">
-<table>
-  <caption>The five most recently updated claims. <a href="{{ '/registry/' | url }}">All claims</a>.</caption>
-  <thead>
-    <tr><th scope="col">Claim</th><th scope="col">Verdict</th><th scope="col">Repeated by</th><th scope="col">Updated</th></tr>
-  </thead>
-  <tbody>
-  {% for claim in latest | take(5) %}
-    <tr>
-      <td><a href="{{ claim.url | url }}">{{ claim.title }}</a></td>
-      <td><span class="badge badge-verdict badge-{{ claim.verdict }}">{{ claim.verdict | verdictLabel }}</span></td>
-      <td>{{ claim.repeatedBy | length }} of 8</td>
-      <td><time datetime="{{ claim.updated | isoDate }}">{{ claim.updated | displayDate }}</time></td>
-    </tr>
-  {% endfor %}
-  </tbody>
-</table>
-</div>
+<h2 id="findings">{{ 'section.findings' | t }}</h2>
+{% set tableClaims = latest | take(5) %}
+{% set tableCaption = 'caption.claims' | t %}
+{% include "partials/claims-table.njk" %}
 {% if navigation.has.escalations and site.counters.escalations_sent %}
-<p>Escalations: {{ site.counters.escalations_sent }} report{{ "" if site.counters.escalations_sent == 1 else "s" }} sent · {{ site.counters.escalations_answered }} response{{ "" if site.counters.escalations_answered == 1 else "s" }} · {{ site.counters.escalations_actioned }} confirmed change{{ "" if site.counters.escalations_actioned == 1 else "s" }}. <a href="{{ '/escalations/' | url }}">See the escalation log</a></p>
+<p>{{ 'misc.escalationSummary' | t(site.counters.escalations_sent, site.counters.escalations_answered, site.counters.escalations_actioned) }} · <a href="{{ '/escalations/' | loc(lang) | url }}">{{ 'action.escalationLog' | t }}</a></p>
 {% endif %}
 {% endif %}
 
 {% if site.used_by | length %}
-<h2 id="used-by">Where our data is used</h2>
+<h2 id="used-by">{{ 'section.usedBy' | t }}</h2>
 <ul>
 {% for item in site.used_by %}
-  <li><a href="{{ item.url | url }}">{{ item.org }} — {{ item.title }}</a>, <time datetime="{{ item.date | isoDate }}">{{ item.date | displayDate }}</time></li>
+  <li><a href="{{ item.url }}">{{ item.org }} — {{ item.title }}</a>, <time datetime="{{ item.date | isoDate }}">{{ item.date | displayDate }}</time></li>
 {% endfor %}
 </ul>
 {% endif %}
 
-<h2 id="why-trust-this">Why trust this</h2>
+<h2 id="why-trust-this">{{ 'section.whyTrust' | t }}</h2>
 <ul class="trust">
 {% for item in trust %}
   <li>
-    {{ copyEn.sections[item.key].html | safe }}
-    {% if navigation.byKey[item.nav] %}<a href="{{ navigation.byKey[item.nav].url | url }}">{{ item.label }}</a>{% endif %}
+    {{ copyDoc.sections[item.key].html | safe }}
+    {% if navigation.byKey[item.nav] %}<a href="{{ navigation.byKey[item.nav].url | loc(lang) | url }}">{{ navigation.byKey[item.nav].label[lang] | default(navigation.byKey[item.nav].label.en) }}</a>{% endif %}
   </li>
 {% endfor %}
 </ul>
-{{ copyEn.sections['independence'].html | safe }}
-{% if navigation.has.about %}<p><a href="{{ '/about/' | url }}">Who we are</a></p>{% endif %}
+{{ copyDoc.sections['independence'].html | safe }}
+{% if navigation.has.about %}<p><a href="{{ '/about/' | loc(lang) | url }}">{{ 'action.whoWeAre' | t }}</a></p>{% endif %}

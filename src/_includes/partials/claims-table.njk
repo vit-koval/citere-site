@@ -3,22 +3,22 @@
   <caption>{{ tableCaption }}</caption>
   <thead>
     <tr>
-      <th scope="col">Claim</th>
-      <th scope="col">Verdict</th>
-      <th scope="col">Repeated by</th>
-      <th scope="col">Countries</th>
-      <th scope="col">Escalation</th>
-      <th scope="col">Updated</th>
+      <th scope="col">{{ 'col.claim' | t }}</th>
+      <th scope="col">{{ 'col.verdict' | t }}</th>
+      <th scope="col">{{ 'col.repeatedBy' | t }}</th>
+      <th scope="col">{{ 'col.countries' | t }}</th>
+      <th scope="col">{{ 'col.escalation' | t }}</th>
+      <th scope="col">{{ 'col.updated' | t }}</th>
     </tr>
   </thead>
   <tbody>
   {% for item in tableClaims %}
     <tr>
-      <th scope="row"><a href="{{ item.url | url }}">{{ item.title_en }}</a></th>
+      <th scope="row"><a href="{{ item.url | loc(lang) | url }}">{{ item.title_en }}</a></th>
       <td><span class="badge badge-verdict badge-{{ item.verdict }}">{{ item.verdict | verdictLabel }}</span></td>
-      <td>{% if item.repeatedBy | length %}{% for bot in item.repeatedBy %}{{ bot | chatbotLabel }}{% if not loop.last %}, {% endif %}{% endfor %}{% else %}none{% endif %}</td>
+      <td>{% if item.repeatedBy | length %}{% for bot in item.repeatedBy %}{{ bot | chatbotLabel }}{% if not loop.last %}, {% endif %}{% endfor %}{% else %}{{ 'value.none' | t }}{% endif %}</td>
       <td>{% for code in item.countries %}{{ code | upper }}{% if not loop.last %}, {% endif %}{% endfor %}</td>
-      <td>{% if item.escalationStatus %}{{ item.escalationStatus | statusLabel }}{% else %}not reported{% endif %}</td>
+      <td>{% if item.escalationStatus %}{{ item.escalationStatus | statusLabel }}{% else %}{{ 'value.notReported' | t }}{% endif %}</td>
       <td><time datetime="{{ item.updated | isoDate }}">{{ item.updated | displayDate }}</time></td>
     </tr>
   {% endfor %}

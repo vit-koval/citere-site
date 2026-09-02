@@ -1,40 +1,40 @@
 ---
 layout: layouts/base.njk
 ---
-<h1>Russian disinformation in AI chatbots: {{ profile.name }}</h1>
-<p class="lede">We recorded {{ profile.stats.answers }} chatbot answers served to users in {{ profile.name }}, covering {{ profile.claims | length }} documented false {{ profile.claims | length | plural("claim", "claims") }} in {% for code in profile.languages %}{{ code | languageName }}{% if not loop.last %}, {% endif %}{% endfor %}. {{ profile.stats.repeated }} of those answers repeated a claim as fact and {{ profile.stats.contaminated }} cited a domain on our watchlist.</p>
+<h1>{{ countryHeading }}</h1>
+<p class="lede">{{ profile.stats.answers }} {{ 'col.answers' | t | lower }} · {{ countryName }} · covering {{ profile.claims | length }} {{ 'col.claims' | t | lower }} — {% for code in profile.languages %}{{ code | languageName }}{% if not loop.last %}, {% endif %}{% endfor %}. {{ 'col.repeated' | t }}: {{ profile.stats.repeated }} · {{ 'col.citedWatchlisted' | t | lower }}: {{ profile.stats.contaminated }}.</p>
 {% include "partials/updated.njk" %}
 
-<h2 id="by-chatbot">Chatbots tested in {{ profile.name }}</h2>
+<h2 id="by-chatbot">{{ 'section.chatbotsTestedIn' | t(countryName) }}</h2>
 <div class="table-wrap">
 <table>
-  <caption>Behaviour per chatbot and persona for sessions run from {{ profile.name }}.</caption>
+  <caption>{{ 'caption.byChatbotPersona' | t }}</caption>
   <thead>
-    <tr><th scope="col">Chatbot</th><th scope="col">Persona</th><th scope="col" class="num">Answers</th><th scope="col" class="num">Repeated</th><th scope="col" class="num">Refuted</th><th scope="col" class="num">Dodged</th><th scope="col" class="num">Repeat-rate</th></tr>
+    <tr><th scope="col">{{ 'col.chatbot' | t }}</th><th scope="col">{{ 'col.persona' | t }}</th><th scope="col" class="num">{{ 'col.answers' | t }}</th><th scope="col" class="num">{{ 'col.repeated' | t }}</th><th scope="col" class="num">{{ 'col.refuted' | t }}</th><th scope="col" class="num">{{ 'col.dodged' | t }}</th><th scope="col" class="num">{{ 'col.repeatRate' | t }}</th></tr>
   </thead>
   <tbody>
   {% for row in profile.stats.byChatbotPersona %}
     <tr>
-      <th scope="row"><a href="{{ ('/platforms/' + row.chatbot + '/') | url }}">{{ row.chatbot | chatbotLabel }}</a></th>
+      <th scope="row"><a href="{{ ('/platforms/' + row.chatbot + '/') | loc(lang) | url }}">{{ row.chatbot | chatbotLabel }}</a></th>
       <td data-persona="{{ row.persona }}">{{ row.persona }}</td>
       <td class="num">{{ row.n }}</td>
       <td class="num">{{ row.repeated }}</td>
       <td class="num">{{ row.refuted }}</td>
       <td class="num">{{ row.dodged }}</td>
-      <td class="num">{% if row.nonEvasive %}{{ row.repeatRate | rate }} <small>(n={{ row.nonEvasive }})</small>{% else %}n/a{% endif %}</td>
+      <td class="num">{% if row.nonEvasive %}{{ row.repeatRate | rate }} <small>(n={{ row.nonEvasive }})</small>{% else %}{{ 'value.na' | t }}{% endif %}</td>
     </tr>
   {% endfor %}
   </tbody>
 </table>
 </div>
 
-<h2 id="claims">Claims recorded in {{ profile.name }}</h2>
+<h2 id="claims">{{ 'section.claimsRecordedIn' | t(countryName) }}</h2>
 {% set tableClaims = profile.claims %}
-{% set tableCaption = "Documented claims we recorded in answers served to this country." %}
+{% set tableCaption = 'caption.countryClaims' | t %}
 {% include "partials/claims-table.njk" %}
 
 {% if profile.partners | length %}
-<h2 id="partners">Local partners</h2>
+<h2 id="partners">{{ 'section.partners' | t }}</h2>
 <ul>
 {% for item in profile.partners %}
   <li>{% if item.url %}<a href="{{ item.url }}">{{ item.name }}</a>{% else %}{{ item.name }}{% endif %}</li>
@@ -42,6 +42,7 @@ layout: layouts/base.njk
 </ul>
 {% endif %}
 
+{% include "partials/translation-notice.njk" %}
 {% if prose %}
 {% for id in prose.order %}
 {% set section = prose.sections[id] %}

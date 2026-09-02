@@ -1,23 +1,9 @@
 const { md: markdown } = require("./src/_lib/markdown.cjs");
 
-const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-
-const VERDICTS = { false: "FALSE", misleading: "MISLEADING", unsupported: "UNSUPPORTED" };
-const BEHAVIOURS = { repeated: "Repeated", contextualised: "Contextualised", refuted: "Refuted", dodged: "Dodged" };
-const STATUSES = {
-  submitted: "Submitted", acknowledged: "Acknowledged", actioned: "Actioned",
-  no_response: "No response", declined: "Declined", completed: "Completed",
-  live: "Live", published: "Published", receipt_confirmed: "Receipt confirmed"
-};
-const ACTION_TYPES = {
-  published: "Published this page", platform_report: "Reported", domain_complaint: "Domain complaint",
-  shared: "Shared with", partner_publication: "Published by",
-  authority_confirmation: "Authority confirmation", remeasured: "Re-measured"
-};
-const NETWORKS = {
-  pravda: "Pravda", doppelganger: "Doppelganger", matryoshka: "Matryoshka",
-  "storm-1516": "Storm-1516", "state-media": "State media", other: "Other"
-};
+const ui = require("./src/_data/ui.js");
+const {
+  VERDICTS, BEHAVIOURS, STATUSES, ACTION_TYPES, NETWORKS, CHATBOTS, MONTHS, pick
+} = require("./src/_lib/labels.cjs");
 
 // Comment strip + whitespace collapse only. Deliberately conservative: nothing that
 // can change selector meaning (no touching spaces around ":" or combinators).
@@ -43,12 +29,29 @@ module.exports = function (eleventyConfig) {
     compile: (inputContent) => () => minifyCss(inputContent)
   });
 
-  eleventyConfig.addFilter("displayDate", (value) => {
+  eleventyConfig.addFilter("displayDate", function (value, langOverride) {
     if (!value) return "";
+    const lang = langOverride || (this.ctx && this.ctx.lang) || "en";
     const [y, m, d] = String(value).slice(0, 10).split("-");
     if (!y || !m || !d) return String(value);
-    return `${Number(d)} ${MONTHS[Number(m) - 1]} ${y}`;
+    return `${Number(d)} ${(MONTHS[lang] || MONTHS.en)[Number(m) - 1]} ${y}`;
   });
+
+  // Interface strings. Unknown keys throw: a typo must not ship as blank chrome.
+  // A missing Ukrainian key falls back to English (CLAUDE.md 2).
+  eleventyConfig.addFilter("t", function (key, ...args) {
+    const lang = (this.ctx && this.ctx.lang) || "en";
+    let value = (ui[lang] || ui.en)[key];
+    if (value === undefined) value = ui.en[key];
+    if (value === undefined) throw new Error(`ui: unknown string key "${key}"`);
+    for (const arg of args) value = value.replace("%s", String(arg));
+    return value;
+  });
+
+  // Mount-point aware sibling URL: /about/ in English, /uk/about/ in Ukrainian.
+  eleventyConfig.addFilter("loc", (path, lang) =>
+    lang && lang !== "en" ? `/${lang}${path}` : path
+  );
   eleventyConfig.addFilter("isoDate", (value) => String(value || "").slice(0, 10));
   eleventyConfig.addFilter("year", (value) => String(value || "").slice(0, 4));
 
@@ -56,26 +59,31 @@ module.exports = function (eleventyConfig) {
   eleventyConfig.addFilter("defang", (domain) => String(domain || "").replace(/\./g, "[.]"));
   eleventyConfig.addFilter("domainSlug", (domain) => String(domain || "").replace(/\./g, "-"));
 
-  eleventyConfig.addFilter("verdictLabel", (v) => VERDICTS[v] || String(v || "").toUpperCase());
-  eleventyConfig.addFilter("behaviourLabel", (v) => BEHAVIOURS[v] || v);
-  eleventyConfig.addFilter("statusLabel", (v) => STATUSES[v] || v);
-  eleventyConfig.addFilter("actionTypeLabel", (v) => ACTION_TYPES[v] || v);
-  eleventyConfig.addFilter("networkLabel", (v) => NETWORKS[v] || v);
+  const langOf = (ctx, override) => override || (ctx && ctx.lang) || "en";
+  eleventyConfig.addFilter("verdictLabel", function (v, l) { return pick(VERDICTS, langOf(this.ctx, l), v); });
+  eleventyConfig.addFilter("behaviourLabel", function (v, l) { return pick(BEHAVIOURS, langOf(this.ctx, l), v); });
+  eleventyConfig.addFilter("statusLabel", function (v, l) { return pick(STATUSES, langOf(this.ctx, l), v); });
+  eleventyConfig.addFilter("actionTypeLabel", function (v, l) { return pick(ACTION_TYPES, langOf(this.ctx, l), v); });
+  eleventyConfig.addFilter("networkLabel", function (v, l) { return pick(NETWORKS, langOf(this.ctx, l), v); });
 
-  const CHATBOTS = {
-    chatgpt: "ChatGPT", gemini: "Gemini", grok: "Grok", claude: "Claude",
-    copilot: "Copilot", perplexity: "Perplexity", deepseek: "DeepSeek", "le-chat": "Le Chat"
+  const displayNames = (lang, type) => {
+    try { return new Intl.DisplayNames([lang], { type }); } catch { return null; }
   };
-  const regionNames = new Intl.DisplayNames(["en"], { type: "region" });
-  const langNames = new Intl.DisplayNames(["en"], { type: "language" });
+  const nameCache = new Map();
+  const nameOf = (lang, type, value) => {
+    const cacheKey = `${lang}|${type}`;
+    if (!nameCache.has(cacheKey)) nameCache.set(cacheKey, displayNames(lang, type));
+    const formatter = nameCache.get(cacheKey);
+    const raw = type === "region" ? String(value).toUpperCase() : String(value);
+    try { return (formatter && formatter.of(raw)) || raw; } catch { return raw; }
+  };
 
   eleventyConfig.addFilter("chatbotLabel", (v) => CHATBOTS[v] || v);
-  eleventyConfig.addFilter("countryName", (v) => {
-    try { return regionNames.of(String(v).toUpperCase()) || String(v).toUpperCase(); }
-    catch { return String(v).toUpperCase(); }
+  eleventyConfig.addFilter("countryName", function (v, l) {
+    return nameOf(langOf(this.ctx, l), "region", v);
   });
-  eleventyConfig.addFilter("languageName", (v) => {
-    try { return langNames.of(String(v)) || v; } catch { return v; }
+  eleventyConfig.addFilter("languageName", function (v, l) {
+    return nameOf(langOf(this.ctx, l), "language", v);
   });
 
   eleventyConfig.addFilter("rate", (v) => (v === null || v === undefined ? "n/a" : `${Math.round(v * 1000) / 10}%`));
@@ -98,7 +106,17 @@ module.exports = function (eleventyConfig) {
   eleventyConfig.addFilter("sumField", (rows, field) =>
     (rows || []).reduce((total, row) => total + (Number(row[field]) || 0), 0)
   );
-  eleventyConfig.addFilter("plural", (count, one, many) => (Number(count) === 1 ? one : many));
+  // Slavic languages need three forms; English uses the first and third.
+  eleventyConfig.addFilter("plural", function (count, one, many, few) {
+    const lang = (this.ctx && this.ctx.lang) || "en";
+    const n = Math.abs(Number(count));
+    if (lang !== "uk" || few === undefined) return n === 1 ? one : many;
+    const mod10 = n % 10;
+    const mod100 = n % 100;
+    if (mod10 === 1 && mod100 !== 11) return one;
+    if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) return few;
+    return many;
+  });
   eleventyConfig.addFilter("take", (arr, n) => (arr || []).slice(0, n));
   eleventyConfig.addFilter("unique", (arr) => [...new Set([].concat(arr || []))]);
   eleventyConfig.addFilter("sortBy", (arr, key, dir) => {

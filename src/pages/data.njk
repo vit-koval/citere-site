@@ -1,28 +1,27 @@
 ---
 layout: layouts/page.njk
-permalink: /data/
-lang: en
-title: Open data on AI chatbots and Russian disinformation
-description: Download the Sitera claim registry, chatbot observations, domain watchlist and escalation log as CSV and JSON under CC BY 4.0, with citation.
-h1: Data
 schemas:
   - datacatalog
-breadcrumbTrail:
-  - title: Home
-    url: /
-  - title: Data
+pageKey: data
+pagination:
+  data: build.languages
+  alias: lang
+  size: 1
+permalink: "{{ '/data/' | loc(lang) }}"
+crumbs:
+  - key: crumb.data
     url: /data/
 ---
-{% set doc = copy.en.data %}
+{% include "partials/translation-notice.njk" %}
 <p class="lede">{{ doc.introText }}</p>
 
 {% if datasets.all | length %}
-<h2 id="downloads">Downloads</h2>
+<h2 id="downloads">{{ 'section.downloads' | t }}</h2>
 <div class="table-wrap">
 <table>
-  <caption>Every dataset published from this site. All under CC BY 4.0.</caption>
+  <caption>{{ 'caption.datasets' | t }}</caption>
   <thead>
-    <tr><th scope="col">Dataset</th><th scope="col">Format</th><th scope="col">What it contains</th></tr>
+    <tr><th scope="col">{{ 'col.dataset' | t }}</th><th scope="col">{{ 'col.format' | t }}</th><th scope="col">{{ 'col.contains' | t }}</th></tr>
   </thead>
   <tbody>
   {% for item in datasets.all %}
@@ -43,7 +42,7 @@ breadcrumbTrail:
 {{ section.html | safe }}
 {% endfor %}
 
-<h2 id="cite">How to cite</h2>
+<h2 id="cite">{{ 'section.cite' | t }}</h2>
 <p class="cite-block">{{ site.org.name }} ({{ site.last_update | year }}). Registry of Russian disinformation in AI chatbot answers. Version {{ site.watchlist_version }}. {{ site.url }}/data/</p>
 <p class="cite-block">@misc{ {{- site.org.name | lower }}{{ site.last_update | year }},
   author = { {{- site.org.name -}} },
@@ -51,4 +50,4 @@ breadcrumbTrail:
   year   = { {{- site.last_update | year -}} },
   url    = { {{- site.url }}/data/}
 }</p>
-<p>Questions about the data, or a request for extended access: <a href="mailto:{{ site.org.email.research }}">{{ site.org.email.research }}</a></p>
+<p>{{ 'misc.citeQuestions' | t }} <a href="mailto:{{ site.org.email.research }}">{{ site.org.email.research }}</a></p>

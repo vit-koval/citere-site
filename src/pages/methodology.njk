@@ -1,19 +1,18 @@
 ---
 layout: layouts/page.njk
-permalink: /methodology/
-lang: en
-title: How we measure disinformation in AI chatbot answers
-description: "Sitera classifies what a chatbot answer did with a documented false claim: repeated, contextualised, refuted or dodged. Four personas, never averaged."
-h1: How we measure
-breadcrumbTrail:
-  - title: Home
-    url: /
-  - title: Methodology
+pageKey: methodology
+pagination:
+  data: build.languages
+  alias: lang
+  size: 1
+permalink: "{{ '/methodology/' | loc(lang) }}"
+crumbs:
+  - key: crumb.methodology
     url: /methodology/
 ---
-{% set doc = copy.en.methodology %}
+{% include "partials/translation-notice.njk" %}
 <p class="lede">{{ doc.introText }}</p>
-<p>Methodology version {{ site.methodology_version }}. Watchlist version {{ site.watchlist_version }}.</p>
+<p>{{ 'misc.methodologyVersion' | t(site.methodology_version, site.watchlist_version) }}</p>
 
 {% for id in doc.order %}
 {% set section = doc.sections[id] %}

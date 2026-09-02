@@ -8,19 +8,20 @@ const { ROOT } = require("../_lib/markdown.cjs");
 const built = (template) => fs.existsSync(path.join(ROOT, "src", template));
 
 const ENTRIES = [
-  { key: "registry", label: "Registry", url: "/registry/", template: "pages/registry.njk", menu: true },
-  { key: "reports", label: "Reports", url: "/monitor/", template: "pages/monitor.njk", menu: true },
-  { key: "chatbots", label: "Chatbots", url: "/platforms/", template: "pages/platforms.njk", menu: true },
-  { key: "sources", label: "Sources", url: "/sources/", template: "pages/sources.njk", menu: true },
-  { key: "escalations", label: "Escalations", url: "/escalations/", template: "pages/escalations.njk", menu: true },
-  { key: "methodology", label: "Methodology", url: "/methodology/", template: "pages/methodology.njk", menu: true },
-  { key: "data", label: "Data", url: "/data/", template: "pages/data.njk", menu: false },
-  { key: "about", label: "About", url: "/about/", template: "pages/about.njk", menu: true },
-  { key: "corrections", label: "Corrections", url: "/about/#corrections", template: "pages/about.njk", menu: false },
-  { key: "contact", label: "Contact", url: "/about/#contact", template: "pages/about.njk", menu: false },
-  { key: "rss", label: "RSS", url: "/feed.xml", template: "machine/feed.njk", menu: false },
-  { key: "json", label: "JSON", url: "/registry.json", template: "machine/registry-json.njk", menu: false },
-  { key: "llms", label: "llms.txt", url: "/llms.txt", template: "machine/llms.njk", menu: false }
+  { key: "registry", label: { en: "Registry", uk: "Реєстр" }, url: "/registry/", template: "pages/registry.njk", menu: true },
+  { key: "reports", label: { en: "Reports", uk: "Звіти" }, url: "/monitor/", template: "pages/monitor.njk", menu: true },
+  { key: "chatbots", label: { en: "Chatbots", uk: "Чат-боти" }, url: "/platforms/", template: "pages/platforms.njk", menu: true },
+  { key: "sources", label: { en: "Sources", uk: "Джерела" }, url: "/sources/", template: "pages/sources.njk", menu: true },
+  { key: "escalations", label: { en: "Escalations", uk: "Ескалації" }, url: "/escalations/", template: "pages/escalations.njk", menu: true },
+  { key: "methodology", label: { en: "Methodology", uk: "Методологія" }, url: "/methodology/", template: "pages/methodology.njk", menu: true },
+  { key: "data", label: { en: "Data", uk: "Дані" }, url: "/data/", template: "pages/data.njk", menu: false },
+  { key: "about", label: { en: "About", uk: "Про нас" }, url: "/about/", template: "pages/about.njk", menu: true },
+  { key: "corrections", label: { en: "Corrections", uk: "Виправлення" }, url: "/about/#corrections", template: "pages/about.njk", menu: false },
+  { key: "contact", label: { en: "Contact", uk: "Контакти" }, url: "/about/#contact", template: "pages/about.njk", menu: false },
+  // Feeds and machine files are language-neutral: one copy, linked from both.
+  { key: "rss", label: { en: "RSS", uk: "RSS" }, url: "/feed.xml", template: "machine/feed-xml.njk", menu: false, shared: true },
+  { key: "json", label: { en: "JSON", uk: "JSON" }, url: "/registry.json", template: "machine/registry-json.njk", menu: false, shared: true },
+  { key: "llms", label: { en: "llms.txt", uk: "llms.txt" }, url: "/llms.txt", template: "machine/llms.njk", menu: false, shared: true }
 ];
 
 const live = ENTRIES.filter((e) => built(e.template));
