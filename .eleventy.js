@@ -1,3 +1,5 @@
+const { md: markdown } = require("./src/_lib/markdown.cjs");
+
 const MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 
 const VERDICTS = { false: "FALSE", misleading: "MISLEADING", unsupported: "UNSUPPORTED" };
@@ -83,6 +85,19 @@ module.exports = function (eleventyConfig) {
     return `${n > 0 ? "+" : ""}${n} pp`;
   });
 
+  // Prose in content/ carries no numbers; where a sentence needs one it writes
+  // {{ name }} and the template supplies the value from data/ (CLAUDE.md 11.1).
+  // Unknown names are left untouched, so a {{TODO}} marker survives to check.mjs.
+  eleventyConfig.addFilter("fill", (text, values) =>
+    String(text || "").replace(/\{\{\s*([a-zA-Z0-9_]+)\s*\}\}/g, (match, key) =>
+      Object.prototype.hasOwnProperty.call(values || {}, key) ? String(values[key]) : match
+    )
+  );
+  eleventyConfig.addFilter("md", (text) => markdown.render(String(text || "")).trim());
+
+  eleventyConfig.addFilter("sumField", (rows, field) =>
+    (rows || []).reduce((total, row) => total + (Number(row[field]) || 0), 0)
+  );
   eleventyConfig.addFilter("plural", (count, one, many) => (Number(count) === 1 ? one : many));
   eleventyConfig.addFilter("take", (arr, n) => (arr || []).slice(0, n));
   eleventyConfig.addFilter("unique", (arr) => [...new Set([].concat(arr || []))]);

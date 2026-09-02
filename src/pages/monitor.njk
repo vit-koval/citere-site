@@ -1,0 +1,51 @@
+---
+layout: layouts/base.njk
+permalink: /monitor/
+lang: en
+h1: Monthly monitor of AI chatbots on Russian disinformation
+breadcrumbTrail:
+  - title: Home
+    url: /
+  - title: Reports
+    url: /monitor/
+---
+{% set doc = copy.en.monitor %}
+<h1>{{ h1 }}</h1>
+<p class="lede">{{ doc.introText }}</p>
+{% include "partials/updated.njk" %}
+
+{% if reports | length %}
+<h2 id="reports">Reports</h2>
+<div class="table-wrap">
+<table>
+  <caption>Every report in the series, newest first.</caption>
+  <thead>
+    <tr>
+      <th scope="col">Report</th>
+      <th scope="col">Published</th>
+      <th scope="col" class="num">Answers</th>
+      <th scope="col">Chatbots</th>
+      <th scope="col">Countries</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for item in reports %}
+    {% set stats = runs.summariseRuns(item.runs) %}
+    <tr>
+      <th scope="row"><a href="{{ ('/monitor/' + item.slug + '/') | url }}">{{ item.title_en }}</a></th>
+      <td><time datetime="{{ item.date | isoDate }}">{{ item.date | displayDate }}</time></td>
+      <td class="num">{{ stats.answers }}</td>
+      <td>{{ stats.chatbots | length }}</td>
+      <td>{% for code in stats.countries %}{{ code | upper }}{% if not loop.last %}, {% endif %}{% endfor %}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+</div>
+{% endif %}
+
+{% for id in doc.order %}
+{% set section = doc.sections[id] %}
+<h2 id="{{ section.id }}">{{ section.title }}</h2>
+{{ section.html | safe }}
+{% endfor %}

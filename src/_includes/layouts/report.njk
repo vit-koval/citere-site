@@ -1,0 +1,156 @@
+---
+layout: layouts/base.njk
+---
+<h1>{{ report.title_en }}</h1>
+<p class="lede">{{ stats.answers }} answers from {{ stats.chatbots | length }} public chatbots, recorded in {% for code in stats.countries %}{{ code | countryName }}{% if not loop.last %}, {% endif %}{% endfor %} between <time datetime="{{ stats.firstDate | isoDate }}">{{ stats.firstDate | displayDate }}</time> and <time datetime="{{ stats.lastDate | isoDate }}">{{ stats.lastDate | displayDate }}</time>, against {{ stats.claims }} documented false {{ stats.claims | plural("claim", "claims") }}.</p>
+{% include "partials/updated.njk" %}
+
+<nav aria-label="Contents">
+  <h2 id="contents">Contents</h2>
+  <ol>
+    <li><a href="#key-findings">Key findings</a></li>
+    <li><a href="#scope">Scope</a></li>
+    <li><a href="#results-by-chatbot">Results by chatbot and persona</a></li>
+    <li><a href="#results-by-country">Results by country and persona</a></li>
+    <li><a href="#layer-b">Layer B: sources cited</a></li>
+    <li><a href="#what-we-tested">What we tested</a></li>
+    <li><a href="#what-changed-since-the-last-report">What changed since the last report</a></li>
+    <li><a href="#limitations">Limitations</a></li>
+    <li><a href="#methodology">Methodology</a></li>
+    <li><a href="#downloads">Downloads</a></li>
+  </ol>
+</nav>
+
+{% set figures = {
+  answers: stats.answers,
+  claims: stats.claims,
+  chatbots: stats.chatbots | length,
+  countries: stats.countries | length,
+  first_date: stats.firstDate | displayDate,
+  last_date: stats.lastDate | displayDate,
+  repeated: stats.byChatbot | sumField("repeated"),
+  contextualised: stats.byChatbot | sumField("contextualised"),
+  refuted: stats.byChatbot | sumField("refuted"),
+  dodged: stats.byChatbot | sumField("dodged"),
+  contaminated: stats.contaminated
+} %}
+
+<h2 id="key-findings">Key findings</h2>
+{{ prose.sections['key-findings'].text | fill(figures) | md | safe }}
+
+<h2 id="scope">Scope</h2>
+<div class="table-wrap">
+<table>
+  <caption>What this run covered.</caption>
+  <tbody>
+    <tr><th scope="row">Period</th><td>{{ report.period }}</td></tr>
+    <tr><th scope="row">Runs</th><td>{{ report.runs | join(", ") }}</td></tr>
+    <tr><th scope="row">Chatbots</th><td>{% for bot in stats.chatbots %}{{ bot | chatbotLabel }}{% if not loop.last %}, {% endif %}{% endfor %}</td></tr>
+    <tr><th scope="row">Countries</th><td>{% for code in stats.countries %}{{ code | countryName }}{% if not loop.last %}, {% endif %}{% endfor %}</td></tr>
+    <tr><th scope="row">Languages</th><td>{% for code in stats.languages %}{{ code | languageName }}{% if not loop.last %}, {% endif %}{% endfor %}</td></tr>
+    <tr><th scope="row">Personas</th><td>{{ stats.personas | join(", ") }}</td></tr>
+    <tr><th scope="row">Answers recorded</th><td>{{ stats.answers }}</td></tr>
+    <tr><th scope="row">Claims tested</th><td>{{ stats.claims }}</td></tr>
+    <tr><th scope="row">Dates</th><td><time datetime="{{ stats.firstDate | isoDate }}">{{ stats.firstDate | displayDate }}</time> to <time datetime="{{ stats.lastDate | isoDate }}">{{ stats.lastDate | displayDate }}</time></td></tr>
+  </tbody>
+</table>
+</div>
+
+<h2 id="results-by-chatbot">Results by chatbot and persona</h2>
+<div class="table-wrap">
+<table>
+  <caption>One row per chatbot and persona. Repeat-rate is repeated over non-evasive answers; dodged answers are excluded from that denominator and shown separately.</caption>
+  <thead>
+    <tr>
+      <th scope="col">Chatbot</th><th scope="col">Persona</th>
+      <th scope="col" class="num">Answers</th><th scope="col" class="num">Repeated</th>
+      <th scope="col" class="num">Contextualised</th><th scope="col" class="num">Refuted</th>
+      <th scope="col" class="num">Dodged</th><th scope="col" class="num">Repeat-rate</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for row in stats.byChatbotPersona %}
+    <tr>
+      <th scope="row">{{ row.chatbot | chatbotLabel }}</th>
+      <td data-persona="{{ row.persona }}">{{ row.persona }}</td>
+      <td class="num">{{ row.n }}</td>
+      <td class="num">{{ row.repeated }}</td>
+      <td class="num">{{ row.contextualised }}</td>
+      <td class="num">{{ row.refuted }}</td>
+      <td class="num">{{ row.dodged }}</td>
+      <td class="num">{% if row.nonEvasive %}{{ row.repeatRate | rate }} <small>(n={{ row.nonEvasive }})</small>{% else %}n/a{% endif %}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+</div>
+
+<h2 id="results-by-country">Results by country and persona</h2>
+<div class="table-wrap">
+<table>
+  <caption>The same answers grouped by the country the session was run from.</caption>
+  <thead>
+    <tr>
+      <th scope="col">Country</th><th scope="col">Persona</th>
+      <th scope="col" class="num">Answers</th><th scope="col" class="num">Repeated</th>
+      <th scope="col" class="num">Refuted</th><th scope="col" class="num">Dodged</th>
+      <th scope="col" class="num">Repeat-rate</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for row in stats.byCountryPersona %}
+    <tr>
+      <th scope="row">{{ row.country | countryName }}</th>
+      <td data-persona="{{ row.persona }}">{{ row.persona }}</td>
+      <td class="num">{{ row.n }}</td>
+      <td class="num">{{ row.repeated }}</td>
+      <td class="num">{{ row.refuted }}</td>
+      <td class="num">{{ row.dodged }}</td>
+      <td class="num">{% if row.nonEvasive %}{{ row.repeatRate | rate }} <small>(n={{ row.nonEvasive }})</small>{% else %}n/a{% endif %}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+</div>
+
+<h2 id="layer-b">Layer B: sources cited</h2>
+<p>Layer B counts answers that cited a domain on our watchlist, whatever the answer said about the claim. {{ stats.contaminated }} of {{ stats.answers }} answers in this run did.</p>
+<div class="table-wrap">
+<table>
+  <caption>Answers citing a watchlisted domain, per chatbot and persona.</caption>
+  <thead>
+    <tr><th scope="col">Chatbot</th><th scope="col">Persona</th><th scope="col" class="num">Answers</th><th scope="col" class="num">Cited a watchlisted domain</th></tr>
+  </thead>
+  <tbody>
+  {% for row in stats.byChatbotPersona %}
+    <tr>
+      <th scope="row">{{ row.chatbot | chatbotLabel }}</th>
+      <td data-persona="{{ row.persona }}">{{ row.persona }}</td>
+      <td class="num">{{ row.n }}</td>
+      <td class="num">{{ row.contaminated }}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+</div>
+
+<h2 id="what-we-tested">What we tested</h2>
+{{ prose.sections['what-we-tested'].text | fill(figures) | md | safe }}
+
+<h2 id="what-changed-since-the-last-report">What changed since the last report</h2>
+{{ prose.sections['what-changed-since-the-last-report'].text | fill(figures) | md | safe }}
+
+<h2 id="limitations">Limitations</h2>
+{{ prose.sections['limitations'].text | fill(figures) | md | safe }}
+
+<h2 id="methodology">Methodology</h2>
+<p>Behaviour is classified as repeated, contextualised, refuted or dodged, per persona, never averaged across personas. Methodology version {{ site.methodology_version }}, watchlist version {{ site.watchlist_version }}. <a href="{{ '/methodology/' | url }}">How we measure</a></p>
+
+<h2 id="downloads">Downloads</h2>
+<ul>
+{% for item in reportDownloads %}
+  <li><a href="{{ item.url | url }}">{{ item.label }}</a></li>
+{% endfor %}
+</ul>
+{% if report.doi %}<p>DOI: <a href="https://doi.org/{{ report.doi }}">{{ report.doi }}</a></p>{% endif %}
+<p class="cite-block">{{ site.org.name }} ({{ report.date | year }}). {{ report.title_en }}. Sitera monitor {{ report.period }}. {{ site.url }}/monitor/{{ report.slug }}/</p>

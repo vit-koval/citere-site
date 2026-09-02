@@ -5,21 +5,73 @@
   "type": "array",
   "items": {
     "type": "object",
-    "required": ["slug", "period", "date", "title_en"],
+    "required": [
+      "slug",
+      "period",
+      "date",
+      "title_en",
+      "runs"
+    ],
     "additionalProperties": false,
     "properties": {
-      "slug": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}-[a-z0-9-]+$" },
-      "period": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}$" },
-      "date": { "type": "string", "format": "date" },
-      "title_en": { "type": "string" },
-      "title_uk": { "type": "string" },
-      "countries": { "type": "array", "items": { "type": "string", "pattern": "^[a-z]{2}$" } },
-      "languages": { "type": "array", "items": { "type": "string", "pattern": "^[a-z]{2}$" } },
-      "chatbots": { "type": "array", "items": { "type": "string" } },
-      "n_responses": { "type": "integer", "minimum": 1 },
-      "dataset_url": { "type": "string" },
-      "doi": { "type": "string" },
-      "pdf_url": { "type": "string" }
+      "slug": {
+        "type": "string",
+        "pattern": "^[0-9]{4}-[0-9]{2}-[a-z0-9-]+$"
+      },
+      "period": {
+        "type": "string",
+        "pattern": "^[0-9]{4}-[0-9]{2}$"
+      },
+      "date": {
+        "type": "string",
+        "format": "date"
+      },
+      "title_en": {
+        "type": "string"
+      },
+      "title_uk": {
+        "type": "string"
+      },
+      "countries": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "pattern": "^[a-z]{2}$"
+        }
+      },
+      "languages": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "pattern": "^[a-z]{2}$"
+        }
+      },
+      "chatbots": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "n_responses": {
+        "type": "integer",
+        "minimum": 1
+      },
+      "dataset_url": {
+        "type": "string"
+      },
+      "doi": {
+        "type": "string"
+      },
+      "pdf_url": {
+        "type": "string"
+      },
+      "runs": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "minItems": 1
+      }
     }
   }
 }
