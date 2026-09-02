@@ -34,7 +34,7 @@ validate("data/reports.json", schema("reports"), read("data/reports.json"));
 const claimSchema = schema("claim");
 const claimDir = join(ROOT, "data/claims");
 const claimFiles = existsSync(claimDir) ? readdirSync(claimDir).filter((f) => f.endsWith(".json")) : [];
-const clusters = read("data/clusters.json");
+const clusterIds = new Set(read("data/clusters.json").clusters.map((c) => c.id));
 const seenSlugs = new Map();
 const claimIds = new Set();
 
@@ -50,7 +50,7 @@ for (const file of claimFiles) {
     }
     seenSlugs.set(claim.slug, file);
   }
-  if (claim.cluster && !clusters[claim.cluster]) {
+  if (claim.cluster && !clusterIds.has(claim.cluster)) {
     errors.push(`data/claims/${file}: cluster "${claim.cluster}" has no entry in data/clusters.json`);
   }
   if (claim.id) claimIds.add(claim.id);
@@ -63,14 +63,32 @@ for (const file of claimFiles) {
     if (!claimIds.has(rel)) errors.push(`data/claims/${file}: related claim ${rel} does not exist`);
   }
 }
-for (const entry of read("data/escalations.json")) {
+for (const entry of read("data/escalations.json").actions) {
   if (!claimIds.has(entry.claim_id)) {
     errors.push(`data/escalations.json: claim_id ${entry.claim_id} does not exist`);
   }
 }
-for (const source of read("data/sources.json")) {
+for (const source of read("data/sources.json").domains) {
   for (const id of source.cited_in || []) {
     if (!claimIds.has(id)) errors.push(`data/sources.json: ${source.domain} cites unknown claim ${id}`);
+  }
+}
+
+// Cross-file: every claim's observations must name a chatbot we publish a
+// profile for, and every cited domain must be on the watchlist.
+const botKeys = new Set(Object.keys(read("data/platforms.json").platforms));
+const watchlist = new Set(read("data/sources.json").domains.map((d) => d.domain));
+for (const file of claimFiles) {
+  const claim = read(`data/claims/${file}`);
+  for (const o of claim.observations || []) {
+    if (!botKeys.has(o.chatbot)) {
+      errors.push(`data/claims/${file}: observation names unknown chatbot ${o.chatbot}`);
+    }
+    for (const d of o.cited_domains || []) {
+      if (!watchlist.has(d)) {
+        errors.push(`data/claims/${file}: observation cites ${d}, which is not in sources.json`);
+      }
+    }
   }
 }
 

@@ -1,16 +1,38 @@
 {
-  "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://citere.ai/schemas/clusters.schema.json",
   "title": "Claim clusters",
   "type": "object",
-  "propertyNames": { "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$" },
-  "additionalProperties": {
-    "type": "object",
-    "required": ["name_en"],
-    "additionalProperties": false,
-    "properties": {
-      "name_en": { "type": "string" },
-      "name_uk": { "type": "string" }
+  "required": [
+    "clusters"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "demo": {
+      "type": "boolean"
+    },
+    "clusters": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "label_en"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+          },
+          "label_en": {
+            "type": "string"
+          },
+          "label_uk": {
+            "type": "string"
+          }
+        }
+      }
     }
-  }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://citere.ai/schemas/clusters.schema.json"
 }

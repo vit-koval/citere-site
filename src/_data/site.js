@@ -6,7 +6,8 @@ const path = require("node:path");
 const { readJson, ROOT } = require("../_lib/markdown.cjs");
 
 const site = readJson("data/site.json");
-const escalations = readJson("data/escalations.json");
+const escalationsFile = readJson("data/escalations.json");
+const escalations = escalationsFile.actions || [];
 
 const claimDir = path.join(ROOT, "data/claims");
 const claims = fs.existsSync(claimDir)
@@ -34,12 +35,17 @@ const median = responseDays.length
 const lastUpdate = [site.last_update, ...claims.map((c) => c.updated)].filter(Boolean).sort().pop();
 
 const { CHATBOTS } = require("../_lib/labels.cjs");
-const sources = readJson("data/sources.json");
+const sources = readJson("data/sources.json").domains || [];
 const benchmarks = readJson("data/benchmarks.json");
 
 module.exports = {
   ...site,
-  url: `https://${site.domain}`,
+  // The canonical host. Defaults to the production domain; CANONICAL_URL
+  // overrides it for a preview deploy, which is what lets a demo build ship
+  // somewhere that is not production (see scripts/check.mjs).
+  url: (process.env.CANONICAL_URL || `https://${site.domain}`).replace(/\/+$/, ""),
+  productionUrl: `https://${site.domain}`,
+  isDemo: site.demo === true,
   counters: {
     claims: claims.length,
     clusters: new Set(claims.map((c) => c.cluster)).size,

@@ -17,10 +17,10 @@ wrap: wrap-narrow
 
 <div class="prose" style="max-width:none">
   <h2 id="the-verdict">The verdict</h2>
-  {{ prose.sections['verdict'].html | prefixLinks | safe }}
+  {{ prose.sections['verdict'].html | prefixLinks | defangCopy | safe }}
 
   <h2 id="what-is-true">What is true</h2>
-  {{ prose.sections['what-is-true'].html | prefixLinks | safe }}
+  {{ prose.sections['what-is-true'].html | prefixLinks | defangCopy | safe }}
 
   {%- if claim.grain_of_truth and benchmarks.headline %}
   <div class="callout">In {{ benchmarks.headline.run_label }}, chatbots refuted pure inventions
@@ -29,7 +29,7 @@ wrap: wrap-narrow
   {%- endif %}
 
   <h2 id="where-the-claim-comes-from">Where the claim comes from</h2>
-  {{ prose.sections['where-the-claim-comes-from'].html | prefixLinks | safe }}
+  {{ prose.sections['where-the-claim-comes-from'].html | prefixLinks | defangCopy | safe }}
   <p>First seen <time datetime="{{ claim.origin.first_seen | isoDate }}">{{ claim.origin.first_seen | displayDate }}</time>
     on the {{ claim.origin.network | networkName }} network{% if claim.origin.attribution | length %}, attributed by
     {% for a in claim.origin.attribution %}{% if a.url %}<a href="{{ a.url }}">{{ a.org }}</a>{% else %}{{ a.org }}{% endif %}

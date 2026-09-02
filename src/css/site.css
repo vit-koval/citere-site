@@ -465,3 +465,43 @@ a:focus-visible,button:focus-visible,summary:focus-visible,[tabindex]:focus-visi
 .fmenu a:hover{background:var(--bg);color:var(--ink)}
 .fmenu a[aria-current]{color:var(--ink);font-weight:660}
 .fmenu a span{color:var(--dimmer);font-variant-numeric:tabular-nums}
+/* ---------- assistant brand marks ----------
+   Real logo files and monogram tiles must occupy identical space so a page looks the same
+   whether or not an official asset has been dropped in. Marks sit on a white rounded plate
+   because most vendor marks are supplied monochrome and several are near-black. */
+
+.botmark{display:inline-block;flex:none;vertical-align:middle;object-fit:contain;
+  background:#fff;border:1px solid var(--line);border-radius:6.5px;padding:2px}
+.botmark-sm{width:22px;height:22px;border-radius:6.5px;padding:2px}
+.botmark-md{width:25px;height:25px;border-radius:7px;padding:3px}
+.botmark-lg{width:52px;height:52px;border-radius:14px;padding:8px;border-width:1px}
+
+/* stacked marks in tables keep the same overlap as monogram tiles */
+.stack .botmark + .botmark{margin-left:-6px;box-shadow:0 0 0 2px #fff}
+
+/* profile-header monogram, matching .botmark-lg dimensions */
+.pmark{width:52px;height:52px;border-radius:14px;display:grid;place-items:center;
+  font-size:18px;font-weight:800;color:#fff;flex:none}
+
+/* screen-reader name that accompanies an aria-hidden monogram */
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;
+  clip:rect(0 0 0 0);white-space:nowrap;border:0}
+
+/* trademark notice in the footer */
+.marknotice{margin-top:10px;font-size:12.4px;color:var(--dimmer);line-height:1.6}
+
+@media(prefers-color-scheme:dark){
+  /* v1 has no dark mode; when it lands, keep the white plate so vendor marks stay legible */
+}
+
+/* ---------- demonstration-data banner ----------
+   Shown on every page while data/site.json has demo:true. Deliberately loud
+   and not dismissible: the figures behind it are generated, and a reviewer
+   must not be able to lose that fact while scrolling. */
+.demobar{background:#7a1410;color:#fff;border-bottom:1px solid #5d0f0c;
+  position:relative;z-index:40}
+.demobar-in{display:flex;align-items:center;gap:12px;padding:10px 28px;
+  font-size:13.4px;line-height:1.45}
+.demobar-tag{flex:none;background:#fff;color:#7a1410;border-radius:5px;
+  padding:2px 8px;font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase}
+.demobar-text{font-weight:520}

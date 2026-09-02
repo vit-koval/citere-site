@@ -29,12 +29,18 @@ jobs:
       # GitHub Pages serves this repo from https://<user>.github.io/citere-site/
       # until the custom domain is switched on. Set the repository variable
       # PATH_PREFIX to "/" once sitera.ai serves the site from its root.
+      # CANONICAL_URL is the host that goes into canonical, hreflang and
+      # JSON-LD. On the Pages preview that is the github.io URL, not the
+      # production domain - and while data/site.json carries demo:true,
+      # check.mjs refuses to build demo figures under the production host.
       - run: npm run build
         env:
           PATH_PREFIX: ${{ vars.PATH_PREFIX || '/citere-site/' }}
+          CANONICAL_URL: ${{ vars.CANONICAL_URL || 'https://vit-koval.github.io/citere-site' }}
       - run: npm run check
         env:
           PATH_PREFIX: ${{ vars.PATH_PREFIX || '/citere-site/' }}
+          CANONICAL_URL: ${{ vars.CANONICAL_URL || 'https://vit-koval.github.io/citere-site' }}
       # CLAUDE.md 10: Lighthouse >= 95 in all four categories on the homepage,
       # one claim page, the registry and one report. npm run lighthouse builds
       # its own copy into _site-lighthouse/ at the root prefix (where the

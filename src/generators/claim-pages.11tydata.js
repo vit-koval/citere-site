@@ -12,14 +12,16 @@ module.exports = {
     title: (data) => fitTitle(`“${data.claim.title_en}”`),
     description: (data) => {
       const claim = data.claim;
-      const bots = claim.repeatedBy.map((b) => (CHATBOTS[b] || {}).name || b);
+      // Values reach eleventyComputed proxy-wrapped for dependency tracking,
+      // so coerce before using one as an object key.
+      const bots = [...claim.repeatedBy].map((b) => (CHATBOTS[String(b)] || {}).name || String(b));
       return fitDescription(
         [
           `${VERDICTS[claim.verdict]}.`,
           bots.length
             ? `Repeated by ${listOf(bots)} in ${claim.counts.observations} recorded answers.`
             : `Recorded in ${claim.counts.observations} chatbot answers.`,
-          `Tested in ${listOf(claim.countries.map(countryName))}.`,
+          `Tested in ${listOf([...claim.countries].map((c) => countryName(String(c))))}.`,
           "Verdict, evidence, the domains cited and every action we took.",
           `Updated ${claim.updated}.`
         ],

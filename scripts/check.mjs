@@ -65,8 +65,12 @@ const sitePaths = new Set(
 
 const guards = JSON.parse(readFileSync(join(ROOT, "scripts/guards.json"), "utf8"));
 const site = JSON.parse(readFileSync(join(ROOT, "data/site.json"), "utf8"));
-const SITE_URL = `https://${site.domain}`;
-const sources = JSON.parse(readFileSync(join(ROOT, "data/sources.json"), "utf8"));
+// The host this build actually writes into canonicals, which is the preview
+// host on a preview deploy. PRODUCTION_URL stays the real domain so the demo
+// guard below can tell the two apart.
+const SITE_URL = (process.env.CANONICAL_URL || `https://${site.domain}`).replace(/\/+$/, "");
+const PRODUCTION_URL = `https://${site.domain}`;
+const sources = JSON.parse(readFileSync(join(ROOT, "data/sources.json"), "utf8")).domains || [];
 const claims = existsSync(join(ROOT, "data/claims"))
   ? readdirSync(join(ROOT, "data/claims"))
       .filter((f) => f.endsWith(".json"))
@@ -334,6 +338,30 @@ if (existsSync(feedXml)) {
   if (jsonFeedItems !== null && items !== jsonFeedItems) {
     err("feed.xml", `${items} items but feed.json has ${jsonFeedItems}`);
   }
+}
+
+// --- demonstration data must never carry a production canonical -----------
+// site.json.demo means every figure on the site is generated. Shipping that
+// under the production host would publish fabricated measurements as findings.
+if (site.demo === true) {
+  const productionHost = PRODUCTION_URL;
+  const built = htmlFiles.length
+    ? (readFileSync(htmlFiles[0], "utf8").match(/<link rel="canonical" href="(https?:\/\/[^/"]+)/) || [])[1]
+    : null;
+  if (built && built === productionHost) {
+    err(
+      "data/site.json",
+      `demo is true but the built canonical host is the production domain (${productionHost}). ` +
+        "Set CANONICAL_URL to a preview host, or replace the demo data with a real export."
+    );
+  }
+  const banners = htmlFiles.filter((f) => !/class="demobar"/.test(readFileSync(f, "utf8")));
+  if (banners.length) {
+    err("demo banner", `${banners.length} page(s) render no demo banner while demo is true`);
+  }
+} else {
+  const leaked = htmlFiles.filter((f) => /class="demobar"/.test(readFileSync(f, "utf8")));
+  if (leaked.length) err("demo banner", `${leaked.length} page(s) render a demo banner while demo is off`);
 }
 
 // --- security.txt ----------------------------------------------------------

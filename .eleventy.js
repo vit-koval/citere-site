@@ -147,6 +147,22 @@ module.exports = function (eleventyConfig) {
       : String(html || "")
   );
 
+  // Watchlisted domains must be printed defanged wherever they appear, prose
+  // included (CLAUDE.md 5.3). Content is written with the plain domain; this
+  // rewrites it on the way out so no page can leak a live one.
+  const watchlist = (() => {
+    try {
+      const file = require("node:fs").readFileSync(require("node:path").join(__dirname, "data/sources.json"), "utf8");
+      return (JSON.parse(file).domains || []).map((d) => d.domain).sort((a, b) => b.length - a.length);
+    } catch { return []; }
+  })();
+  const watchlistRe = watchlist.length
+    ? new RegExp(`(?<![\\w[.])(${watchlist.map((d) => d.replace(/\./g, "\\.")).join("|")})(?![\\w.])`, "g")
+    : null;
+  eleventyConfig.addFilter("defangCopy", (html) =>
+    watchlistRe ? String(html || "").replace(watchlistRe, (m) => m.replace(/\./g, "[.]")) : String(html || "")
+  );
+
   // ---- structured data ---------------------------------------------------
   // Strips nulls, empties and unresolved {{TODO}} values so JSON-LD never
   // describes something the page does not actually state (CLAUDE.md 7).

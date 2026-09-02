@@ -1,1 +1,374 @@
-[]
+{
+  "demo": true,
+  "version": "v14",
+  "updated": "2026-10-24",
+  "domains": [
+    {
+      "domain": "rt.com",
+      "slug": "rt-com",
+      "network": "state-media",
+      "label": "RT International",
+      "first_seen": "2026-07-10",
+      "note_en": "Sanctioned Russian state broadcaster; listed by the EU since 2022.",
+      "attribution": [
+        {
+          "org": "EUvsDisinfo",
+          "url": "https://euvsdisinfo.eu",
+          "date": "2022-03-02"
+        }
+      ],
+      "cited_in": [
+        "C1-001",
+        "C1-003",
+        "C1-007",
+        "C2-001",
+        "C2-004",
+        "C5-001"
+      ],
+      "citations": 11,
+      "complaints": [
+        {
+          "target": "Registrar",
+          "date": "2026-10-09",
+          "status": "submitted"
+        }
+      ],
+      "article_evidence": []
+    },
+    {
+      "domain": "pravda-en.example",
+      "slug": "pravda-en-example",
+      "network": "pravda",
+      "label": "Pravda network node",
+      "first_seen": "2025-11-02",
+      "note_en": "Part of the Portal Kombat network mapped by Viginum in February 2024.",
+      "attribution": [
+        {
+          "org": "Viginum",
+          "url": "https://www.sgdsn.gouv.fr/viginum",
+          "date": "2024-02-12"
+        },
+        {
+          "org": "NewsGuard",
+          "url": "https://www.newsguardtech.com",
+          "date": "2025-03-06"
+        }
+      ],
+      "cited_in": [
+        "C1-001"
+      ],
+      "citations": 1,
+      "complaints": [
+        {
+          "target": "Registrar",
+          "date": "2026-10-09",
+          "status": "submitted"
+        }
+      ],
+      "article_evidence": [
+        {
+          "url": "news-aggregator.example/2026/09/aid-audit-leak",
+          "host": "allowlisted aggregator",
+          "status": "to_review"
+        },
+        {
+          "url": "regional-portal.example/opinion/who-really-profits",
+          "host": "allowlisted regional outlet",
+          "status": "confirmed"
+        }
+      ]
+    },
+    {
+      "domain": "pravda-de.example",
+      "slug": "pravda-de-example",
+      "network": "pravda",
+      "label": "Pravda network node (DE)",
+      "first_seen": "2025-11-08",
+      "note_en": "German-language node of the same network.",
+      "attribution": [
+        {
+          "org": "Viginum",
+          "url": "https://www.sgdsn.gouv.fr/viginum",
+          "date": "2024-02-12"
+        },
+        {
+          "org": "NewsGuard",
+          "url": "https://www.newsguardtech.com",
+          "date": "2025-03-06"
+        }
+      ],
+      "cited_in": [
+        "C1-001",
+        "C1-003",
+        "C2-001",
+        "C2-002"
+      ],
+      "citations": 6,
+      "complaints": [
+        {
+          "target": "Registrar",
+          "date": "2026-10-09",
+          "status": "submitted"
+        }
+      ],
+      "article_evidence": []
+    },
+    {
+      "domain": "pravda-fr.example",
+      "slug": "pravda-fr-example",
+      "network": "pravda",
+      "label": "Pravda network node (FR)",
+      "first_seen": "2025-11-08",
+      "note_en": "French-language node of the same network.",
+      "attribution": [
+        {
+          "org": "Viginum",
+          "url": "https://www.sgdsn.gouv.fr/viginum",
+          "date": "2024-02-12"
+        },
+        {
+          "org": "NewsGuard",
+          "url": "https://www.newsguardtech.com",
+          "date": "2025-03-06"
+        }
+      ],
+      "cited_in": [
+        "C1-001",
+        "C1-003",
+        "C3-003"
+      ],
+      "citations": 3,
+      "complaints": [
+        {
+          "target": "Registrar",
+          "date": "2026-10-09",
+          "status": "submitted"
+        }
+      ],
+      "article_evidence": []
+    },
+    {
+      "domain": "pravda-pl.example",
+      "slug": "pravda-pl-example",
+      "network": "pravda",
+      "label": "Pravda network node (PL)",
+      "first_seen": "2025-12-01",
+      "note_en": "Polish-language node of the same network.",
+      "attribution": [
+        {
+          "org": "Viginum",
+          "url": "https://www.sgdsn.gouv.fr/viginum",
+          "date": "2024-02-12"
+        },
+        {
+          "org": "NewsGuard",
+          "url": "https://www.newsguardtech.com",
+          "date": "2025-03-06"
+        }
+      ],
+      "cited_in": [
+        "C2-002",
+        "C3-003"
+      ],
+      "citations": 2,
+      "complaints": [
+        {
+          "target": "Registrar",
+          "date": "2026-10-09",
+          "status": "submitted"
+        }
+      ],
+      "article_evidence": []
+    },
+    {
+      "domain": "geo-politica.example",
+      "slug": "geo-politica-example",
+      "network": "laundering",
+      "label": "Laundering site",
+      "first_seen": "2025-09-18",
+      "note_en": "Republishes network content under an independent-analysis framing.",
+      "attribution": [
+        {
+          "org": "DFRLab",
+          "url": "https://dfrlab.org",
+          "date": "2025-01-30"
+        }
+      ],
+      "cited_in": [
+        "C1-007"
+      ],
+      "citations": 2,
+      "complaints": [
+        {
+          "target": "Registrar",
+          "date": "2026-10-09",
+          "status": "submitted"
+        }
+      ],
+      "article_evidence": []
+    },
+    {
+      "domain": "news-frontier.example",
+      "slug": "news-frontier-example",
+      "network": "doppelganger",
+      "label": "Doppelganger clone",
+      "first_seen": "2026-08-04",
+      "note_en": "Typosquatted clone of a mainstream outlet.",
+      "attribution": [
+        {
+          "org": "EU DisinfoLab",
+          "url": "https://www.disinfo.eu",
+          "date": "2022-09-27"
+        },
+        {
+          "org": "DFRLab",
+          "url": "https://dfrlab.org",
+          "date": "2024-06-18"
+        }
+      ],
+      "cited_in": [],
+      "citations": 0,
+      "complaints": [],
+      "article_evidence": []
+    },
+    {
+      "domain": "der-bote.example",
+      "slug": "der-bote-example",
+      "network": "doppelganger",
+      "label": "Doppelganger clone (DE)",
+      "first_seen": "2026-08-11",
+      "note_en": "Clone imitating a German regional newspaper.",
+      "attribution": [
+        {
+          "org": "EU DisinfoLab",
+          "url": "https://www.disinfo.eu",
+          "date": "2022-09-27"
+        },
+        {
+          "org": "DFRLab",
+          "url": "https://dfrlab.org",
+          "date": "2024-06-18"
+        }
+      ],
+      "cited_in": [
+        "C2-003"
+      ],
+      "citations": 2,
+      "complaints": [
+        {
+          "target": "Registrar",
+          "date": "2026-10-09",
+          "status": "submitted"
+        }
+      ],
+      "article_evidence": []
+    },
+    {
+      "domain": "le-observateur.example",
+      "slug": "le-observateur-example",
+      "network": "doppelganger",
+      "label": "Doppelganger clone (FR)",
+      "first_seen": "2026-08-19",
+      "note_en": "Clone imitating a French daily.",
+      "attribution": [
+        {
+          "org": "EU DisinfoLab",
+          "url": "https://www.disinfo.eu",
+          "date": "2022-09-27"
+        },
+        {
+          "org": "DFRLab",
+          "url": "https://dfrlab.org",
+          "date": "2024-06-18"
+        }
+      ],
+      "cited_in": [
+        "C3-002",
+        "C5-002"
+      ],
+      "citations": 2,
+      "complaints": [
+        {
+          "target": "Registrar",
+          "date": "2026-10-09",
+          "status": "submitted"
+        }
+      ],
+      "article_evidence": []
+    },
+    {
+      "domain": "svoboda-eu.example",
+      "slug": "svoboda-eu-example",
+      "network": "storm-1516",
+      "label": "Storm-1516 asset",
+      "first_seen": "2026-06-29",
+      "note_en": "Seeds fabricated video claims for later laundering.",
+      "attribution": [
+        {
+          "org": "Microsoft MTAC",
+          "url": "https://www.microsoft.com/mtac",
+          "date": "2024-04-17"
+        }
+      ],
+      "cited_in": [
+        "C1-004",
+        "C3-001"
+      ],
+      "citations": 2,
+      "complaints": [
+        {
+          "target": "Registrar",
+          "date": "2026-10-09",
+          "status": "submitted"
+        }
+      ],
+      "article_evidence": []
+    },
+    {
+      "domain": "matryoshka-hub.example",
+      "slug": "matryoshka-hub-example",
+      "network": "matryoshka",
+      "label": "Matryoshka amplifier",
+      "first_seen": "2026-07-22",
+      "note_en": "Coordinated reply-amplification infrastructure.",
+      "attribution": [
+        {
+          "org": "CheckFirst",
+          "url": "https://checkfirst.network",
+          "date": "2024-09-04"
+        }
+      ],
+      "cited_in": [],
+      "citations": 0,
+      "complaints": [],
+      "article_evidence": []
+    },
+    {
+      "domain": "eurasia-review.example",
+      "slug": "eurasia-review-example",
+      "network": "laundering",
+      "label": "Laundering site",
+      "first_seen": "2026-05-14",
+      "note_en": "Aggregates network output alongside legitimate wire copy.",
+      "attribution": [
+        {
+          "org": "DFRLab",
+          "url": "https://dfrlab.org",
+          "date": "2025-01-30"
+        }
+      ],
+      "cited_in": [
+        "C1-007"
+      ],
+      "citations": 2,
+      "complaints": [
+        {
+          "target": "Registrar",
+          "date": "2026-10-09",
+          "status": "submitted"
+        }
+      ],
+      "article_evidence": []
+    }
+  ]
+}

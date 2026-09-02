@@ -1,0 +1,61 @@
+{#
+  bot-mark.njk — renders an assistant's brand mark, falling back to a monogram tile.
+
+  Usage:
+    {% from "partials/bot-mark.njk" import botMark %}
+    {{ botMark(logos, "grok", "sm") }}      → 22px, used inside tables and rank rows
+    {{ botMark(logos, "grok", "md") }}      → 25px, used in the homepage assistant strip
+    {{ botMark(logos, "grok", "lg") }}      → 52px, used in the chatbot profile header
+
+  `logos` is the parsed data/logos.json. The mark renders as an <img> only when a real file
+  exists at src/assets/logos/{file}; otherwise it renders the monogram tile from the approved
+  design. Both states are intentional — the monogram is a legitimate permanent choice, not a
+  placeholder, and the site must look finished in either state.
+
+  Rules encoded here, from data/logos.json and the brand guidelines it links to:
+    - Marks are never redrawn, recoloured, cropped or combined with our own wordmark.
+    - Marks are never used as a link to the vendor, and never next to language that could imply
+      partnership or endorsement.
+    - alt text names the product, not the company, and never says "logo".
+    - Every page that shows marks must also render the trademark line from logos.json.
+#}
+
+{% macro botMark(logos, key, size="sm") %}
+  {%- set bot = (logos.assistants | selectattr("key", "equalto", key) | first) -%}
+  {%- if not bot -%}
+    <span class="mini" style="background:#6b7280" aria-hidden="true">??</span>
+  {%- else -%}
+    {%- set px = {"sm": 22, "md": 25, "lg": 52}[size] -%}
+    {%- set cls = {"sm": "mini", "md": "g", "lg": "pmark"}[size] -%}
+    {%- if bot.file and (("assets/logos/" ~ bot.file) | fileExists) -%}
+      <img class="botmark botmark-{{ size }}"
+           src="{{ ('/assets/logos/' ~ bot.file) | url }}"
+           alt="{{ bot.name }}"
+           width="{{ px }}" height="{{ px }}" loading="lazy" decoding="async">
+    {%- else -%}
+      <span class="{{ cls }}" style="background:{{ bot.brand_color }}" aria-hidden="true"
+        >{{ bot.monogram }}</span><span class="sr-only">{{ bot.name }}</span>
+    {%- endif -%}
+  {%- endif -%}
+{% endmacro %}
+
+
+{# Trademark line. Render once per page that shows any mark — the footer is the right place. #}
+{% macro markNotice(logos, lang="en") %}
+  <p class="fnote marknotice">
+    {{ logos["attribution_line_" ~ lang] or logos.attribution_line_en }}
+  </p>
+{% endmacro %}
+
+
+{# Assistant strip used on the homepage. Keeps marks, names and rates together. #}
+{% macro botStrip(logos, rows) %}
+  <div class="bots">
+    {%- for row in rows %}
+      {%- set bot = (logos.assistants | selectattr("key", "equalto", row.key) | first) %}
+      <a class="bot" href="{{ ('/platforms/' ~ row.key ~ '/') | url }}">
+        {{ botMark(logos, row.key, "md") }}{{ bot.name }}<span class="r num">{{ row.rate }}</span>
+      </a>
+    {%- endfor %}
+  </div>
+{% endmacro %}

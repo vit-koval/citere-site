@@ -1,1 +1,52 @@
-{}
+{
+  "demo": true,
+  "countries": {
+    "us": {
+      "name": "United States",
+      "language": "en",
+      "repeat_rate": 0.0786,
+      "contamination_rate": 0.0234,
+      "n": 512,
+      "partners": [
+        "EU DisinfoLab"
+      ],
+      "note_en": "English-language corpus and the largest sample; the corruption cluster dominates."
+    },
+    "de": {
+      "name": "Germany",
+      "language": "de",
+      "repeat_rate": 0.0685,
+      "contamination_rate": 0.0246,
+      "n": 448,
+      "partners": [
+        "German EDMO hub",
+        "CheckFirst"
+      ],
+      "note_en": "Highest repeat-rate of the four markets; energy narratives appear here and barely in English."
+    },
+    "fr": {
+      "name": "France",
+      "language": "fr",
+      "repeat_rate": 0.1047,
+      "contamination_rate": 0.0208,
+      "n": 288,
+      "partners": [
+        "Viginum (public reporting)",
+        "EDMO France"
+      ],
+      "note_en": "Weapons-diversion narratives are more active here than elsewhere."
+    },
+    "pl": {
+      "name": "Poland",
+      "language": "pl",
+      "repeat_rate": 0.0863,
+      "contamination_rate": 0.0114,
+      "n": 352,
+      "partners": [
+        "EDMO Poland",
+        "Demagog"
+      ],
+      "note_en": "Delegitimisation and mobilisation narratives are the most active."
+    }
+  }
+}

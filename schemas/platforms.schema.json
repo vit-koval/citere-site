@@ -1,47 +1,160 @@
 {
-  "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://citere.ai/schemas/platforms.schema.json",
-  "title": "Chatbot metadata and per-run aggregates",
+  "title": "Assistant metadata and per-run aggregates",
   "type": "object",
-  "propertyNames": { "enum": ["chatgpt", "gemini", "grok", "claude", "copilot", "perplexity", "deepseek", "le-chat"] },
-  "additionalProperties": {
-    "type": "object",
-    "required": ["name", "company"],
-    "additionalProperties": false,
-    "properties": {
-      "name": { "type": "string" },
-      "company": { "type": "string" },
-      "runs": {
-        "type": "array",
-        "items": {
-          "type": "object",
-          "required": ["run", "country", "date", "by_persona", "n"],
-          "additionalProperties": false,
-          "properties": {
-            "run": { "type": "string" },
-            "country": { "type": "string", "pattern": "^[a-z]{2}$" },
-            "date": { "type": "string", "format": "date" },
-            "model_version": { "type": "string" },
-            "by_persona": {
+  "required": [
+    "platforms"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "demo": {
+      "type": "boolean"
+    },
+    "platforms": {
+      "type": "object",
+      "propertyNames": {
+        "enum": [
+          "chatgpt",
+          "gemini",
+          "grok",
+          "claude",
+          "copilot",
+          "perplexity",
+          "deepseek",
+          "le-chat"
+        ]
+      },
+      "additionalProperties": {
+        "type": "object",
+        "required": [
+          "name",
+          "company"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "company": {
+            "type": "string"
+          },
+          "initials": {
+            "type": "string"
+          },
+          "runs": {
+            "type": "array",
+            "items": {
               "type": "object",
-              "propertyNames": { "enum": ["P1", "P2", "P3", "P4"] },
-              "additionalProperties": {
-                "type": "object",
-                "required": ["repeat_rate", "n"],
-                "additionalProperties": false,
-                "properties": {
-                  "repeat_rate": { "type": "number", "minimum": 0, "maximum": 1 },
-                  "n": { "type": "integer", "minimum": 1 },
-                  "ci": { "type": "array", "items": { "type": "number" }, "minItems": 2, "maxItems": 2 }
+              "required": [
+                "run",
+                "date"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "run": {
+                  "type": "string"
+                },
+                "date": {
+                  "type": "string",
+                  "format": "date"
+                },
+                "country": {
+                  "type": "string",
+                  "pattern": "^[a-z]{2}$"
+                },
+                "model_version": {
+                  "type": "string"
+                },
+                "by_persona": {
+                  "type": "object",
+                  "propertyNames": {
+                    "enum": [
+                      "P1",
+                      "P2",
+                      "P3",
+                      "P4"
+                    ]
+                  },
+                  "additionalProperties": {
+                    "type": "object",
+                    "required": [
+                      "repeat_rate",
+                      "n"
+                    ],
+                    "additionalProperties": false,
+                    "properties": {
+                      "repeat_rate": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 1
+                      },
+                      "n": {
+                        "type": "integer",
+                        "minimum": 0
+                      },
+                      "ci": {
+                        "type": "array",
+                        "items": {
+                          "type": "number"
+                        },
+                        "minItems": 2,
+                        "maxItems": 2
+                      }
+                    }
+                  }
+                },
+                "by_country": {
+                  "type": "object",
+                  "propertyNames": {
+                    "pattern": "^[a-z]{2}$"
+                  },
+                  "additionalProperties": {
+                    "type": "object",
+                    "required": [
+                      "repeat_rate",
+                      "n"
+                    ],
+                    "additionalProperties": false,
+                    "properties": {
+                      "repeat_rate": {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 1
+                      },
+                      "n": {
+                        "type": "integer",
+                        "minimum": 0
+                      }
+                    }
+                  }
+                },
+                "contamination_rate": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                },
+                "n": {
+                  "type": "integer",
+                  "minimum": 0
                 }
               }
-            },
-            "contamination_rate": { "type": "number", "minimum": 0, "maximum": 1 },
-            "n": { "type": "integer", "minimum": 1 }
+            }
+          },
+          "escalations": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "claims_repeated": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           }
         }
-      },
-      "escalations": { "type": "array", "items": { "type": "string", "pattern": "^C[0-9]+-[0-9]{3}$" } }
+      }
     }
-  }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://citere.ai/schemas/platforms.schema.json"
 }

@@ -56,7 +56,7 @@ Personas are reported separately and never averaged.
 
 | Action | To | Date | Status |
 |---|---|---|---|
-{% for a in claim.actions %}| {{ a.type | actionTypeLabel }} | {{ a.target }} | {{ a.date | displayDate }} | {{ a.status | statusLabel }}{% if a.response_date %} {{ a.response_date | displayDate }}{% endif %} |
+{% for a in claim.actions %}| {{ a.type | actionTypeLabel }} | {{ a.target | defangCopy }} | {{ a.date | displayDate }} | {{ a.status | statusLabel }}{% if a.response_date %} {{ a.response_date | displayDate }}{% endif %} |
 {% endfor %}
 We publish the fact, date and status of each action. We do not publish correspondence with platforms or the names of individuals.
 {% if claim.before_after | length %}

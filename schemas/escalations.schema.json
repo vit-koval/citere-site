@@ -1,20 +1,85 @@
 {
-  "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://citere.ai/schemas/escalations.schema.json",
   "title": "Public escalation log",
-  "type": "array",
-  "items": {
-    "type": "object",
-    "required": ["date", "type", "target", "claim_id", "status"],
-    "additionalProperties": false,
-    "properties": {
-      "date": { "type": "string", "format": "date" },
-      "type": { "enum": ["published", "platform_report", "domain_complaint", "shared", "partner_publication", "authority_confirmation", "remeasured"] },
-      "target": { "type": "string" },
-      "claim_id": { "type": "string", "pattern": "^C[0-9]+-[0-9]{3}$" },
-      "status": { "enum": ["submitted", "acknowledged", "actioned", "no_response", "declined", "completed", "live", "published", "receipt_confirmed"] },
-      "response_date": { "type": "string", "format": "date" },
-      "url": { "type": "string" }
+  "type": "object",
+  "required": [
+    "actions"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "demo": {
+      "type": "boolean"
+    },
+    "total": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "answered": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "median_response_days": {
+      "type": [
+        "number",
+        "null"
+      ]
+    },
+    "actions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "date",
+          "type",
+          "target",
+          "claim_id",
+          "status"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date"
+          },
+          "type": {
+            "enum": [
+              "published",
+              "platform_report",
+              "domain_complaint",
+              "shared",
+              "partner_publication",
+              "authority_confirmation",
+              "remeasured"
+            ]
+          },
+          "target": {
+            "type": "string"
+          },
+          "claim_id": {
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "submitted",
+              "acknowledged",
+              "actioned",
+              "no_response",
+              "declined",
+              "completed",
+              "live",
+              "published",
+              "receipt_confirmed"
+            ]
+          },
+          "response_date": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          }
+        }
+      }
     }
-  }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://citere.ai/schemas/escalations.schema.json"
 }

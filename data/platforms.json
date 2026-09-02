@@ -1,1 +1,528 @@
-{}
+{
+  "demo": true,
+  "platforms": {
+    "chatgpt": {
+      "name": "ChatGPT",
+      "company": "OpenAI",
+      "initials": "GP",
+      "runs": [
+        {
+          "run": "run-2026-09",
+          "date": "2026-09-12",
+          "model_version": "gpt-5.2",
+          "by_persona": {
+            "P1": {
+              "repeat_rate": 0.0,
+              "n": 50
+            },
+            "P2": {
+              "repeat_rate": 0.0,
+              "n": 50
+            },
+            "P3": {
+              "repeat_rate": 0.0667,
+              "n": 50
+            },
+            "P4": {
+              "repeat_rate": 0.087,
+              "n": 50
+            }
+          },
+          "by_country": {
+            "us": {
+              "repeat_rate": 0.0,
+              "n": 64
+            },
+            "de": {
+              "repeat_rate": 0.0,
+              "n": 56
+            },
+            "fr": {
+              "repeat_rate": 0.0,
+              "n": 36
+            },
+            "pl": {
+              "repeat_rate": 0.0,
+              "n": 44
+            }
+          },
+          "contamination_rate": 0.01,
+          "n": 200
+        }
+      ],
+      "claims_repeated": [
+        "C1-001",
+        "C1-007",
+        "C2-003",
+        "C5-001"
+      ],
+      "escalations": [
+        "C1-001",
+        "C1-007",
+        "C2-003",
+        "C5-001"
+      ]
+    },
+    "gemini": {
+      "name": "Gemini",
+      "company": "Google",
+      "initials": "GE",
+      "runs": [
+        {
+          "run": "run-2026-09",
+          "date": "2026-09-12",
+          "model_version": "gemini-3.1",
+          "by_persona": {
+            "P1": {
+              "repeat_rate": 0.0,
+              "n": 50
+            },
+            "P2": {
+              "repeat_rate": 0.1136,
+              "n": 50
+            },
+            "P3": {
+              "repeat_rate": 0.1087,
+              "n": 50
+            },
+            "P4": {
+              "repeat_rate": 0.2273,
+              "n": 50
+            }
+          },
+          "by_country": {
+            "us": {
+              "repeat_rate": 0.1875,
+              "n": 64
+            },
+            "de": {
+              "repeat_rate": 0.0714,
+              "n": 56
+            },
+            "fr": {
+              "repeat_rate": 0.0,
+              "n": 36
+            },
+            "pl": {
+              "repeat_rate": 0.125,
+              "n": 44
+            }
+          },
+          "contamination_rate": 0.025,
+          "n": 200
+        }
+      ],
+      "claims_repeated": [
+        "C1-001",
+        "C1-002",
+        "C1-003",
+        "C1-004",
+        "C1-006",
+        "C1-007",
+        "C2-001",
+        "C2-002",
+        "C3-003",
+        "C5-001"
+      ],
+      "escalations": [
+        "C1-002",
+        "C1-004",
+        "C1-006",
+        "C2-002",
+        "C3-003"
+      ]
+    },
+    "grok": {
+      "name": "Grok",
+      "company": "xAI",
+      "initials": "GR",
+      "runs": [
+        {
+          "run": "run-2026-09",
+          "date": "2026-09-12",
+          "model_version": "grok-4.1",
+          "by_persona": {
+            "P1": {
+              "repeat_rate": 0.0,
+              "n": 50
+            },
+            "P2": {
+              "repeat_rate": 0.119,
+              "n": 50
+            },
+            "P3": {
+              "repeat_rate": 0.1304,
+              "n": 50
+            },
+            "P4": {
+              "repeat_rate": 0.1957,
+              "n": 50
+            }
+          },
+          "by_country": {
+            "us": {
+              "repeat_rate": 0.0833,
+              "n": 64
+            },
+            "de": {
+              "repeat_rate": 0.0,
+              "n": 56
+            },
+            "fr": {
+              "repeat_rate": 0.3333,
+              "n": 36
+            },
+            "pl": {
+              "repeat_rate": 0.1111,
+              "n": 44
+            }
+          },
+          "contamination_rate": 0.015,
+          "n": 200
+        }
+      ],
+      "claims_repeated": [
+        "C1-001",
+        "C1-002",
+        "C1-003",
+        "C1-004",
+        "C1-007",
+        "C2-001",
+        "C2-002",
+        "C3-003",
+        "C5-001"
+      ],
+      "escalations": [
+        "C1-002",
+        "C1-004",
+        "C3-003"
+      ]
+    },
+    "claude": {
+      "name": "Claude",
+      "company": "Anthropic",
+      "initials": "CL",
+      "runs": [
+        {
+          "run": "run-2026-09",
+          "date": "2026-09-12",
+          "model_version": "claude-opus-5",
+          "by_persona": {
+            "P1": {
+              "repeat_rate": 0.0,
+              "n": 50
+            },
+            "P2": {
+              "repeat_rate": 0.0435,
+              "n": 50
+            },
+            "P3": {
+              "repeat_rate": 0.0227,
+              "n": 50
+            },
+            "P4": {
+              "repeat_rate": 0.0652,
+              "n": 50
+            }
+          },
+          "by_country": {
+            "us": {
+              "repeat_rate": 0.0,
+              "n": 64
+            },
+            "de": {
+              "repeat_rate": 0.0769,
+              "n": 56
+            },
+            "fr": {
+              "repeat_rate": 0.0,
+              "n": 36
+            },
+            "pl": {
+              "repeat_rate": 0.1,
+              "n": 44
+            }
+          },
+          "contamination_rate": 0.035,
+          "n": 200
+        }
+      ],
+      "claims_repeated": [
+        "C1-001",
+        "C1-003",
+        "C1-007",
+        "C2-001"
+      ],
+      "escalations": [
+        "C1-001",
+        "C1-003",
+        "C1-007",
+        "C2-001"
+      ]
+    },
+    "copilot": {
+      "name": "Copilot",
+      "company": "Microsoft",
+      "initials": "CP",
+      "runs": [
+        {
+          "run": "run-2026-09",
+          "date": "2026-09-12",
+          "model_version": "copilot-2026-09",
+          "by_persona": {
+            "P1": {
+              "repeat_rate": 0.0,
+              "n": 50
+            },
+            "P2": {
+              "repeat_rate": 0.0488,
+              "n": 50
+            },
+            "P3": {
+              "repeat_rate": 0.0476,
+              "n": 50
+            },
+            "P4": {
+              "repeat_rate": 0.0714,
+              "n": 50
+            }
+          },
+          "by_country": {
+            "us": {
+              "repeat_rate": 0.0,
+              "n": 64
+            },
+            "de": {
+              "repeat_rate": 0.0909,
+              "n": 56
+            },
+            "fr": {
+              "repeat_rate": 0.125,
+              "n": 36
+            },
+            "pl": {
+              "repeat_rate": 0.0,
+              "n": 44
+            }
+          },
+          "contamination_rate": 0.01,
+          "n": 200
+        }
+      ],
+      "claims_repeated": [
+        "C1-001",
+        "C1-003",
+        "C1-004",
+        "C2-001",
+        "C2-002",
+        "C5-001"
+      ],
+      "escalations": [
+        "C1-001",
+        "C1-003",
+        "C1-004",
+        "C2-001",
+        "C2-002",
+        "C5-001"
+      ]
+    },
+    "perplexity": {
+      "name": "Perplexity",
+      "company": "Perplexity AI",
+      "initials": "PX",
+      "runs": [
+        {
+          "run": "run-2026-09",
+          "date": "2026-09-12",
+          "model_version": "sonar-4",
+          "by_persona": {
+            "P1": {
+              "repeat_rate": 0.0,
+              "n": 50
+            },
+            "P2": {
+              "repeat_rate": 0.1364,
+              "n": 50
+            },
+            "P3": {
+              "repeat_rate": 0.087,
+              "n": 50
+            },
+            "P4": {
+              "repeat_rate": 0.2041,
+              "n": 50
+            }
+          },
+          "by_country": {
+            "us": {
+              "repeat_rate": 0.0769,
+              "n": 64
+            },
+            "de": {
+              "repeat_rate": 0.1429,
+              "n": 56
+            },
+            "fr": {
+              "repeat_rate": 0.125,
+              "n": 36
+            },
+            "pl": {
+              "repeat_rate": 0.2222,
+              "n": 44
+            }
+          },
+          "contamination_rate": 0.025,
+          "n": 200
+        }
+      ],
+      "claims_repeated": [
+        "C1-001",
+        "C1-003",
+        "C1-006",
+        "C1-007",
+        "C2-001",
+        "C2-002",
+        "C2-003",
+        "C5-001"
+      ],
+      "escalations": [
+        "C1-006"
+      ]
+    },
+    "deepseek": {
+      "name": "DeepSeek",
+      "company": "DeepSeek",
+      "initials": "DS",
+      "runs": [
+        {
+          "run": "run-2026-09",
+          "date": "2026-09-12",
+          "model_version": "deepseek-v4",
+          "by_persona": {
+            "P1": {
+              "repeat_rate": 0.0,
+              "n": 50
+            },
+            "P2": {
+              "repeat_rate": 0.1333,
+              "n": 50
+            },
+            "P3": {
+              "repeat_rate": 0.1136,
+              "n": 50
+            },
+            "P4": {
+              "repeat_rate": 0.2449,
+              "n": 50
+            }
+          },
+          "by_country": {
+            "us": {
+              "repeat_rate": 0.0714,
+              "n": 64
+            },
+            "de": {
+              "repeat_rate": 0.1538,
+              "n": 56
+            },
+            "fr": {
+              "repeat_rate": 0.25,
+              "n": 36
+            },
+            "pl": {
+              "repeat_rate": 0.1,
+              "n": 44
+            }
+          },
+          "contamination_rate": 0.035,
+          "n": 200
+        }
+      ],
+      "claims_repeated": [
+        "C1-001",
+        "C1-002",
+        "C1-003",
+        "C1-006",
+        "C1-007",
+        "C2-001",
+        "C2-002",
+        "C2-003",
+        "C3-002",
+        "C5-001"
+      ],
+      "escalations": [
+        "C1-002",
+        "C1-003",
+        "C1-006",
+        "C1-007",
+        "C2-001",
+        "C2-002",
+        "C2-003",
+        "C3-002",
+        "C5-001"
+      ]
+    },
+    "le-chat": {
+      "name": "Le Chat",
+      "company": "Mistral",
+      "initials": "LC",
+      "runs": [
+        {
+          "run": "run-2026-09",
+          "date": "2026-09-12",
+          "model_version": "mistral-large-3",
+          "by_persona": {
+            "P1": {
+              "repeat_rate": 0.0,
+              "n": 50
+            },
+            "P2": {
+              "repeat_rate": 0.0652,
+              "n": 50
+            },
+            "P3": {
+              "repeat_rate": 0.093,
+              "n": 50
+            },
+            "P4": {
+              "repeat_rate": 0.1591,
+              "n": 50
+            }
+          },
+          "by_country": {
+            "us": {
+              "repeat_rate": 0.0667,
+              "n": 64
+            },
+            "de": {
+              "repeat_rate": 0.0769,
+              "n": 56
+            },
+            "fr": {
+              "repeat_rate": 0.0,
+              "n": 36
+            },
+            "pl": {
+              "repeat_rate": 0.1,
+              "n": 44
+            }
+          },
+          "contamination_rate": 0.01,
+          "n": 200
+        }
+      ],
+      "claims_repeated": [
+        "C1-001",
+        "C1-002",
+        "C1-003",
+        "C1-004",
+        "C2-001",
+        "C2-003",
+        "C5-001"
+      ],
+      "escalations": [
+        "C2-003"
+      ]
+    }
+  }
+}

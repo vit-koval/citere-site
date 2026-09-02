@@ -26,10 +26,7 @@
         "type": "array",
         "items": {
           "type": "object",
-          "required": [
-            "key",
-            "value"
-          ],
+          "required": [],
           "additionalProperties": false,
           "properties": {
             "key": {
@@ -78,6 +75,9 @@
             },
             "after": {
               "type": "number"
+            },
+            "claim": {
+              "type": "string"
             }
           }
         }
@@ -372,6 +372,66 @@
     },
     "completed_run_label": {
       "type": "string"
+    },
+    "demo": {
+      "type": "boolean"
+    },
+    "country_matrix": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "chatbot",
+          "country",
+          "rate"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "chatbot": {
+            "type": "string"
+          },
+          "country": {
+            "type": "string",
+            "pattern": "^[a-z]{2}$"
+          },
+          "rate": {
+            "type": "number"
+          },
+          "spread": {
+            "type": "number"
+          },
+          "n": {
+            "type": "integer"
+          }
+        }
+      }
+    },
+    "cluster_by_country": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "cluster",
+          "country",
+          "rate"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "cluster": {
+            "type": "string"
+          },
+          "country": {
+            "type": "string",
+            "pattern": "^[a-z]{2}$"
+          },
+          "rate": {
+            "type": "number"
+          },
+          "n": {
+            "type": "integer"
+          }
+        }
+      }
     }
   }
 }

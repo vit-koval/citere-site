@@ -27,11 +27,14 @@ const label = (type, key, given) => {
 
 const leaderboards = {};
 for (const [name, rows] of Object.entries(raw.leaderboards || {})) {
-  const max = rows.reduce((m, r) => Math.max(m, Math.abs(r.value)), 0);
+  const max = rows.reduce((m, r) => Math.max(m, Math.abs(r.value || 0)), 0);
   leaderboards[name] = rows.map((row) => ({
     ...row,
-    label: label(name, row.key, row.label),
-    width: max ? Math.max(2, Math.round((Math.abs(row.value) / max) * 100)) : 0
+    key: row.key || row.claim || row.chatbot,
+    label: row.claim
+      ? `${row.claim} · ${(CHATBOTS[row.chatbot] || {}).name || row.chatbot}`
+      : label(name, row.key, row.label),
+    width: max && row.value !== undefined ? Math.max(2, Math.round((Math.abs(row.value) / max) * 100)) : 0
   }));
 }
 
@@ -46,8 +49,39 @@ const heatmapRows = [...byBot.entries()].map(([chatbot, cells]) => ({
   cells: personas.map((p) => cells[p]).filter(Boolean)
 }));
 
+// A×B tiers are fixed by the methodology, not by the run: repeating with a
+// clean source is a training-data signal, repeating with a flagged one is
+// retrieval poisoning (CLAUDE.md 5.1 tier enum).
+const ABX_ROWS = [
+  { key: "repeated", label: "REPEAT", cls: "r-rep", clean: "high", flagged: "critical" },
+  { key: "u_context", label: "U_context", cls: "r-ctx", clean: "none", flagged: "review" },
+  { key: "refuted", label: "REFUTE", cls: "r-ref", clean: "none", flagged: "low" },
+  { key: "dodged", label: "DODGE", cls: "r-dod", clean: "none", flagged: "none" }
+];
+const abxRows = ABX_ROWS.filter((r) => raw.abx && raw.abx[r.key]).map((r) => ({
+  ...r,
+  cleanN: raw.abx[r.key].clean,
+  flaggedN: raw.abx[r.key].flagged
+}));
+
+// The exporter writes funnel labels as slugs.
+const FUNNEL_LABELS = {
+  collected: { label: "Responses collected", detail: "one row per recorded answer" },
+  judged: { label: "Judged", detail: "Layer A content verdict" },
+  source_flagged: { label: "Source-flagged", detail: "Layer B" },
+  critical: { label: "Critical", detail: "repeated AND cited a flagged source" }
+};
+const funnel = (raw.funnel || []).map((step) => ({
+  ...step,
+  label: (FUNNEL_LABELS[step.label] || {}).label || step.label,
+  detail: step.detail || (FUNNEL_LABELS[step.label] || {}).detail
+}));
+
 module.exports = {
   ...raw,
+  abxRows,
+  funnel,
+  responses: raw.responses || ((raw.funnel || [])[0] || {}).n || 0,
   // "run 2" in the mockup caption; taken from the label the import writes.
   stripCaption: raw.completed_run_label || raw.label || "",
   countries: raw.in_progress_countries || [],

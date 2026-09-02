@@ -42,7 +42,7 @@ description: "Citere tests ChatGPT, Gemini, Grok, Claude, Copilot, Perplexity, D
 
 <section><div class="band">
   <h2>{{ doc.sections['band'].title }}</h2>
-  {{ doc.sections['band'].html | prefixLinks | safe }}
+  {{ doc.sections['band'].html | prefixLinks | defangCopy | safe }}
   {%- if quoteFigures %}
   <div class="quote">In {{ quoteFigures.run_label }}, chatbots refuted pure inventions <b>{{ quoteFigures.pure_refuted | rate }}</b> of the time — and
     repeated the claims built on a grain of truth in <b>{{ quoteFigures.grain_repeated | rate }}</b> of answers.</div>
@@ -55,7 +55,7 @@ description: "Citere tests ChatGPT, Gemini, Grok, Claude, Copilot, Perplexity, D
   {%- for step in ['detect','trace','publish','report','confirm','remeasure'] %}
     <div class="st"><div class="i">{{ loop.index }}</div>
       <h3>{{ doc.sections['step-' + step].title }}</h3>
-      {{ doc.sections['step-' + step].html | prefixLinks | safe }}</div>
+      {{ doc.sections['step-' + step].html | prefixLinks | defangCopy | safe }}</div>
   {%- endfor %}
   </div>
 </section>
@@ -65,7 +65,7 @@ description: "Citere tests ChatGPT, Gemini, Grok, Claude, Copilot, Perplexity, D
   <div class="grid4">
   {%- for item in trustCards %}
     <div class="t"><h3>{{ doc.sections[item.key].title }}</h3>
-      {{ doc.sections[item.key].html | prefixLinks | safe }}
+      {{ doc.sections[item.key].html | prefixLinks | defangCopy | safe }}
       {%- if item.href %}<a href="{{ item.href | url }}">{{ item.label }} &rarr;</a>{% endif %}</div>
   {%- endfor %}
   </div>

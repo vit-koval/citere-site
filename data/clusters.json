@@ -1,7 +1,21 @@
 {
-  "corruption-diverted-aid": { "name_en": "Corruption / diverted aid" },
-  "delegitimisation": { "name_en": "Delegitimisation" },
-  "weapons-diversion": { "name_en": "Weapons diversion" },
-  "mobilisation": { "name_en": "Mobilisation" },
-  "energy-panic": { "name_en": "Energy panic" }
+  "demo": true,
+  "clusters": [
+    {
+      "id": "corruption-diverted-aid",
+      "label_en": "Corruption / diverted aid"
+    },
+    {
+      "id": "delegitimisation",
+      "label_en": "Zelensky delegitimisation"
+    },
+    {
+      "id": "weapons-diversion",
+      "label_en": "Weapons diversion"
+    },
+    {
+      "id": "energy-panic",
+      "label_en": "Energy panic"
+    }
+  ]
 }

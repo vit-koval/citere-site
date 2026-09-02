@@ -170,6 +170,34 @@
     },
     "methodology_version": {
       "type": "string"
+    },
+    "demo": {
+      "type": "boolean"
+    },
+    "demo_banner_en": {
+      "type": "string"
+    },
+    "demo_banner_uk": {
+      "type": "string"
+    },
+    "current_run": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "label": {
+          "type": "string"
+        },
+        "markets": {
+          "type": "string"
+        },
+        "countries": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z]{2}$"
+          }
+        }
+      }
     }
   }
 }

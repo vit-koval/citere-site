@@ -9,13 +9,13 @@
   },
   "scripts": {
     "validate": "node scripts/validate.mjs",
-    "build": "eleventy",
+    "build": "rm -rf _site && eleventy",
     "check": "node scripts/check.mjs",
     "serve": "eleventy --serve",
     "import": "node scripts/import-citere.mjs",
     "all": "npm run validate && npm run build && npm run check && npm run lighthouse",
-    "build:pages": "PATH_PREFIX=/citere-site/ eleventy",
-    "check:pages": "PATH_PREFIX=/citere-site/ node scripts/check.mjs",
+    "build:pages": "PATH_PREFIX=/citere-site/ CANONICAL_URL=https://vit-koval.github.io/citere-site rm -rf _site && PATH_PREFIX=/citere-site/ CANONICAL_URL=https://vit-koval.github.io/citere-site eleventy",
+    "check:pages": "PATH_PREFIX=/citere-site/ CANONICAL_URL=https://vit-koval.github.io/citere-site node scripts/check.mjs",
     "lighthouse": "PATH_PREFIX=/ eleventy --output=_site-lighthouse && lhci autorun --config=lighthouserc.json"
   },
   "devDependencies": {

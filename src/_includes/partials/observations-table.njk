@@ -5,7 +5,7 @@
   <thead><tr><th scope="col">Chatbot</th><th scope="col">Country</th><th scope="col">Persona</th>
     <th scope="col">Verdict</th><th scope="col">Judge</th></tr></thead>
   <tbody>
-  {%- for o in claim.observations %}
+  {%- for o in claim.observationsShown %}
     <tr>
       <td><span class="mini {{ o.chatbot | botClass }}" style="display:inline-grid;margin-right:7px;vertical-align:middle">{{ o.chatbot | botCode }}</span>{{ o.chatbot | botName }}</td>
       <td>{{ o.country | upper }}</td>
@@ -14,4 +14,10 @@
       <td class="num" style="font-size:12.5px;color:var(--dim)">{% if o.judge %}conf {{ o.judge.confidence | round(2) }}{% if o.judge.agreement %} &middot; agree {{ o.judge.agreement | round(2) }}{% endif %}{% endif %}{% if o.cited_domains | length %} &middot; {{ o.cited_domains | first | defang }} cited{% elif o.judge %} &middot; clean source{% endif %}</td>
     </tr>
   {%- endfor %}
-  </tbody></table></div>
+  </tbody></table>
+  {%- if claim.observationsTruncated %}
+  <div class="summary-line" style="border-bottom:0;border-top:1px solid var(--line2)">
+    Showing {{ claim.observationsShown | length }} of {{ claim.counts.observations }} recorded answers
+    <a style="margin-left:auto;color:var(--accent);font-weight:600" href="{{ ('/registry/' + claim.slug + '.json') | url }}">Every answer as JSON &rarr;</a></div>
+  {%- endif %}
+</div>

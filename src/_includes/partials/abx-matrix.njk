@@ -1,20 +1,11 @@
 {%- set tiers = {"critical":"crit","high":"high","review":"rev","low":"low","none":""} -%}
-{%- set rows = [
-  {"key":"repeat","label":"REPEAT","cls":"r-rep"},
-  {"key":"u_context","label":"U_context","cls":"r-ctx"},
-  {"key":"refute","label":"REFUTE","cls":"r-ref"},
-  {"key":"dodge","label":"DODGE","cls":"r-dod"}
-] -%}
 <div class="abx">
   <div></div><div class="colh">Sources clean</div><div class="colh">Sources flagged</div>
-  {%- for row in rows %}
-  {%- set cell = benchmarks.abx[row.key] %}
-  {%- if cell %}
+  {%- for row in benchmarks.abxRows %}
   <div class="rowh {{ row.cls }}">{{ row.label }}</div>
-  <div class="cell {{ tiers[cell.clean_tier] }}"><div class="cn">{{ cell.clean }}</div>
-    <div class="ct{{ ' none' if not tiers[cell.clean_tier] }}">{{ cell.clean_tier | upper if tiers[cell.clean_tier] else "&mdash;" | safe }}</div></div>
-  <div class="cell {{ tiers[cell.flagged_tier] }}"><div class="cn">{{ cell.flagged }}</div>
-    <div class="ct{{ ' none' if not tiers[cell.flagged_tier] }}">{{ cell.flagged_tier | upper if tiers[cell.flagged_tier] else "&mdash;" | safe }}</div></div>
-  {%- endif %}
+  <div class="cell {{ tiers[row.clean] }}"><div class="cn">{{ row.cleanN }}</div>
+    <div class="ct{{ ' none' if not tiers[row.clean] }}">{% if tiers[row.clean] %}{{ row.clean | upper }}{% else %}&mdash;{% endif %}</div></div>
+  <div class="cell {{ tiers[row.flagged] }}"><div class="cn">{{ row.flaggedN }}</div>
+    <div class="ct{{ ' none' if not tiers[row.flagged] }}">{% if tiers[row.flagged] %}{{ row.flagged | upper }}{% else %}&mdash;{% endif %}</div></div>
   {%- endfor %}
 </div>

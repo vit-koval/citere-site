@@ -46,6 +46,11 @@ const claims = files
         actions: actions.length,
         responses: actions.filter((a) => a.response_date).length
       },
+      // The mockup shows a six-row excerpt of this table. Real claims carry
+      // 32-128 recorded answers, which would blow the 60 KB page budget in
+      // CLAUDE.md 2, so the page shows an excerpt and links the full set.
+      observationsShown: observations.slice(0, 24),
+      observationsTruncated: observations.length > 24,
       remeasuredOn: actions.filter((a) => a.type === "remeasured").map((a) => a.date).pop() || null,
       status: escalationStatus(actions)
     };

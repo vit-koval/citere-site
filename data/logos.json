@@ -1,5 +1,5 @@
 {
-  "_note": "Brand marks belong to their owners and are used here for identification only (nominative fair use). Do not recreate or redraw any mark. Place official SVG/PNG files downloaded from the brand pages below into src/assets/logos/ using the `file` name. Until a file is present, the template falls back to the monogram tile — which is a legitimate permanent option, not a placeholder.",
+  "_note": "Brand marks belong to their owners and are used here for identification only (nominative fair use). Do not recreate or redraw any mark. Place official SVG/PNG files downloaded from the brand pages below into src/assets/logos/ using the `file` name. Until a file is present, the template falls back to the monogram tile — which is a legitimate permanent option, not a placeholder. brand_color values are the WCAG AA corrected shades used in src/css/site.css; brand_color_mockup keeps the original where they differ.",
   "attribution_line_en": "Assistant names and marks are the property of their respective owners and are used for identification only. Citere is not affiliated with, endorsed by or sponsored by any of them.",
   "attribution_line_uk": "Назви та знаки асистентів належать їхнім власникам і використовуються лише для ідентифікації. Citere не є афілійованою з ними, не має їхнього схвалення чи спонсорства.",
   "fallback": "monogram",
@@ -10,10 +10,11 @@
       "company": "OpenAI",
       "domain": "openai.com",
       "monogram": "GP",
-      "brand_color": "#0e9c74",
-      "file": "openai.svg",
+      "brand_color": "#0c8764",
+      "file": "openai.webp",
       "brand_page": "https://openai.com/brand/",
-      "notes": "Official downloads and usage terms on the brand page. Guidelines: don't alter the mark, don't build your own lockup, don't pair the logomark with product or model names, prefer the black or white version for contrast. Permission questions: partnercomms@openai.com."
+      "notes": "Official downloads and usage terms on the brand page. Guidelines: don't alter the mark, don't build your own lockup, don't pair the logomark with product or model names, prefer the black or white version for contrast. Permission questions: partnercomms@openai.com.",
+      "brand_color_mockup": "#0e9c74"
     },
     {
       "key": "gemini",
@@ -21,10 +22,11 @@
       "company": "Google",
       "domain": "google.com",
       "monogram": "GE",
-      "brand_color": "#3d7ef0",
-      "file": "google-gemini.svg",
+      "brand_color": "#3873dc",
+      "file": "google-gemini.jpeg",
       "brand_page": "https://about.google/brand-resource-center/",
-      "notes": "Google marks are governed by the Brand Resource Center and Google's trademark guidelines. Use the Gemini mark only to refer to the Gemini product."
+      "notes": "Google marks are governed by the Brand Resource Center and Google's trademark guidelines. Use the Gemini mark only to refer to the Gemini product.",
+      "brand_color_mockup": "#3d7ef0"
     },
     {
       "key": "grok",
@@ -33,7 +35,7 @@
       "domain": "x.ai",
       "monogram": "GR",
       "brand_color": "#15181e",
-      "file": "xai-grok.svg",
+      "file": "xai-grok.jpg",
       "brand_page": "https://x.ai/",
       "notes": "xAI does not publish a public brand kit at a stable URL; take the mark from the product site or request it from xAI. Do not redraw it."
     },
@@ -43,10 +45,11 @@
       "company": "Anthropic",
       "domain": "anthropic.com",
       "monogram": "CL",
-      "brand_color": "#d9714e",
-      "file": "anthropic-claude.svg",
+      "brand_color": "#b55e41",
+      "file": "anthropic-claude.png",
       "brand_page": "https://www.anthropic.com/",
-      "notes": "Anthropic publishes brand assets and trademark guidance on its site; check the current terms before use."
+      "notes": "Anthropic publishes brand assets and trademark guidance on its site; check the current terms before use.",
+      "brand_color_mockup": "#d9714e"
     },
     {
       "key": "copilot",
@@ -54,10 +57,11 @@
       "company": "Microsoft",
       "domain": "microsoft.com",
       "monogram": "CP",
-      "brand_color": "#0d7ad1",
+      "brand_color": "#0d79cf",
       "file": "microsoft-copilot.svg",
       "brand_page": "https://www.microsoft.com/en-us/legal/intellectualproperty/trademarks",
-      "notes": "Microsoft's Trademark and Brand Guidelines permit referential use of product names and marks under stated conditions. Read them: they are specific about spacing, colour and prohibited implications of endorsement."
+      "notes": "Microsoft's Trademark and Brand Guidelines permit referential use of product names and marks under stated conditions. Read them: they are specific about spacing, colour and prohibited implications of endorsement.",
+      "brand_color_mockup": "#0d7ad1"
     },
     {
       "key": "perplexity",
@@ -65,10 +69,11 @@
       "company": "Perplexity AI",
       "domain": "perplexity.ai",
       "monogram": "PX",
-      "brand_color": "#1c8b93",
+      "brand_color": "#1a838a",
       "file": "perplexity.svg",
       "brand_page": "https://www.perplexity.ai/",
-      "notes": "No stable public brand kit URL; take the mark from the product site or request it."
+      "notes": "No stable public brand kit URL; take the mark from the product site or request it.",
+      "brand_color_mockup": "#1c8b93"
     },
     {
       "key": "deepseek",
@@ -87,10 +92,11 @@
       "company": "Mistral AI",
       "domain": "mistral.ai",
       "monogram": "LC",
-      "brand_color": "#f0530f",
+      "brand_color": "#d1480d",
       "file": "mistral-le-chat.svg",
       "brand_page": "https://mistral.ai/",
-      "notes": "Mistral publishes brand assets on its site; check the current terms before use."
+      "notes": "Mistral publishes brand assets on its site; check the current terms before use.",
+      "brand_color_mockup": "#f0530f"
     }
   ],
   "networks_and_partners": {
