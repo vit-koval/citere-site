@@ -106,10 +106,14 @@ a:focus-visible, summary:focus-visible {
 }
 .menu li, .site-footer li { margin: 0; }
 
+/* Above the breakpoint the disclosure disappears and the list is always
+   shown. display:contents takes the details out of the box tree, which is
+   what stops the browser hiding a closed disclosure's contents - no JS. */
 @media (min-width: 46rem) {
+  .menu { display: contents; }
   .menu summary { display: none; }
+  .menu::details-content { content-visibility: visible; block-size: auto; display: contents; }
   .menu ul { margin-top: 0; }
-  .menu[open] ul { display: flex; }
 }
 
 /* breadcrumbs + update line */
