@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://sitera.ai/schemas/reports.schema.json",
+  "$id": "https://citere.ai/schemas/reports.schema.json",
   "title": "Report index",
   "type": "array",
   "items": {

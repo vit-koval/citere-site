@@ -1,6 +1,1 @@
-{
-  "us": { "name": "United States", "languages": ["en"] },
-  "de": { "name": "Germany", "languages": ["de"] },
-  "fr": { "name": "France", "languages": ["fr"] },
-  "pl": { "name": "Poland", "languages": ["pl"] }
-}
+{}

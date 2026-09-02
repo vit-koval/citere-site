@@ -1,12 +1,11 @@
 const { md: markdown } = require("./src/_lib/markdown.cjs");
-
-const ui = require("./src/_data/ui.js");
 const {
-  VERDICTS, BEHAVIOURS, STATUSES, ACTION_TYPES, NETWORKS, CHATBOTS, MONTHS, pick
+  VERDICTS, BEHAVIOURS, STATUSES, ACTION_TYPES, NETWORKS, NETWORK_CLASS,
+  CHATBOTS, PERSONAS, MONTHS
 } = require("./src/_lib/labels.cjs");
 
-// Comment strip + whitespace collapse only. Deliberately conservative: nothing that
-// can change selector meaning (no touching spaces around ":" or combinators).
+// Comment strip + whitespace collapse only. Deliberately conservative: nothing
+// that can change selector meaning.
 function minifyCss(css) {
   return css
     .replace(/\/\*[\s\S]*?\*\//g, "")
@@ -17,82 +16,115 @@ function minifyCss(css) {
 }
 
 module.exports = function (eleventyConfig) {
-  eleventyConfig.setLiquidOptions({ jekyllInclude: false });
   eleventyConfig.addPassthroughCopy({ CNAME: "CNAME" });
   eleventyConfig.setUseGitIgnore(false);
   eleventyConfig.ignores.add("**/node_modules/**");
+  // design-mockup/ is the approved reference. It is never built or deployed.
+  eleventyConfig.ignores.add("design-mockup/**");
 
-  // Stylesheet is the only asset with a build step, and that step is minification.
+  // The stylesheet is the only asset with a build step, and that step is
+  // minification. The source is design-mockup/styles.css, ported as-is.
   eleventyConfig.addTemplateFormats("css");
   eleventyConfig.addExtension("css", {
     outputFileExtension: "css",
     compile: (inputContent) => () => minifyCss(inputContent)
   });
 
-  eleventyConfig.addFilter("displayDate", function (value, langOverride) {
+  // ---- dates -------------------------------------------------------------
+  eleventyConfig.addFilter("displayDate", (value) => {
     if (!value) return "";
-    const lang = langOverride || (this.ctx && this.ctx.lang) || "en";
     const [y, m, d] = String(value).slice(0, 10).split("-");
     if (!y || !m || !d) return String(value);
-    return `${Number(d)} ${(MONTHS[lang] || MONTHS.en)[Number(m) - 1]} ${y}`;
+    return `${Number(d)} ${MONTHS[Number(m) - 1]} ${y}`;
   });
-
-  // Interface strings. Unknown keys throw: a typo must not ship as blank chrome.
-  // A missing Ukrainian key falls back to English (CLAUDE.md 2).
-  eleventyConfig.addFilter("t", function (key, ...args) {
-    const lang = (this.ctx && this.ctx.lang) || "en";
-    let value = (ui[lang] || ui.en)[key];
-    if (value === undefined) value = ui.en[key];
-    if (value === undefined) throw new Error(`ui: unknown string key "${key}"`);
-    for (const arg of args) value = value.replace("%s", String(arg));
-    return value;
+  // The mockup's compact form in table cells: "24 Oct".
+  eleventyConfig.addFilter("shortDate", (value) => {
+    if (!value) return "";
+    const [, m, d] = String(value).slice(0, 10).split("-");
+    if (!m || !d) return String(value);
+    return `${Number(d)} ${MONTHS[Number(m) - 1]}`;
   });
-
-  // Mount-point aware sibling URL: /about/ in English, /uk/about/ in Ukrainian.
-  eleventyConfig.addFilter("loc", (path, lang) =>
-    lang && lang !== "en" ? `/${lang}${path}` : path
-  );
   eleventyConfig.addFilter("isoDate", (value) => String(value || "").slice(0, 10));
   eleventyConfig.addFilter("year", (value) => String(value || "").slice(0, 4));
+  eleventyConfig.addFilter("monthLabel", (value) => {
+    const [y, m] = String(value || "").split("-");
+    return m ? `${MONTHS[Number(m) - 1]}` : String(value);
+  });
 
-  // Watchlisted domains are printed, never linked and never live.
+  // ---- watchlisted domains: printed, never linked, never live ------------
   eleventyConfig.addFilter("defang", (domain) => String(domain || "").replace(/\./g, "[.]"));
   eleventyConfig.addFilter("domainSlug", (domain) => String(domain || "").replace(/\./g, "-"));
 
-  const langOf = (ctx, override) => override || (ctx && ctx.lang) || "en";
-  eleventyConfig.addFilter("verdictLabel", function (v, l) { return pick(VERDICTS, langOf(this.ctx, l), v); });
-  eleventyConfig.addFilter("behaviourLabel", function (v, l) { return pick(BEHAVIOURS, langOf(this.ctx, l), v); });
-  eleventyConfig.addFilter("statusLabel", function (v, l) { return pick(STATUSES, langOf(this.ctx, l), v); });
-  eleventyConfig.addFilter("actionTypeLabel", function (v, l) { return pick(ACTION_TYPES, langOf(this.ctx, l), v); });
-  eleventyConfig.addFilter("networkLabel", function (v, l) { return pick(NETWORKS, langOf(this.ctx, l), v); });
+  // ---- labels ------------------------------------------------------------
+  eleventyConfig.addFilter("verdictLabel", (v) => VERDICTS[v] || String(v || "").toUpperCase());
+  eleventyConfig.addFilter("verdictClass", (v) =>
+    ({ false: "b-f", misleading: "b-m", unsupported: "b-u" })[v] || "b-u"
+  );
+  eleventyConfig.addFilter("behaviourLabel", (v) => BEHAVIOURS[v] || String(v || "").toUpperCase());
+  eleventyConfig.addFilter("statusLabel", (v) => STATUSES[v] || v);
+  eleventyConfig.addFilter("actionTypeLabel", (v) => ACTION_TYPES[v] || v);
+  eleventyConfig.addFilter("networkLabel", (v) => NETWORKS[v] || v);
+  eleventyConfig.addFilter("networkClass", (v) => NETWORK_CLASS[v] || "");
+  eleventyConfig.addFilter("personaLabel", (v) => PERSONAS[v] || "");
 
-  const displayNames = (lang, type) => {
-    try { return new Intl.DisplayNames([lang], { type }); } catch { return null; }
-  };
-  const nameCache = new Map();
-  const nameOf = (lang, type, value) => {
-    const cacheKey = `${lang}|${type}`;
-    if (!nameCache.has(cacheKey)) nameCache.set(cacheKey, displayNames(lang, type));
-    const formatter = nameCache.get(cacheKey);
+  const bot = (key) => CHATBOTS[key] || { name: key, code: String(key || "??").slice(0, 2).toUpperCase(), cls: "", company: "" };
+  eleventyConfig.addFilter("botName", (v) => bot(v).name);
+  eleventyConfig.addFilter("botCode", (v) => bot(v).code);
+  eleventyConfig.addFilter("botClass", (v) => bot(v).cls);
+  eleventyConfig.addFilter("botCompany", (v) => bot(v).company);
+
+  const displayNames = new Map();
+  const nameOf = (type, value) => {
+    if (!displayNames.has(type)) {
+      try { displayNames.set(type, new Intl.DisplayNames(["en"], { type })); }
+      catch { displayNames.set(type, null); }
+    }
+    const formatter = displayNames.get(type);
     const raw = type === "region" ? String(value).toUpperCase() : String(value);
     try { return (formatter && formatter.of(raw)) || raw; } catch { return raw; }
   };
+  eleventyConfig.addFilter("countryName", (v) => nameOf("region", v));
+  eleventyConfig.addFilter("languageName", (v) => nameOf("language", v));
+  eleventyConfig.addFilter("flag", (code) =>
+    String(code || "").toUpperCase().replace(/[A-Z]/g, (c) =>
+      String.fromCodePoint(0x1f1e6 + c.charCodeAt(0) - 65)
+    )
+  );
 
-  eleventyConfig.addFilter("chatbotLabel", (v) => CHATBOTS[v] || v);
-  eleventyConfig.addFilter("countryName", function (v, l) {
-    return nameOf(langOf(this.ctx, l), "region", v);
-  });
-  eleventyConfig.addFilter("languageName", function (v, l) {
-    return nameOf(langOf(this.ctx, l), "language", v);
-  });
-
+  // ---- numbers -----------------------------------------------------------
   eleventyConfig.addFilter("rate", (v) => (v === null || v === undefined ? "n/a" : `${Math.round(v * 1000) / 10}%`));
   eleventyConfig.addFilter("pp", (v) => {
     if (v === null || v === undefined) return "n/a";
     const n = Math.round(v * 1000) / 10;
-    return `${n > 0 ? "+" : ""}${n} pp`;
+    return `${n > 0 ? "+" : n < 0 ? "\u2212" : ""}${Math.abs(n)}pp`;
   });
+  // Bar width relative to the largest value in the same leaderboard.
+  eleventyConfig.addFilter("barWidth", (value, max) => {
+    const m = Number(max);
+    if (!m) return 0;
+    return Math.max(2, Math.round((Number(value) / m) * 100));
+  });
+  eleventyConfig.addFilter("sumField", (rows, field) =>
+    (rows || []).reduce((total, row) => total + (Number(row[field]) || 0), 0)
+  );
+  eleventyConfig.addFilter("maxField", (rows, field) =>
+    (rows || []).reduce((best, row) => Math.max(best, Number(row[field]) || 0), 0)
+  );
 
+  // ---- collections -------------------------------------------------------
+  eleventyConfig.addFilter("take", (arr, n) => (arr || []).slice(0, n));
+  eleventyConfig.addFilter("plural", (count, one, many) => (Number(count) === 1 ? one : many));
+  eleventyConfig.addFilter("unique", (arr) => [...new Set([].concat(arr || []))]);
+  eleventyConfig.addFilter("whereEq", (arr, key, value) =>
+    (arr || []).filter((item) => {
+      const held = item[key];
+      return Array.isArray(held) ? held.includes(value) : held === value;
+    })
+  );
+
+  // ---- prose -------------------------------------------------------------
+  eleventyConfig.addFilter("md", (text) => markdown.render(String(text || "")).trim());
+  eleventyConfig.addFilter("mdInline", (text) => markdown.renderInline(String(text || "")).trim());
   // Prose in content/ carries no numbers; where a sentence needs one it writes
   // {{ name }} and the template supplies the value from data/ (CLAUDE.md 11.1).
   // Unknown names are left untouched, so a {{TODO}} marker survives to check.mjs.
@@ -101,38 +133,10 @@ module.exports = function (eleventyConfig) {
       Object.prototype.hasOwnProperty.call(values || {}, key) ? String(values[key]) : match
     )
   );
-  eleventyConfig.addFilter("md", (text) => markdown.render(String(text || "")).trim());
 
-  eleventyConfig.addFilter("sumField", (rows, field) =>
-    (rows || []).reduce((total, row) => total + (Number(row[field]) || 0), 0)
-  );
-  // Slavic languages need three forms; English uses the first and third.
-  eleventyConfig.addFilter("plural", function (count, one, many, few) {
-    const lang = (this.ctx && this.ctx.lang) || "en";
-    const n = Math.abs(Number(count));
-    if (lang !== "uk" || few === undefined) return n === 1 ? one : many;
-    const mod10 = n % 10;
-    const mod100 = n % 100;
-    if (mod10 === 1 && mod100 !== 11) return one;
-    if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) return few;
-    return many;
-  });
-  eleventyConfig.addFilter("take", (arr, n) => (arr || []).slice(0, n));
-  eleventyConfig.addFilter("unique", (arr) => [...new Set([].concat(arr || []))]);
-  eleventyConfig.addFilter("sortBy", (arr, key, dir) => {
-    const out = [...(arr || [])];
-    out.sort((a, b) => String(a[key] || "").localeCompare(String(b[key] || "")));
-    return dir === "desc" ? out.reverse() : out;
-  });
-  eleventyConfig.addFilter("whereEq", (arr, key, value) =>
-    (arr || []).filter((item) => {
-      const held = item[key];
-      return Array.isArray(held) ? held.includes(value) : held === value;
-    })
-  );
-
+  // ---- structured data ---------------------------------------------------
   // Strips nulls, empties and unresolved {{TODO}} values so JSON-LD never
-  // describes something the page does not actually state (CLAUDE.md section 7).
+  // describes something the page does not actually state (CLAUDE.md 7).
   eleventyConfig.addFilter("compact", function compact(value) {
     if (Array.isArray(value)) {
       const out = value.map(compact).filter((v) => v !== undefined);
@@ -153,62 +157,22 @@ module.exports = function (eleventyConfig) {
     }
     return value;
   });
-
   eleventyConfig.addFilter("isReal", (v) => {
     if (v === null || v === undefined) return false;
     if (Array.isArray(v)) return v.length > 0;
     if (typeof v === "string") return v.trim() !== "" && !v.includes("{{TODO}}");
     return true;
   });
-
-  // JSON-LD: block any string that could close the script element early.
   eleventyConfig.addFilter("jsonld", (value) =>
     JSON.stringify(value, null, 0).replace(/</g, "\\u003c").replace(/>/g, "\\u003e")
   );
-  // Deterministic STIX ids: the same domain yields the same indicator id on
-  // every build, so consumers can diff bundles between releases.
-  eleventyConfig.addFilter("stixId", (domain) => {
-    const hash = require("node:crypto").createHash("sha256").update(String(domain)).digest("hex");
-    const uuid = [
-      hash.slice(0, 8),
-      hash.slice(8, 12),
-      "5" + hash.slice(13, 16),
-      ((parseInt(hash.slice(16, 17), 16) & 0x3) | 0x8).toString(16) + hash.slice(17, 20),
-      hash.slice(20, 32)
-    ].join("-");
-    return `indicator--${uuid}`;
-  });
-
-  eleventyConfig.addFilter("xmlEscape", (value) =>
-    String(value === null || value === undefined ? "" : value)
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-  );
-
-  // RFC 822 date for RSS. Built from the ISO date in data, always UTC.
-  eleventyConfig.addFilter("rfc822", (value) => {
-    const d = new Date(`${String(value).slice(0, 10)}T00:00:00Z`);
-    return Number.isNaN(d.getTime()) ? "" : d.toUTCString();
-  });
-  eleventyConfig.addFilter("rfc3339", (value) => {
-    const d = new Date(`${String(value).slice(0, 10)}T00:00:00Z`);
-    return Number.isNaN(d.getTime()) ? "" : d.toISOString();
-  });
-
   eleventyConfig.addFilter("csvCell", (value) => {
     const s = value === null || value === undefined ? "" : String(value);
     return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
   });
 
   return {
-    dir: {
-      input: "src",
-      includes: "_includes",
-      data: "_data",
-      output: "_site"
-    },
+    dir: { input: "src", includes: "_includes", data: "_data", output: "_site" },
     templateFormats: ["njk", "md", "css"],
     markdownTemplateEngine: "njk",
     htmlTemplateEngine: "njk",

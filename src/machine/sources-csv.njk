@@ -1,7 +1,0 @@
----
-permalink: /sources.csv
-eleventyExcludeFromCollections: true
----
-domain,slug,network,first_seen,cited_in,cited_by,attribution,complaint_status,url
-{% for source in sources %}{{ source.domain | csvCell }},{{ source.slug | csvCell }},{{ source.network | csvCell }},{{ source.first_seen | csvCell }},{{ source.cited_in | default([]) | join(" ") | csvCell }},{{ source.citedBy | join(" ") | csvCell }},{% set orgs = [] %}{% for a in source.attribution | default([]) %}{% set orgs = (orgs.push(a.org + " (" + a.date + ")"), orgs) %}{% endfor %}{{ orgs | join("; ") | csvCell }},{{ source.complaintStatus | default("") | csvCell }},{{ (site.url + source.url) | csvCell }}
-{% endfor %}

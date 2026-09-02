@@ -1,8 +1,8 @@
 {
-  "name": "sitera-site",
+  "name": "citere-site",
   "version": "0.1.0",
   "private": true,
-  "description": "Sitera public website - public evidence base for AI chatbot monitoring",
+  "description": "Citere public website - public evidence base for AI chatbot monitoring",
   "license": "CC-BY-4.0",
   "engines": {
     "node": ">=20"

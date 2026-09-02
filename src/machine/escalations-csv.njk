@@ -1,7 +1,0 @@
----
-permalink: /escalations.csv
-eleventyExcludeFromCollections: true
----
-date,type,target,claim_id,status,response_date,claim_url
-{% for item in escalations %}{% set claim = claims | whereEq('id', item.claim_id) | first %}{{ item.date | csvCell }},{{ item.type | csvCell }},{{ item.target | csvCell }},{{ item.claim_id | csvCell }},{{ item.status | csvCell }},{{ item.response_date | default("") | csvCell }},{{ (site.url + claim.url) | csvCell if claim else "" }}
-{% endfor %}

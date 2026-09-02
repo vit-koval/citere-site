@@ -1,15 +1,13 @@
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>{{ title }}</title>
 <meta name="description" content="{{ description }}">
 <link rel="canonical" href="{{ site.url }}{{ page.url }}">
-{%- for code in build.languages %}
-<link rel="alternate" hreflang="{{ code }}" href="{{ site.url }}{{ basePath | loc(code) }}">
-{%- endfor %}
-<link rel="alternate" hreflang="x-default" href="{{ site.url }}{{ basePath }}">
-{% if navigation.has.rss %}<link rel="alternate" type="application/rss+xml" title="{{ site.org.name }}" href="{{ '/feed.xml' | url }}">{% endif %}
-<!-- The site ships no images. This stops the browser's automatic /favicon.ico
-     request, which would otherwise be a 404 on every page load. -->
+<link rel="alternate" hreflang="en" href="{{ site.url }}{{ page.url }}">
+<link rel="alternate" hreflang="x-default" href="{{ site.url }}{{ page.url }}">
+{%- if navigation.has.rss %}
+<link rel="alternate" type="application/rss+xml" title="{{ site.org.name }}" href="{{ '/feed.xml' | url }}">
+{%- endif %}
 <link rel="icon" href="data:,">
 <link rel="stylesheet" href="{{ '/css/site.css' | url }}">
 {% include "jsonld/organization.njk" %}

@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://sitera.ai/schemas/escalations.schema.json",
+  "$id": "https://citere.ai/schemas/escalations.schema.json",
   "title": "Public escalation log",
   "type": "array",
   "items": {

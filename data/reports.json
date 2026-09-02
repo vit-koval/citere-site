@@ -1,13 +1,1 @@
-[
-  {
-    "slug": "2026-09-monitor",
-    "period": "2026-09",
-    "date": "2026-09-22",
-    "title_en": "September 2026: eight chatbots, four countries",
-    "runs": ["run-2026-09-us", "run-2026-09-de", "run-2026-09-fr", "run-2026-09-pl"],
-    "countries": ["us", "de", "fr", "pl"],
-    "languages": ["en", "de", "fr", "pl"],
-    "chatbots": ["chatgpt", "gemini", "grok", "claude", "copilot", "perplexity", "deepseek", "le-chat"],
-    "dataset_url": "/registry.csv"
-  }
-]
+[]

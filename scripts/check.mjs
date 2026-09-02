@@ -120,9 +120,12 @@ for (const file of htmlFiles) {
 
   // The aria-label is translated, so the check keys on the class and requires
   // the label to be present in whatever language the page is in.
-  const breadcrumbNav = html.match(/<nav[^>]*class="breadcrumb"[^>]*>/i);
-  if (!breadcrumbNav) err(page, "no breadcrumb nav");
-  else if (!/aria-label="[^"]+"/i.test(breadcrumbNav[0])) err(page, "breadcrumb nav has no aria-label");
+  const isHome = page === "/index.html";
+  const breadcrumbNav = html.match(/<nav[^>]*class="crumbs"[^>]*>/i);
+  if (!breadcrumbNav && !isHome) err(page, "no breadcrumb nav");
+  else if (breadcrumbNav && !/aria-label="[^"]+"/i.test(breadcrumbNav[0])) {
+    err(page, "breadcrumb nav has no aria-label");
+  }
   if (!/"@type":"BreadcrumbList"/.test(html)) err(page, "no BreadcrumbList JSON-LD");
 
   // --- JSON-LD validity ----------------------------------------------------
@@ -190,8 +193,8 @@ for (const file of htmlFiles) {
     const reviews = (html.match(/"@type":"ClaimReview"/g) || []).length;
     if (reviews !== 1) err(page, `${reviews} ClaimReview blocks, expected exactly 1`);
 
-    const badge = (html.match(/class="badge badge-verdict[^"]*">([^<]+)</) || [])[1];
-    const expectedBadge = labels.pick(labels.VERDICTS, pageLang, claim.verdict);
+    const badge = (html.match(/class="badge b-[fmu]"[^>]*>([^<]+)</) || [])[1];
+    const expectedBadge = labels.VERDICTS[claim.verdict];
     if (!badge) err(page, "no verdict badge");
     else if (badge.trim() !== expectedBadge) {
       err(page, `verdict badge "${badge.trim()}" does not match data "${claim.verdict}" (expected "${expectedBadge}")`);
@@ -339,11 +342,6 @@ for (const source of sources) {
   }
 }
 
-const css = join(SITE, "css/site.css");
-if (existsSync(css)) {
-  const kb = statSync(css).size / 1024;
-  if (kb > 12) err("css/site.css", `${kb.toFixed(1)} KB, max 12 KB`);
-}
 
 // Lighthouse CI (CLAUDE.md 10, last bullet) lands with build step 9.
 

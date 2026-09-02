@@ -1,10 +1,1 @@
-{
-  "chatgpt": { "name": "ChatGPT", "company": "OpenAI", "runs": [], "escalations": ["C1-003"] },
-  "gemini": { "name": "Gemini", "company": "Google", "runs": [], "escalations": [] },
-  "grok": { "name": "Grok", "company": "xAI", "runs": [], "escalations": ["C1-003"] },
-  "claude": { "name": "Claude", "company": "Anthropic", "runs": [], "escalations": [] },
-  "copilot": { "name": "Copilot", "company": "Microsoft", "runs": [], "escalations": [] },
-  "perplexity": { "name": "Perplexity", "company": "Perplexity AI", "runs": [], "escalations": [] },
-  "deepseek": { "name": "DeepSeek", "company": "DeepSeek", "runs": [], "escalations": [] },
-  "le-chat": { "name": "Le Chat", "company": "Mistral AI", "runs": [], "escalations": [] }
-}
+{}

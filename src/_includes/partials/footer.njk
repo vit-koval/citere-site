@@ -1,19 +1,22 @@
-<footer class="site-footer">
-  {% if pageExports and pageExports.length %}
-  <nav aria-label="{{ 'nav.pageData' | t }}">
-    <p>{{ 'footer.pageData' | t }}
-    {%- for item in pageExports %} <a href="{{ item.url | url }}">{{ item.label }}</a>{% if not loop.last %} ·{% endif %}{% endfor %}</p>
-  </nav>
-  {% endif %}
-  <nav aria-label="{{ 'nav.footer' | t }}">
-    <ul>
-    {% for item in navigation.footer %}
-      <li><a href="{{ (item.url if item.shared else (item.url | loc(lang))) | url }}">{{ item.label[lang] | default(item.label.en) }}</a></li>
-    {% endfor %}
-    {% for item in site.org.links %}
-      <li><a href="{{ item.url }}">{{ item.label }}</a></li>
-    {% endfor %}
-    </ul>
-  </nav>
-  <p class="fine">{{ site.org.name }} · {% if site.org.city | isReal %}{{ site.org.city }}, {% endif %}{{ site.org.country }} · {{ 'footer.licence' | t }} <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a> · {{ 'updated.prefix' | t }} <time datetime="{{ site.last_update | isoDate }}">{{ site.last_update | displayDate }}</time></p>
-</footer>
+<footer><div class="wrap">
+    <div class="fcols">
+      <div class="fcol fbrand">
+        <div class="logo"><span class="mark"></span>{{ site.org.name }}</div>
+        <p>Independent monitoring of public AI chatbots for Russian disinformation about Ukraine.
+          Ukrainian research company, Diia.City resident.</p>
+      </div>
+      {%- for col in navigation.footer %}
+      <div class="fcol"><h5>{{ col.heading | safe }}</h5>
+        {%- for item in col.links %}
+        <a href="{{ item.url | url }}">{{ item.label | safe }}</a>
+        {%- endfor %}
+      </div>
+      {%- endfor %}
+    </div>
+    <div class="fbot">
+      <span>&copy; {{ site.last_update | year }} {{ site.org.name }} &middot; Data under CC BY 4.0 &middot; Updated <time datetime="{{ site.last_update | isoDate }}">{{ site.last_update | displayDate }}</time></span>
+      {%- if navigation.legal | length %}
+      <span class="legal">{% for item in navigation.legal %}<a href="{{ item.url | url }}">{{ item.label | safe }}</a>{% endfor %}</span>
+      {%- endif %}
+    </div>
+  </div></footer>

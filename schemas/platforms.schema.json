@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://sitera.ai/schemas/platforms.schema.json",
+  "$id": "https://citere.ai/schemas/platforms.schema.json",
   "title": "Chatbot metadata and per-run aggregates",
   "type": "object",
   "propertyNames": { "enum": ["chatgpt", "gemini", "grok", "claude", "copilot", "perplexity", "deepseek", "le-chat"] },

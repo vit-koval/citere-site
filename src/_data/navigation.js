@@ -1,34 +1,97 @@
-// Nav and footer entries. A link appears only once the template that produces
-// its page exists, so no step of the build order can ship a dead link or a
-// "coming soon" placeholder (CLAUDE.md section 11.7).
+// The nav and footer link sets from design-mockup/, in the mockup's order.
+// A link renders only once the template that produces its page exists, so no
+// step of the build order can ship a dead link (CLAUDE.md 10, 11.6).
 const fs = require("node:fs");
 const path = require("node:path");
 const { ROOT } = require("../_lib/markdown.cjs");
 
-const built = (template) => fs.existsSync(path.join(ROOT, "src", template));
+const built = (template) => template === null || fs.existsSync(path.join(ROOT, "src", template));
 
-const ENTRIES = [
-  { key: "registry", label: { en: "Registry", uk: "Реєстр" }, url: "/registry/", template: "pages/registry.njk", menu: true },
-  { key: "reports", label: { en: "Reports", uk: "Звіти" }, url: "/monitor/", template: "pages/monitor.njk", menu: true },
-  { key: "chatbots", label: { en: "Chatbots", uk: "Чат-боти" }, url: "/platforms/", template: "pages/platforms.njk", menu: true },
-  { key: "sources", label: { en: "Sources", uk: "Джерела" }, url: "/sources/", template: "pages/sources.njk", menu: true },
-  { key: "escalations", label: { en: "Escalations", uk: "Ескалації" }, url: "/escalations/", template: "pages/escalations.njk", menu: true },
-  { key: "methodology", label: { en: "Methodology", uk: "Методологія" }, url: "/methodology/", template: "pages/methodology.njk", menu: true },
-  { key: "data", label: { en: "Data", uk: "Дані" }, url: "/data/", template: "pages/data.njk", menu: false },
-  { key: "about", label: { en: "About", uk: "Про нас" }, url: "/about/", template: "pages/about.njk", menu: true },
-  { key: "corrections", label: { en: "Corrections", uk: "Виправлення" }, url: "/about/#corrections", template: "pages/about.njk", menu: false },
-  { key: "contact", label: { en: "Contact", uk: "Контакти" }, url: "/about/#contact", template: "pages/about.njk", menu: false },
-  // Feeds and machine files are language-neutral: one copy, linked from both.
-  { key: "rss", label: { en: "RSS", uk: "RSS" }, url: "/feed.xml", template: "machine/feed-xml.njk", menu: false, shared: true },
-  { key: "json", label: { en: "JSON", uk: "JSON" }, url: "/registry.json", template: "machine/registry-json.njk", menu: false, shared: true },
-  { key: "llms", label: { en: "llms.txt", uk: "llms.txt" }, url: "/llms.txt", template: "machine/llms.njk", menu: false, shared: true }
+const P = {
+  registry: "pages/registry.njk",
+  benchmarks: "pages/benchmarks.njk",
+  reports: "pages/monitor.njk",
+  chatbots: "pages/platforms.njk",
+  countries: "pages/countries.njk",
+  sources: "pages/sources.njk",
+  escalations: "pages/escalations.njk",
+  methodology: "pages/methodology.njk",
+  data: "pages/data.njk",
+  about: "pages/about.njk",
+  mission: "pages/mission.njk",
+  manifesto: "pages/manifesto.njk",
+  press: "pages/press.njk",
+  terms: "pages/terms.njk",
+  privacy: "pages/privacy.njk",
+  feed: "machine/feed-xml.njk",
+  feedJson: "machine/feed-json.njk",
+  llms: "machine/llms.njk",
+  security: "machine/security.njk"
+};
+
+const entry = (key, label, url, template) => ({ key, label, url, template });
+
+const MAIN = [
+  entry("registry", "Registry", "/registry/", P.registry),
+  entry("benchmarks", "Benchmarks", "/benchmarks/", P.benchmarks),
+  entry("reports", "Reports", "/monitor/", P.reports),
+  entry("chatbots", "Chatbots", "/platforms/", P.chatbots),
+  entry("sources", "Sources", "/sources/", P.sources),
+  entry("escalations", "Escalations", "/escalations/", P.escalations),
+  entry("methodology", "Methodology", "/methodology/", P.methodology)
 ];
 
-const live = ENTRIES.filter((e) => built(e.template));
+const FOOTER = [
+  {
+    heading: "Monitoring",
+    links: [
+      entry("registry", "Claim registry", "/registry/", P.registry),
+      entry("benchmarks", "Benchmarks", "/benchmarks/", P.benchmarks),
+      entry("reports", "Reports", "/monitor/", P.reports),
+      entry("chatbots", "Chatbots", "/platforms/", P.chatbots),
+      entry("countries", "Countries", "/countries/", P.countries),
+      entry("sources", "Sources", "/sources/", P.sources),
+      entry("escalations", "Escalation log", "/escalations/", P.escalations)
+    ]
+  },
+  {
+    heading: "Method &amp; data",
+    links: [
+      entry("methodology", "Methodology", "/methodology/", P.methodology),
+      entry("data", "Data &amp; downloads", "/data/", P.data),
+      entry("cite", "How to cite", "/data/#cite", P.data),
+      entry("rss", "RSS", "/feed.xml", P.feed),
+      entry("jsonfeed", "JSON Feed", "/feed.json", P.feedJson),
+      entry("llms", "llms.txt", "/llms.txt", P.llms)
+    ]
+  },
+  {
+    heading: "Organisation",
+    links: [
+      entry("about", "About", "/about/", P.about),
+      entry("mission", "Mission", "/mission/", P.mission),
+      entry("manifesto", "Manifesto", "/manifesto/", P.manifesto),
+      entry("press", "Press &amp; Media", "/press/", P.press),
+      entry("corrections", "Corrections", "/about/#corrections", P.about),
+      entry("contact", "Contact", "/about/#contact", P.about)
+    ]
+  }
+];
+
+const LEGAL = [
+  entry("terms", "Terms", "/terms/", P.terms),
+  entry("privacy", "Privacy", "/privacy/", P.privacy),
+  entry("press", "Press &amp; Media", "/press/", P.press),
+  entry("security", "security.txt", "/.well-known/security.txt", P.security)
+];
+
+const live = (list) => list.filter((item) => built(item.template));
 
 module.exports = {
-  byKey: Object.fromEntries(live.map((e) => [e.key, e])),
-  menu: live.filter((e) => e.menu),
-  footer: live,
-  has: Object.fromEntries(ENTRIES.map((e) => [e.key, built(e.template)]))
+  main: live(MAIN),
+  footer: FOOTER.map((col) => ({ ...col, links: live(col.links) })).filter((col) => col.links.length),
+  legal: live(LEGAL),
+  has: Object.fromEntries(
+    [...MAIN, ...FOOTER.flatMap((c) => c.links), ...LEGAL].map((i) => [i.key, built(i.template)])
+  )
 };

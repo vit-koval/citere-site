@@ -1,18 +1,18 @@
 {
-  "domain": "sitera.ai",
+  "domain": "citere.ai",
   "org": {
-    "name": "Sitera",
+    "name": "Citere",
     "legal_name": "{{TODO}}",
-    "city": "{{TODO}}",
+    "city": "Chernivtsi",
     "country": "Ukraine",
     "founded": "{{TODO}}",
     "diia_city_since": "2026-05",
     "funding": "self-funded",
     "email": {
-      "research": "research@sitera.ai",
-      "platforms": "platforms@sitera.ai",
-      "press": "press@sitera.ai",
-      "corrections": "corrections@sitera.ai"
+      "research": "research@citere.ai",
+      "platforms": "platforms@citere.ai",
+      "press": "press@citere.ai",
+      "corrections": "corrections@citere.ai"
     },
     "sameAs": [],
     "team": [],
@@ -26,7 +26,7 @@
     "escalations_actioned": 0
   },
   "used_by": [],
-  "last_update": "2026-09-02",
-  "watchlist_version": "v1",
-  "methodology_version": "v1"
+  "last_update": "2026-10-24",
+  "watchlist_version": "v14",
+  "methodology_version": "v2"
 }

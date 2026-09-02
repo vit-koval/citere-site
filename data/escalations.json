@@ -1,8 +1,1 @@
-[
-  { "date": "2026-09-24", "type": "shared", "target": "Centre for Countering Disinformation (RNBO)", "claim_id": "C1-003", "status": "receipt_confirmed" },
-  { "date": "2026-10-01", "type": "partner_publication", "target": "VoxCheck", "claim_id": "C1-003", "status": "published" },
-  { "date": "2026-10-09", "type": "platform_report", "target": "OpenAI", "claim_id": "C1-003", "status": "acknowledged", "response_date": "2026-10-14" },
-  { "date": "2026-10-09", "type": "platform_report", "target": "xAI", "claim_id": "C1-003", "status": "no_response" },
-  { "date": "2026-10-09", "type": "domain_complaint", "target": "Registrar of example[.]com", "claim_id": "C1-003", "status": "submitted" },
-  { "date": "2026-10-24", "type": "remeasured", "target": "8 chatbots", "claim_id": "C1-003", "status": "completed" }
-]
+[]

@@ -1,62 +1,53 @@
-// Display labels per language. Shared by the templates and by scripts/check.mjs,
-// so the verdict-badge check compares against the same strings the build wrote.
-const VERDICTS = {
-  en: { false: "FALSE", misleading: "MISLEADING", unsupported: "UNSUPPORTED" },
-  uk: { false: "НЕПРАВДА", misleading: "ОМАНЛИВО", unsupported: "БЕЗ ПІДТВЕРДЖЕНЬ" }
-};
+// Display labels and the mockup's per-bot identity (two-letter code + colour
+// class g1..g8). Shared by the templates and by scripts/check.mjs so the
+// verdict-badge check compares against the string the build actually wrote.
+const VERDICTS = { false: "FALSE", misleading: "MISLEADING", unsupported: "UNSUPPORTED" };
 
+// Layer A verdicts as the mockup prints them in the observations table.
 const BEHAVIOURS = {
-  en: { repeated: "Repeated", contextualised: "Contextualised", refuted: "Refuted", dodged: "Dodged" },
-  uk: { repeated: "Повторив", contextualised: "Уточнив", refuted: "Спростував", dodged: "Ухилився" }
+  repeated: "REPEATED",
+  contextualised: "CONTEXTUALISED",
+  refuted: "REFUTED",
+  dodged: "DODGED"
 };
 
 const STATUSES = {
-  en: {
-    submitted: "Submitted", acknowledged: "Acknowledged", actioned: "Actioned",
-    no_response: "No response", declined: "Declined", completed: "Completed",
-    live: "Live", published: "Published", receipt_confirmed: "Receipt confirmed"
-  },
-  uk: {
-    submitted: "Надіслано", acknowledged: "Підтверджено отримання", actioned: "Вжито заходів",
-    no_response: "Без відповіді", declined: "Відхилено", completed: "Завершено",
-    live: "Опубліковано", published: "Опубліковано", receipt_confirmed: "Отримання підтверджено"
-  }
+  submitted: "Submitted", acknowledged: "Acknowledged", actioned: "Actioned",
+  no_response: "No response", declined: "Declined", completed: "Completed",
+  live: "Live", published: "Published", receipt_confirmed: "Receipt confirmed"
 };
 
 const ACTION_TYPES = {
-  en: {
-    published: "Published this page", platform_report: "Reported", domain_complaint: "Domain complaint",
-    shared: "Shared with", partner_publication: "Published by",
-    authority_confirmation: "Authority confirmation", remeasured: "Re-measured"
-  },
-  uk: {
-    published: "Опублікували цю сторінку", platform_report: "Повідомили", domain_complaint: "Скарга на домен",
-    shared: "Передали", partner_publication: "Опублікував партнер",
-    authority_confirmation: "Підтвердження від органу влади", remeasured: "Повторний вимір"
-  }
+  published: "Published this page", platform_report: "Reported", domain_complaint: "Domain complaint",
+  shared: "Data shared", partner_publication: "Published by",
+  authority_confirmation: "Authority confirmation", remeasured: "Re-measured"
 };
 
 const NETWORKS = {
-  en: {
-    pravda: "Pravda", doppelganger: "Doppelganger", matryoshka: "Matryoshka",
-    "storm-1516": "Storm-1516", "state-media": "State media", other: "Other"
-  },
-  uk: {
-    pravda: "Pravda", doppelganger: "Doppelganger", matryoshka: "Matryoshka",
-    "storm-1516": "Storm-1516", "state-media": "Державні медіа", other: "Інша"
-  }
+  pravda: "pravda_network", doppelganger: "doppelganger", matryoshka: "matryoshka",
+  "storm-1516": "storm_1516", "state-media": "state_media", laundering: "laundering", other: "other"
 };
+
+// The mockup tints a network chip only for these three.
+const NETWORK_CLASS = { pravda: "pravda", doppelganger: "doppel", "storm-1516": "storm" };
 
 const CHATBOTS = {
-  chatgpt: "ChatGPT", gemini: "Gemini", grok: "Grok", claude: "Claude",
-  copilot: "Copilot", perplexity: "Perplexity", deepseek: "DeepSeek", "le-chat": "Le Chat"
+  chatgpt: { name: "ChatGPT", code: "GP", cls: "g1", company: "OpenAI" },
+  gemini: { name: "Gemini", code: "GE", cls: "g2", company: "Google" },
+  grok: { name: "Grok", code: "GR", cls: "g3", company: "xAI" },
+  claude: { name: "Claude", code: "CL", cls: "g4", company: "Anthropic" },
+  copilot: { name: "Copilot", code: "CP", cls: "g5", company: "Microsoft" },
+  perplexity: { name: "Perplexity", code: "PX", cls: "g6", company: "Perplexity AI" },
+  deepseek: { name: "DeepSeek", code: "DS", cls: "g7", company: "DeepSeek" },
+  "le-chat": { name: "Le Chat", code: "LC", cls: "g8", company: "Mistral AI" }
 };
 
-const MONTHS = {
-  en: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-  uk: ["січ", "лют", "бер", "кві", "тра", "чер", "лип", "сер", "вер", "жов", "лис", "гру"]
+// The mockup labels personas by what the prompt is, not by number alone.
+const PERSONAS = { P1: "neutral", P2: "topical", P3: "leading", P4: "malicious" };
+
+const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+module.exports = {
+  VERDICTS, BEHAVIOURS, STATUSES, ACTION_TYPES, NETWORKS, NETWORK_CLASS,
+  CHATBOTS, PERSONAS, MONTHS
 };
-
-const pick = (table, lang, key) => (table[lang] || table.en)[key] || (table.en[key] ?? key);
-
-module.exports = { VERDICTS, BEHAVIOURS, STATUSES, ACTION_TYPES, NETWORKS, CHATBOTS, MONTHS, pick };

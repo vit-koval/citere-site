@@ -1,0 +1,137 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://citere.ai/schemas/benchmarks.schema.json",
+  "title": "Precomputed benchmark figures",
+  "description": "Written by import-citere.mjs so no page does arithmetic at build time (CLAUDE.md 5.2). Nothing is required, so an empty file validates before the first run is imported.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "run": { "type": "string" },
+    "label": { "type": "string" },
+    "date": { "type": "string", "format": "date" },
+    "responses": { "type": "integer", "minimum": 0 },
+    "leaderboards": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": ["key", "value"],
+          "additionalProperties": false,
+          "properties": {
+            "key": { "type": "string" },
+            "label": { "type": "string" },
+            "value": { "type": "number" },
+            "display": { "type": "string" },
+            "n": { "type": "integer", "minimum": 0 },
+            "ci": { "type": "array", "items": { "type": "number" }, "minItems": 2, "maxItems": 2 },
+            "delta": { "type": "number" },
+            "persona": { "enum": ["P1", "P2", "P3", "P4"] },
+            "chatbot": { "type": "string" },
+            "href": { "type": "string" }
+          }
+        }
+      }
+    },
+    "persona_note": { "type": "object", "additionalProperties": { "type": "string" } },
+    "heatmap": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["chatbot", "persona", "rate", "n"],
+        "additionalProperties": false,
+        "properties": {
+          "chatbot": { "type": "string" },
+          "persona": { "enum": ["P1", "P2", "P3", "P4"] },
+          "rate": { "type": "number", "minimum": 0, "maximum": 1 },
+          "contamination": { "type": "number", "minimum": 0, "maximum": 1 },
+          "n": { "type": "integer", "minimum": 0 },
+          "low_confidence": { "type": "boolean" }
+        }
+      }
+    },
+    "abx": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "clean": { "type": "integer", "minimum": 0 },
+          "flagged": { "type": "integer", "minimum": 0 },
+          "clean_tier": { "enum": ["critical", "high", "review", "low", "none"] },
+          "flagged_tier": { "enum": ["critical", "high", "review", "low", "none"] }
+        }
+      }
+    },
+    "funnel": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["label", "n"],
+        "additionalProperties": false,
+        "properties": {
+          "label": { "type": "string" },
+          "detail": { "type": "string" },
+          "n": { "type": "integer", "minimum": 0 }
+        }
+      }
+    },
+    "grain_of_truth": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["persona", "with_grain", "pure", "n"],
+        "additionalProperties": false,
+        "properties": {
+          "persona": { "enum": ["P1", "P2", "P3", "P4"] },
+          "with_grain": { "type": "number", "minimum": 0, "maximum": 1 },
+          "pure": { "type": "number", "minimum": 0, "maximum": 1 },
+          "n": { "type": "integer", "minimum": 0 }
+        }
+      }
+    },
+    "verdict_split": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["persona", "repeated", "contextualised", "refuted", "dodged", "n"],
+        "additionalProperties": false,
+        "properties": {
+          "persona": { "enum": ["P1", "P2", "P3", "P4"] },
+          "repeated": { "type": "number", "minimum": 0, "maximum": 1 },
+          "contextualised": { "type": "number", "minimum": 0, "maximum": 1 },
+          "refuted": { "type": "number", "minimum": 0, "maximum": 1 },
+          "dodged": { "type": "number", "minimum": 0, "maximum": 1 },
+          "n": { "type": "integer", "minimum": 0 }
+        }
+      }
+    },
+    "contamination_by_persona": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["persona", "rate", "n"],
+        "additionalProperties": false,
+        "properties": {
+          "persona": { "enum": ["P1", "P2", "P3", "P4"] },
+          "rate": { "type": "number", "minimum": 0, "maximum": 1 },
+          "n": { "type": "integer", "minimum": 0 }
+        }
+      }
+    },
+    "trend": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["month", "median_repeat"],
+        "additionalProperties": false,
+        "properties": {
+          "month": { "type": "string", "pattern": "^[0-9]{4}-[0-9]{2}$" },
+          "median_repeat": { "type": "number", "minimum": 0, "maximum": 1 },
+          "persona": { "enum": ["P1", "P2", "P3", "P4"] },
+          "note": { "type": "string" }
+        }
+      }
+    }
+  }
+}

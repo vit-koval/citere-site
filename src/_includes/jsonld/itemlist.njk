@@ -1,6 +1,6 @@
 {%- set homeItems = [] -%}
 {%- for item in listedClaims -%}
-{%- set homeItems = (homeItems.push({ "@type": "ListItem", "position": loop.index, "url": site.url + (item.url | loc(lang)), "name": item.title }), homeItems) -%}
+{%- set homeItems = (homeItems.push({ "@type": "ListItem", "position": loop.index, "url": site.url + (item.url), "name": item.title }), homeItems) -%}
 {%- endfor -%}
 {%- set jsonldList = {
   "@context": "https://schema.org",

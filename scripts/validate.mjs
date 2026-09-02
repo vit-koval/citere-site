@@ -27,6 +27,7 @@ validate("data/sources.json", schema("sources"), read("data/sources.json"));
 validate("data/platforms.json", schema("platforms"), read("data/platforms.json"));
 validate("data/countries.json", schema("countries"), read("data/countries.json"));
 validate("data/clusters.json", schema("clusters"), read("data/clusters.json"));
+validate("data/benchmarks.json", schema("benchmarks"), read("data/benchmarks.json"));
 validate("data/escalations.json", schema("escalations"), read("data/escalations.json"));
 validate("data/reports.json", schema("reports"), read("data/reports.json"));
 
