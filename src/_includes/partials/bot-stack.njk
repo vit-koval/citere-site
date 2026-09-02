@@ -1,3 +1,4 @@
-{#- The overlapping assistant avatars from the mockup. -#}
-<div class="stack">{% for key in stackBots %}<span class="mini {{ key | botClass }}" title="{{ key | botName }}">{{ key | botCode }}</span>{% endfor %}
+{%- from "partials/bot-mark.njk" import botMark -%}
+{#- Overlapping assistant marks. Real logo or monogram, same 22px footprint. -#}
+<div class="stack">{% for key in stackBots %}{{ botMark(logos, key, "sm") }}{% endfor %}
 {%- if stackTotal %}<span class="rmeta" style="margin-left:7px">{{ stackBots | length }} / {{ stackTotal }}</span>{% endif %}</div>

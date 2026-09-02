@@ -21,7 +21,7 @@
 #}
 
 {% macro botMark(logos, key, size="sm") %}
-  {%- set bot = (logos.assistants | selectattr("key", "equalto", key) | first) -%}
+  {%- set bot = logos.byKey[key] -%}
   {%- if not bot -%}
     <span class="mini" style="background:#6b7280" aria-hidden="true">??</span>
   {%- else -%}
@@ -52,7 +52,7 @@
 {% macro botStrip(logos, rows) %}
   <div class="bots">
     {%- for row in rows %}
-      {%- set bot = (logos.assistants | selectattr("key", "equalto", row.key) | first) %}
+      {%- set bot = logos.byKey[row.key] %}
       <a class="bot" href="{{ ('/platforms/' ~ row.key ~ '/') | url }}">
         {{ botMark(logos, row.key, "md") }}{{ bot.name }}<span class="r num">{{ row.rate }}</span>
       </a>

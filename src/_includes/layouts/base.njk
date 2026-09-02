@@ -13,6 +13,7 @@
 {{ content | safe }}
 </div>
 </main>
+{%- set pageHasMarks = ("botmark" in content) or ("class=\"mini" in content) or ("class=\"pmark" in content) %}
 {% include "partials/footer.njk" %}
 </body>
 </html>

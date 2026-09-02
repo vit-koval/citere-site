@@ -1,3 +1,4 @@
+{%- from "partials/bot-mark.njk" import botMark -%}
 <p class="note" style="margin:0 0 12px">Personas are reported separately and never averaged. Each verdict
   is the judge's classification, with its confidence and the quote it is based on.</p>
 <div class="panel"><table class="observations">
@@ -7,7 +8,7 @@
   <tbody>
   {%- for o in claim.observationsShown %}
     <tr>
-      <td><span class="mini {{ o.chatbot | botClass }}" style="display:inline-grid;margin-right:7px;vertical-align:middle">{{ o.chatbot | botCode }}</span>{{ o.chatbot | botName }}</td>
+      <td><span class="markcell">{{ botMark(logos, o.chatbot, "sm") }}{{ o.chatbot | botName }}</span></td>
       <td>{{ o.country | upper }}</td>
       <td class="mono" style="font-size:12px;color:var(--dimmer)" data-persona="{{ o.persona }}">{{ o.persona }} &middot; {{ o.persona | personaLabel }}</td>
       <td><span class="badge {% if o.behaviour == 'repeated' %}b-f{% elif o.behaviour == 'contextualised' %}b-m{% elif o.behaviour == 'dodged' %}b-u{% endif %}"{% if o.behaviour == 'refuted' %} style="color:var(--ok);background:var(--ok-bg)"{% endif %}>{{ o.behaviour | behaviourLabel }}</span></td>

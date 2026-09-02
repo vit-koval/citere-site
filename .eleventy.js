@@ -17,6 +17,9 @@ function minifyCss(css) {
 
 module.exports = function (eleventyConfig) {
   eleventyConfig.addPassthroughCopy({ CNAME: "CNAME" });
+  // Real vendor logo files, when they have been dropped in. The directory may
+  // be empty: bot-mark.njk falls back to the monogram tile.
+  eleventyConfig.addPassthroughCopy({ "src/assets/logos": "assets/logos" });
   eleventyConfig.setUseGitIgnore(false);
   eleventyConfig.ignores.add("**/node_modules/**");
   // design-mockup/ is the approved reference. It is never built or deployed.
@@ -28,6 +31,20 @@ module.exports = function (eleventyConfig) {
   eleventyConfig.addExtension("css", {
     outputFileExtension: "css",
     compile: (inputContent) => () => minifyCss(inputContent)
+  });
+
+  // Does a file exist under src/? Used by bot-mark.njk to decide between a
+  // real vendor mark and the monogram tile, so an empty src/assets/logos/ is
+  // a supported state rather than a broken build.
+  const SRC = require("node:path").join(__dirname, "src");
+  const existsCache = new Map();
+  eleventyConfig.addFilter("fileExists", (relative) => {
+    const rel = String(relative || "").replace(/^\/+/, "");
+    if (!rel) return false;
+    if (!existsCache.has(rel)) {
+      existsCache.set(rel, require("node:fs").existsSync(require("node:path").join(SRC, rel)));
+    }
+    return existsCache.get(rel);
   });
 
   // ---- dates -------------------------------------------------------------

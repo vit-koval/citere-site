@@ -505,3 +505,15 @@ a:focus-visible,button:focus-visible,summary:focus-visible,[tabindex]:focus-visi
 .demobar-tag{flex:none;background:#fff;color:#7a1410;border-radius:5px;
   padding:2px 8px;font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase}
 .demobar-text{font-weight:520}
+
+/* Assistant name beside its mark, in table cells. Keeps the mark and the name
+   on one baseline whether the mark is a real logo or the monogram tile. */
+.markcell{display:inline-flex;align-items:center;gap:7px}
+.bots-mini .botmark{width:20px;height:20px;border-radius:5.5px;padding:1px}
+.bots-mini .mini{box-shadow:none}
+
+/* The monogram fallback must occupy exactly the same box as a real mark. The
+   mockup's .mini and .bot .g have a width but no flex:none, so inside the
+   flex rows they share with <img class="botmark"> (which does) they were the
+   only thing that could shrink, and came out ~18px against the image's 22/25. */
+.mini,.bot .g,.pmark{flex:none}

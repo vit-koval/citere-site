@@ -1,9 +1,10 @@
+{%- from "partials/bot-mark.njk" import botMark -%}
 <div class="vizcard"><div class="vb">
   <div class="hm">
     <div></div>
     {%- for p in benchmarks.personas %}<div class="h">{{ p }} &middot; {{ p | personaLabel }}</div>{% endfor %}
     {%- for row in benchmarks.heatmapRows %}
-    <div class="rl"><span class="mini {{ row.chatbot | botClass }}">{{ row.chatbot | botCode }}</span>{{ row.chatbot | botName }}</div>
+    <div class="rl">{{ botMark(logos, row.chatbot, "sm") }}{{ row.chatbot | botName }}</div>
     {%- for cell in row.cells %}
     <div class="c {{ cell.level }}" data-persona="{{ cell.persona }}">{{ cell.rate | rate }}<small>n={{ cell.n }}</small></div>
     {%- endfor %}

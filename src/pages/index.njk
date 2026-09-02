@@ -11,8 +11,8 @@ description: "Citere tests ChatGPT, Gemini, Grok, Claude, Copilot, Perplexity, D
 {% set side = "r" %}{% include "partials/hero-mesh.njk" %}
 
   <div class="hero">
-    {%- if benchmarks.label %}
-    <span class="pill"><span class="live"></span>{{ benchmarks.label }}{% if benchmarks.countries | length %} &middot; {% for code in benchmarks.countries %}{{ code | countryName }}{% if not loop.last %}, {% endif %}{% endfor %}{% endif %}</span>
+    {%- if site.current_run and site.current_run.label %}
+    <span class="pill"><span class="live"></span>{{ site.current_run.label }}{% if site.current_run.markets %} &middot; {{ site.current_run.markets }}{% endif %}</span>
     {%- endif %}
     <h1>Do AI chatbots repeat Russian disinformation about Ukraine?</h1>
     {%- if site.counters.claims %}

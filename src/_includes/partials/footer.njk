@@ -1,3 +1,4 @@
+{%- from "partials/bot-mark.njk" import markNotice -%}
 <footer><div class="wrap">
     <div class="fcols">
       <div class="fcol fbrand">
@@ -13,6 +14,11 @@
       </div>
       {%- endfor %}
     </div>
+    {%- if pageHasMarks %}
+    {#- Trademark line, required on any page that shows a vendor mark. Driven
+        off the rendered page, so it cannot drift out of step with the marks. -#}
+    {{ markNotice(logos, lang | default("en")) }}
+    {%- endif %}
     <div class="fbot">
       <span>&copy; {{ site.last_update | year }} {{ site.org.name }} &middot; Data under CC BY 4.0 &middot; Updated <time datetime="{{ site.last_update | isoDate }}">{{ site.last_update | displayDate }}</time></span>
       {%- if navigation.legal | length %}

@@ -1,3 +1,4 @@
+{%- from "partials/bot-mark.njk" import botMark -%}
 {#- Rank card from the mockup. Every card names the persona its rates were
     measured under, so no rate is rendered without one (CLAUDE.md 10). -#}
 <div class="rank">
@@ -5,7 +6,7 @@
   {%- for row in lbRows | take(5) %}
   <div class="row"{% if row.persona %} data-persona="{{ row.persona }}"{% endif %}>
     {%- if lbShowIdx %}<span class="idx">{{ loop.index }}</span>{% endif %}
-    {%- if row.chatbot %}<span class="mini {{ row.chatbot | botClass }}">{{ row.chatbot | botCode }}</span>{% endif %}
+    {%- if row.chatbot %}{{ botMark(logos, row.chatbot, "sm") }}{% endif %}
     <span class="rname">{% if lbFlag %}{{ row.key | flag }} {% endif %}{{ row.label }}</span>
     {%- if lbShowBar %}<span class="barm"><i style="width:{{ row.width }}%"></i></span>{% endif %}
     {%- if row.before is defined %}
