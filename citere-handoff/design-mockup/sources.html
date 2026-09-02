@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Kremlin-linked domains — Citere</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header><div class="wrap bar">
+    <a class="logo" href="index.html"><span class="mark"></span>Citere</a>
+    <nav><a href="registry.html">Registry</a><a href="benchmarks.html">Benchmarks</a><a href="reports.html">Reports</a><a href="chatbots.html">Chatbots</a><a href="sources.html" class='on'>Sources</a><a href="escalations.html">Escalations</a><a href="methodology.html">Methodology</a></nav>
+    <div class="spacer"></div>
+    <div class="search">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+        <circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+      Search claims, chatbots, domains<span class="kbd">&#8984;K</span>
+    </div>
+  </div></header>
+<div class="wrap">
+<p class="crumbs"><a href="index.html">Home</a> / Sources</p>
+  <div class="phead"><h1>Kremlin-linked domains cited by AI chatbots</h1>
+    <p class="plead">When a chatbot answers a question about Ukraine it often searches the live web. This
+      is the list of domains from known Russian influence infrastructure that we have observed appearing
+      in those answers — the Pravda network, Doppelganger, Matryoshka, Storm-1516 and state media.
+      <b>64 domains</b>, watchlist version <b>v14</b>, updated 24 Oct 2026.</p></div>
+  <p class="note" style="margin:-14px 0 22px">Attribution is not ours alone: each network entry links to
+    the public attribution by Viginum, DFRLab, NewsGuard or EU DisinfoLab. Domains are written in defanged
+    form and not hyperlinked, so this page never sends traffic to them.</p>
+
+  <div class="filters">
+    <span class="f active">All networks</span><span class="f">Pravda network</span>
+    <span class="f">Doppelganger</span><span class="f">Storm-1516</span>
+    <span class="f">State media</span><span class="f">Laundering</span></div>
+
+  <div class="panel"><table>
+    <thead><tr><th>Domain</th><th>Network</th><th>First seen</th><th>Cited in</th><th>Citations</th></tr></thead>
+    <tbody>
+      <tr><td><span class="domain">rt[.]com</span></td><td><span class="netchip">state_media</span></td><td style="color:var(--dimmer)">10 Jul 2026</td><td><a href="claim.html" style="color:var(--accent);font-weight:600;font-size:13px">C1-003 &rarr;</a></td><td class="rmeta">14</td></tr>
+      <tr><td><span class="domain">pravda-network-node[.]info</span></td><td><span class="netchip pravda">pravda_network</span></td><td style="color:var(--dimmer)">2 Nov 2025</td><td><a href="claim.html" style="color:var(--accent);font-weight:600;font-size:13px">C1-003, C1-007 &rarr;</a></td><td class="rmeta">9</td></tr>
+      <tr><td><span class="domain">geo-politica[.]info</span></td><td><span class="netchip">laundering</span></td><td style="color:var(--dimmer)">18 Sep 2025</td><td><a href="claim.html" style="color:var(--accent);font-weight:600;font-size:13px">C1-003 &rarr;</a></td><td class="rmeta">6</td></tr>
+      <tr><td><span class="domain">news-frontier[.]net</span></td><td><span class="netchip doppel">doppelganger</span></td><td style="color:var(--dimmer)">4 Aug 2026</td><td><a href="claim.html" style="color:var(--accent);font-weight:600;font-size:13px">C1-011 &rarr;</a></td><td class="rmeta">4</td></tr>
+      <tr><td><span class="domain">svobodnaya-pressa-eu[.]cc</span></td><td><span class="netchip storm">storm-1516</span></td><td style="color:var(--dimmer)">29 Jun 2026</td><td><a href="claim.html" style="color:var(--accent);font-weight:600;font-size:13px">C1-007 &rarr;</a></td><td class="rmeta">3</td></tr>
+    </tbody></table></div>
+
+  <h2 style="margin:36px 0 8px">Article evidence <span style="font-weight:500;color:var(--dimmer);font-size:13px">clean host, dirty article</span></h2>
+  <div class="callout">These are specific URLs on an otherwise allowlisted domain that were cited in a
+    REPEAT answer. A log of evidence, not a rule — the host itself is never blacklisted for one bad article.</div>
+  <div class="panel">
+    <div class="actrow"><div class="what mono" style="font-size:12.6px;color:var(--dim);font-weight:400">reuters-syndication-mirror.example.com/2026/09/aid-audit-leak</div><span class="chip wait"><span class="dot"></span>To review</span></div>
+    <div class="actrow"><div class="what mono" style="font-size:12.6px;color:var(--dim);font-weight:400">regional-news-portal.example.com/opinion/who-really-profits</div><span class="chip ok"><span class="dot"></span>Confirmed, evidence kept</span></div>
+    <div class="actrow"><div class="what mono" style="font-size:12.6px;color:var(--dim);font-weight:400">aggregator-mirror.example.com/syndicated/aid-diversion-report</div><span class="chip wait"><span class="dot"></span>To review</span></div>
+  </div>
+
+  <div class="exports" style="margin:22px 0 40px"><a href="data.html">Download CSV</a><span>&middot;</span>
+    <a href="data.html">STIX 2.1</a><span>&middot;</span><a href="data.html">JSON</a><span>&middot;</span>
+    <a href="data.html">How to use this (MISP / OpenCTI / CERT)</a></div>
+</div>
+<footer><div class="wrap">
+    <div class="fcols">
+      <div class="fcol fbrand">
+        <div class="logo"><span class="mark"></span>Citere</div>
+        <p>Independent monitoring of public AI chatbots for Russian disinformation about Ukraine.
+          Ukrainian research company, Diia.City resident.</p>
+      </div>
+      <div class="fcol"><h5>Monitoring</h5>
+        <a href="registry.html">Claim registry</a><a href="benchmarks.html">Benchmarks</a>
+        <a href="reports.html">Reports</a><a href="chatbots.html">Chatbots</a>
+        <a href="countries.html">Countries</a><a href="sources.html">Sources</a>
+        <a href="escalations.html">Escalation log</a></div>
+      <div class="fcol"><h5>Method &amp; data</h5>
+        <a href="methodology.html">Methodology</a><a href="data.html">Data &amp; downloads</a>
+        <a href="data.html#cite">How to cite</a><a href="#">RSS</a><a href="#">JSON Feed</a>
+        <a href="#">llms.txt</a></div>
+      <div class="fcol"><h5>Organisation</h5>
+        <a href="about.html">About</a><a href="mission.html">Mission</a>
+        <a href="manifesto.html">Manifesto</a><a href="press.html">Press &amp; Media</a>
+        <a href="about.html#corrections">Corrections</a><a href="about.html#contact">Contact</a></div>
+    </div>
+    <div class="fbot">
+      <span>&copy; 2026 Citere &middot; Data under CC BY 4.0 &middot; Updated 24 Oct 2026</span>
+      <span class="legal"><a href="terms.html">Terms</a><a href="privacy.html">Privacy</a>
+        <a href="press.html">Press &amp; Media</a><a href="#">security.txt</a></span>
+    </div>
+  </div></footer>
+</body>
+</html>

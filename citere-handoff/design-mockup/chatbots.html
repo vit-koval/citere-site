@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Chatbot benchmark — Citere</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header><div class="wrap bar">
+    <a class="logo" href="index.html"><span class="mark"></span>Citere</a>
+    <nav><a href="registry.html">Registry</a><a href="benchmarks.html">Benchmarks</a><a href="reports.html">Reports</a><a href="chatbots.html" class='on'>Chatbots</a><a href="sources.html">Sources</a><a href="escalations.html">Escalations</a><a href="methodology.html">Methodology</a></nav>
+    <div class="spacer"></div>
+    <div class="search">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+        <circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+      Search claims, chatbots, domains<span class="kbd">&#8984;K</span>
+    </div>
+  </div></header>
+<div class="wrap">
+<p class="crumbs"><a href="index.html">Home</a> / <a href="benchmarks.html">Benchmarks</a> / Chatbots</p>
+  <div class="phead"><h1>Chatbot benchmark</h1>
+    <p class="plead">How each assistant handles documented false claims about Ukraine. Ranked by
+      repeat-rate on the P2 topical-news persona from the September 2026 run — the persona that most
+      resembles how people actually ask. Every row links to a full profile with the trend, the country
+      split and the escalations we sent.</p></div>
+
+  <div class="filters">
+    <span class="f active">P2 &middot; topical</span><span class="f">P1 &middot; neutral</span>
+    <span class="f">P3 &middot; leading</span><span class="f">P4 &middot; malicious</span>
+    <span class="f">All countries &#8964;</span></div>
+
+  <div class="panel"><table>
+    <thead><tr><th>#</th><th>Chatbot</th><th>Company</th><th>Repeat-rate</th><th>Contamination</th>
+      <th>Claims repeated</th><th>Escalations</th><th>Trend</th></tr></thead>
+    <tbody>
+      <tr><td class="num" style="color:var(--dimmer)">1</td><td class="cl"><span class="mini g7" style="display:inline-grid;margin-right:8px;vertical-align:middle">DS</span><a href="chatbot.html">DeepSeek</a></td><td style="color:var(--dim)">DeepSeek</td><td><div style="display:flex;align-items:center;gap:9px"><span class="barm"><i style="width:100%"></i></span><span class="rmeta">11.2%</span></div></td><td class="rmeta">4.4%</td><td class="num">6</td><td class="num">4</td><td class="rmeta" style="color:var(--false)">&uarr; 1.1</td></tr>
+      <tr><td class="num" style="color:var(--dimmer)">2</td><td class="cl"><span class="mini g6" style="display:inline-grid;margin-right:8px;vertical-align:middle">PX</span><a href="chatbot.html">Perplexity</a></td><td style="color:var(--dim)">Perplexity AI</td><td><div style="display:flex;align-items:center;gap:9px"><span class="barm"><i style="width:84%"></i></span><span class="rmeta">9.4%</span></div></td><td class="rmeta">8.5%</td><td class="num">5</td><td class="num">5</td><td class="rmeta" style="color:var(--ok)">&darr; 2.3</td></tr>
+      <tr><td class="num" style="color:var(--dimmer)">3</td><td class="cl"><span class="mini g3" style="display:inline-grid;margin-right:8px;vertical-align:middle">GR</span><a href="chatbot.html">Grok</a></td><td style="color:var(--dim)">xAI</td><td><div style="display:flex;align-items:center;gap:9px"><span class="barm"><i style="width:70%"></i></span><span class="rmeta">7.8%</span></div></td><td class="rmeta">3.1%</td><td class="num">4</td><td class="num">3</td><td class="rmeta" style="color:var(--ok)">&darr; 1.8</td></tr>
+      <tr><td class="num" style="color:var(--dimmer)">4</td><td class="cl"><span class="mini g2" style="display:inline-grid;margin-right:8px;vertical-align:middle">GE</span><a href="chatbot.html">Gemini</a></td><td style="color:var(--dim)">Google</td><td><div style="display:flex;align-items:center;gap:9px"><span class="barm"><i style="width:69%"></i></span><span class="rmeta">7.7%</span></div></td><td class="rmeta">2.4%</td><td class="num">4</td><td class="num">3</td><td class="rmeta" style="color:var(--dim)">&ndash; 0.2</td></tr>
+      <tr><td class="num" style="color:var(--dimmer)">5</td><td class="cl"><span class="mini g8" style="display:inline-grid;margin-right:8px;vertical-align:middle">LC</span><a href="chatbot.html">Le Chat</a></td><td style="color:var(--dim)">Mistral</td><td><div style="display:flex;align-items:center;gap:9px"><span class="barm"><i style="width:57%"></i></span><span class="rmeta">6.4%</span></div></td><td class="rmeta">3.8%</td><td class="num">3</td><td class="num">2</td><td class="rmeta" style="color:var(--ok)">&darr; 0.9</td></tr>
+      <tr><td class="num" style="color:var(--dimmer)">6</td><td class="cl"><span class="mini g5" style="display:inline-grid;margin-right:8px;vertical-align:middle">CP</span><a href="chatbot.html">Copilot</a></td><td style="color:var(--dim)">Microsoft</td><td><div style="display:flex;align-items:center;gap:9px"><span class="barm"><i style="width:46%"></i></span><span class="rmeta">5.1%</span></div></td><td class="rmeta">2.0%</td><td class="num">2</td><td class="num">2</td><td class="rmeta" style="color:var(--ok)">&darr; 1.4</td></tr>
+      <tr><td class="num" style="color:var(--dimmer)">7</td><td class="cl"><span class="mini g4" style="display:inline-grid;margin-right:8px;vertical-align:middle">CL</span><a href="chatbot.html">Claude</a></td><td style="color:var(--dim)">Anthropic</td><td><div style="display:flex;align-items:center;gap:9px"><span class="barm"><i style="width:38%"></i></span><span class="rmeta">4.3%</span></div></td><td class="rmeta">7.7%</td><td class="num">2</td><td class="num">2</td><td class="rmeta" style="color:var(--dim)">&ndash; 0.1</td></tr>
+      <tr><td class="num" style="color:var(--dimmer)">8</td><td class="cl"><span class="mini g1" style="display:inline-grid;margin-right:8px;vertical-align:middle">GP</span><a href="chatbot.html">ChatGPT</a></td><td style="color:var(--dim)">OpenAI</td><td><div style="display:flex;align-items:center;gap:9px"><span class="barm"><i style="width:31%"></i></span><span class="rmeta">3.5%</span></div></td><td class="rmeta">1.9%</td><td class="num">1</td><td class="num">2</td><td class="rmeta" style="color:var(--ok)">&darr; 0.6</td></tr>
+    </tbody></table></div>
+
+  <p class="note">Repeat-rate and contamination measure different failures and do not move together —
+    Claude has the second-lowest repeat-rate and the second-highest contamination rate, because it engages
+    with the question and searches rather than declining. We test the public consumer interface, not the
+    API; results describe that product at that date and model version.</p>
+
+  <div class="exports" style="margin-bottom:44px"><a href="data.html">Download this table (CSV)</a>
+    <span>&middot;</span><a href="benchmarks.html">All benchmarks</a><span>&middot;</span>
+    <a href="methodology.html">How repeat-rate is computed</a></div>
+</div>
+<footer><div class="wrap">
+    <div class="fcols">
+      <div class="fcol fbrand">
+        <div class="logo"><span class="mark"></span>Citere</div>
+        <p>Independent monitoring of public AI chatbots for Russian disinformation about Ukraine.
+          Ukrainian research company, Diia.City resident.</p>
+      </div>
+      <div class="fcol"><h5>Monitoring</h5>
+        <a href="registry.html">Claim registry</a><a href="benchmarks.html">Benchmarks</a>
+        <a href="reports.html">Reports</a><a href="chatbots.html">Chatbots</a>
+        <a href="countries.html">Countries</a><a href="sources.html">Sources</a>
+        <a href="escalations.html">Escalation log</a></div>
+      <div class="fcol"><h5>Method &amp; data</h5>
+        <a href="methodology.html">Methodology</a><a href="data.html">Data &amp; downloads</a>
+        <a href="data.html#cite">How to cite</a><a href="#">RSS</a><a href="#">JSON Feed</a>
+        <a href="#">llms.txt</a></div>
+      <div class="fcol"><h5>Organisation</h5>
+        <a href="about.html">About</a><a href="mission.html">Mission</a>
+        <a href="manifesto.html">Manifesto</a><a href="press.html">Press &amp; Media</a>
+        <a href="about.html#corrections">Corrections</a><a href="about.html#contact">Contact</a></div>
+    </div>
+    <div class="fbot">
+      <span>&copy; 2026 Citere &middot; Data under CC BY 4.0 &middot; Updated 24 Oct 2026</span>
+      <span class="legal"><a href="terms.html">Terms</a><a href="privacy.html">Privacy</a>
+        <a href="press.html">Press &amp; Media</a><a href="#">security.txt</a></span>
+    </div>
+  </div></footer>
+</body>
+</html>

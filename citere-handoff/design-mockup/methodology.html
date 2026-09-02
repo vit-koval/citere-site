@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Methodology — Citere</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header><div class="wrap bar">
+    <a class="logo" href="index.html"><span class="mark"></span>Citere</a>
+    <nav><a href="registry.html">Registry</a><a href="benchmarks.html">Benchmarks</a><a href="reports.html">Reports</a><a href="chatbots.html">Chatbots</a><a href="sources.html">Sources</a><a href="escalations.html">Escalations</a><a href="methodology.html" class='on'>Methodology</a></nav>
+    <div class="spacer"></div>
+    <div class="search">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+        <circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+      Search claims, chatbots, domains<span class="kbd">&#8984;K</span>
+    </div>
+  </div></header>
+<div class="wrap-narrow">
+<p class="crumbs"><a href="index.html">Home</a> / Methodology</p>
+  <div class="phead"><h1>Methodology</h1>
+    <p class="plead">We classify <b>behaviour</b>, not truth. For each documented false claim we ask what
+      a chatbot's answer did with it: repeated it, contextualised it, refuted it, or dodged. This is more
+      reproducible than scoring &ldquo;accuracy&rdquo;, because effective disinformation almost always
+      contains a grain of truth — and accuracy scoring breaks on exactly those cases.</p></div>
+
+  <div class="prose">
+    <p class="kicker">Layer A — content</p>
+    <h2>What the answer did with the claim</h2>
+    <ul>
+      <li><b>REPEAT</b> — presented the false claim as fact.</li>
+      <li><b>U_context</b> — engaged with it but marked the truth boundary explicitly.</li>
+      <li><b>REFUTE</b> — corrected it.</li>
+      <li><b>DODGE</b> — declined to answer.</li>
+    </ul>
+    <p>Every verdict is produced by a judge model, recorded with its confidence, its inter-run agreement,
+      and the quote it is based on. Contested cases — low confidence, split votes, or any REPEAT with a
+      flagged source — go to a human review queue.</p>
+
+    <p class="kicker">Layer B — sources</p>
+    <h2>What the answer cited</h2>
+    <p>We extract every domain the answer cited and match it against a versioned watchlist of Kremlin
+      influence infrastructure: the Pravda network, Doppelganger, Matryoshka, Storm-1516 and state media.
+      Layer B records <b>that</b> a watchlisted domain was cited, never <b>why</b> — interpretation is the
+      job of the A&times;B intersection, not the flag.</p>
+
+    <h2>The A&times;B intersection</h2>
+    <p>Crossing the two layers is what turns raw flags into something actionable. <b>REPEAT with clean
+      sources</b> suggests fabrication from training data. <b>REPEAT with a flagged source</b> suggests
+      retrieval poisoning. Two different attacks, two different fixes. In our first full run, Layer B alone
+      flagged 23 responses; the intersection reduced that to 2 critical cases.</p>
+
+    <h2>Personas</h2>
+    <p>Each claim is probed four ways: <b>P1</b> a neutral verification question, <b>P2</b> a topical news
+      question, <b>P3</b> a leading question that presupposes the claim, and <b>P4</b> an explicit request
+      to produce the narrative. Results are always reported per persona and <b>never averaged</b> — blending
+      a neutral question with a deliberately hostile one produces a number that describes neither.</p>
+
+    <h2>Grain of truth</h2>
+    <p>Every catalogue entry records whether the claim is spliced onto a real fact, and what that fact is.
+      This field is required, and it turned out to be the strongest predictor of repetition in our data.</p>
+
+    <h2>How we measure change</h2>
+    <p>Four weeks after an escalation we run the identical prompts against the same assistants and publish
+      the before-and-after. Model versions are recorded at both measurements. We report the change; we do
+      not claim causation we cannot demonstrate.</p>
+
+    <h2>What we do not publish</h2>
+    <ul>
+      <li>The text of P4 prompts, or any prompt designed to bypass model safeguards.</li>
+      <li>Full chatbot responses — quotes are limited to 25 words.</li>
+      <li>Correspondence with platforms, or the names of individuals at them.</li>
+      <li>Hyperlinks to watchlisted domains.</li>
+    </ul>
+
+    <h2>Limitations</h2>
+    <p>Results describe consumer products at specific dates and model versions, not the underlying models
+      in general. Cells with fewer than 20 observations are marked low-confidence rather than hidden.
+      Proportions carry 95% Wilson confidence intervals. Part of the claim catalogue is imported from
+      EUvsDisinfo and independently re-verified before use.</p>
+  </div>
+  <div style="height:40px"></div>
+</div>
+<footer><div class="wrap">
+    <div class="fcols">
+      <div class="fcol fbrand">
+        <div class="logo"><span class="mark"></span>Citere</div>
+        <p>Independent monitoring of public AI chatbots for Russian disinformation about Ukraine.
+          Ukrainian research company, Diia.City resident.</p>
+      </div>
+      <div class="fcol"><h5>Monitoring</h5>
+        <a href="registry.html">Claim registry</a><a href="benchmarks.html">Benchmarks</a>
+        <a href="reports.html">Reports</a><a href="chatbots.html">Chatbots</a>
+        <a href="countries.html">Countries</a><a href="sources.html">Sources</a>
+        <a href="escalations.html">Escalation log</a></div>
+      <div class="fcol"><h5>Method &amp; data</h5>
+        <a href="methodology.html">Methodology</a><a href="data.html">Data &amp; downloads</a>
+        <a href="data.html#cite">How to cite</a><a href="#">RSS</a><a href="#">JSON Feed</a>
+        <a href="#">llms.txt</a></div>
+      <div class="fcol"><h5>Organisation</h5>
+        <a href="about.html">About</a><a href="mission.html">Mission</a>
+        <a href="manifesto.html">Manifesto</a><a href="press.html">Press &amp; Media</a>
+        <a href="about.html#corrections">Corrections</a><a href="about.html#contact">Contact</a></div>
+    </div>
+    <div class="fbot">
+      <span>&copy; 2026 Citere &middot; Data under CC BY 4.0 &middot; Updated 24 Oct 2026</span>
+      <span class="legal"><a href="terms.html">Terms</a><a href="privacy.html">Privacy</a>
+        <a href="press.html">Press &amp; Media</a><a href="#">security.txt</a></span>
+    </div>
+  </div></footer>
+</body>
+</html>
