@@ -33,7 +33,7 @@
         "C1-008",
         "C5-002"
       ],
-      "citations": 54,
+      "citations": 59,
       "complaints": [],
       "article_evidence": []
     },
@@ -53,10 +53,9 @@
         }
       ],
       "cited_in": [
-        "C1-001",
         "C1-003",
         "C1-004",
-        "C1-005",
+        "C1-006",
         "C1-007"
       ],
       "citations": 8,
@@ -94,7 +93,7 @@
         "C1-008",
         "C5-002"
       ],
-      "citations": 71,
+      "citations": 65,
       "complaints": [],
       "article_evidence": []
     },
@@ -119,7 +118,7 @@
         }
       ],
       "cited_in": [
-        "C1-001",
+        "C1-002",
         "C1-003",
         "C1-004",
         "C1-005",
@@ -128,7 +127,7 @@
         "C1-008",
         "C5-002"
       ],
-      "citations": 39,
+      "citations": 38,
       "complaints": [],
       "article_evidence": []
     },
@@ -161,7 +160,7 @@
         "C1-008",
         "C5-002"
       ],
-      "citations": 19,
+      "citations": 13,
       "complaints": [],
       "article_evidence": []
     },
@@ -186,10 +185,9 @@
         }
       ],
       "cited_in": [
-        "C1-003",
-        "C5-002"
+        "C1-002"
       ],
-      "citations": 2,
+      "citations": 1,
       "complaints": [],
       "article_evidence": []
     },
@@ -219,7 +217,7 @@
         "C1-008",
         "C5-002"
       ],
-      "citations": 86,
+      "citations": 64,
       "complaints": [],
       "article_evidence": []
     },
@@ -254,7 +252,7 @@
         "C1-008",
         "C5-002"
       ],
-      "citations": 66,
+      "citations": 56,
       "complaints": [
         {
           "target": "Registrar",
@@ -294,7 +292,7 @@
         "C1-008",
         "C5-002"
       ],
-      "citations": 38,
+      "citations": 35,
       "complaints": [
         {
           "target": "Registrar",
@@ -325,13 +323,12 @@
         }
       ],
       "cited_in": [
+        "C1-001",
         "C1-002",
-        "C1-003",
         "C1-004",
         "C1-005",
         "C1-006",
         "C1-007",
-        "C1-008",
         "C5-002"
       ],
       "citations": 15,
@@ -370,7 +367,7 @@
         "C1-008",
         "C5-002"
       ],
-      "citations": 85,
+      "citations": 73,
       "complaints": [
         {
           "target": "Registrar",
@@ -406,7 +403,7 @@
         "C1-008",
         "C5-002"
       ],
-      "citations": 65,
+      "citations": 47,
       "complaints": [],
       "article_evidence": []
     },
@@ -436,7 +433,7 @@
         "C1-008",
         "C5-002"
       ],
-      "citations": 81,
+      "citations": 64,
       "complaints": [],
       "article_evidence": []
     }

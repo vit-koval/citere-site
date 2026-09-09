@@ -291,6 +291,15 @@ def pick(weighted):
     return weighted[-1][0]
 
 
+# How much likelier a listed source is when the answer repeated the claim. Some
+# correlation is real - a bot that surfaced the fake is likelier to have found
+# it on a listed site - but it must stay small, or the A x B matrix stops doing
+# its job. The matrix exists to filter raw Layer B flags down to the few worth a
+# human's attention (pipeline guide 5.1: 23 flags -> 2 CRITICAL, ~9%), and
+# CRITICAL has to stay rare next to HIGH and REVIEW.
+REPEAT_CITATION_LIFT = 1.25
+
+
 def cited_domains(claim_id, market_lang, bot_w, persona_contam, market_w, repeated):
     """All domains one answer cited: listed ones, legitimate ones, and the
     occasional unclassified relay. Everything is recorded, not only the hits -
@@ -298,7 +307,7 @@ def cited_domains(claim_id, market_lang, bot_w, persona_contam, market_w, repeat
     surface = {d for d, kind, _ in CLAIM_GRID[claim_id]["surface"] if kind in ("outlet", "clone")}
     out = []
     for _ in range(1 + int(random.random() * 3)):
-        p_listed = 0.055 * bot_w * persona_contam * market_w * (2.5 if repeated else 1.0)
+        p_listed = 0.055 * bot_w * persona_contam * market_w * (REPEAT_CITATION_LIFT if repeated else 1.0)
         if random.random() < p_listed:
             weights = []
             for domain, network, lang, *_ in WATCHLIST:
