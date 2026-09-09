@@ -310,6 +310,17 @@ if (sitemapFiles.length) {
   }
 }
 
+// --- countermeasures: never publish the submission or the proof -----------
+// Countermeasures Catalogue §1 and the brief's /data split: submission_content,
+// proof, contact details and reviewer names are internal only. The schema keeps
+// them out of data/; this keeps them out of the build.
+for (const file of [...htmlFiles, ...allFiles.filter((f) => /\.(csv|json|txt|xml|md)$/.test(f))]) {
+  const body = readFileSync(file, "utf8");
+  for (const field of ["submission_content", "target_contact", "confirmed_by"]) {
+    if (body.includes(field)) err(relative(SITE, file), `publishes the internal countermeasure field ${field}`);
+  }
+}
+
 // --- robots.txt and llms.txt ----------------------------------------------
 for (const name of ["robots.txt", "llms.txt", "llms-full.txt"]) {
   const file = join(SITE, name);

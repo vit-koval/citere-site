@@ -114,7 +114,7 @@ for (const file of claimFiles) {
   }
 }
 for (const entry of read("data/countermeasures.json").actions) {
-  if (!claimIds.has(entry.claim_id)) {
+  if (entry.claim_id && !claimIds.has(entry.claim_id)) {
     errors.push(`data/countermeasures.json: claim_id ${entry.claim_id} does not exist`);
   }
 }

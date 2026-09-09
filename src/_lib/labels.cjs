@@ -93,32 +93,44 @@ const WATCHLIST_CATEGORIES = {
 const CLAIM_STATUSES = { active: "active", dormant: "dormant", archived: "archived" };
 
 // ------------------------------------------------------- countermeasures
-// The twelve countermeasure types (CLAUDE_CODE_BRIEF §4, /countermeasures).
+// The twelve types of Citere_Countermeasures_Catalogue.md §2.1-2.12, keyed by
+// the "Report line" name each section gives. The enum is exactly twelve: the
+// catalogue folds re-measurement into the disclosure lifecycle (§2.1 "Track"),
+// where it is a follow_up_due on the disclosure that triggered it, not an
+// action of its own.
 const COUNTERMEASURE_TYPES = {
-  disclosure: { label: "Disclosure to platform", cls: "t-platform" },
-  factcheck: { label: "Data shared with fact-checkers", cls: "t-fc" },
-  partner: { label: "Partner notification", cls: "t-partner" },
-  catalog: { label: "Catalog update", cls: "t-catalog" },
-  public: { label: "Public report", cls: "t-public" },
-  github: { label: "Dataset publication", cls: "t-github" },
-  feed: { label: "Standing data feed", cls: "t-feed" },
-  infra: { label: "Infrastructure notification", cls: "t-infra" },
-  social: { label: "Social platform report", cls: "t-social" },
-  fimi: { label: "FIMI registry report", cls: "t-fimi" },
-  national: { label: "National authority complaint", cls: "t-national" },
-  dsa: { label: "DSA / AI Act complaint", cls: "t-dsa" },
-  // Not in the brief's twelve. The Claim Report Spec and the Countries pages
-  // both list re-measurement as a countermeasure type of its own, and CM §7
-  // makes it the unit of the cleansing calculation, so binning it under
-  // "disclosure" would inflate disclosure counts and lose the cleansing link.
-  // Citere_Countermeasures_Catalogue.md is not in the repo; when it lands, this
-  // entry is the one to reconcile.
-  remeasurement: { label: "Re-measurement", cls: "t-remeasure", catalogue: false }
+  disclosure: { label: "Disclosure to platform", cls: "t-platform", section: "2.1" },
+  factcheck: { label: "Data shared with fact-checkers", cls: "t-fc", section: "2.2" },
+  partner: { label: "Partner notification", cls: "t-partner", section: "2.3" },
+  catalog: { label: "Catalog update", cls: "t-catalog", section: "2.4" },
+  public: { label: "Public report", cls: "t-public", section: "2.5",
+    subtypes: { publication: "Publication", press_pitch: "Press pitch" } },
+  github: { label: "Dataset publication", cls: "t-github", section: "2.6" },
+  feed: { label: "Standing data feed", cls: "t-feed", section: "2.7" },
+  infra: { label: "Infrastructure notification", cls: "t-infra", section: "2.8",
+    subtypes: {
+      search_engine_bug_report: "Search engine bug report",
+      domain_takedown: "Domain takedown",
+      hosting_provider_notification: "Hosting provider notification",
+      common_crawl_flagging: "Common Crawl flagging",
+      robots_deindexing: "robots.txt / de-indexing",
+      advertiser_network_notification: "Advertiser network notification"
+    } },
+  social: { label: "Social platform report", cls: "t-social", section: "2.9" },
+  fimi: { label: "FIMI registry report", cls: "t-fimi", section: "2.10" },
+  national: { label: "National authority complaint", cls: "t-national", section: "2.11" },
+  dsa: { label: "Regulatory complaint", cls: "t-dsa", section: "2.12" }
 };
 
-// drafted -> pending_confirmation -> submitted -> acknowledged -> responded ->
-// closed, with declined as the terminal refusal. A draft is visibly not an
-// action taken: a human confirms before anything leaves the building.
+// A re-measurement is not a type. It is the follow-up loop on a disclosure
+// (catalogue §2.1, CM §7), and it is what the Claim Report and the Countries
+// index show as their "re-measurement" column - a derived view, not a row in
+// the type enum.
+const REMEASUREMENT = { key: "remeasurement", label: "Re-measurement", cls: "t-remeasure", parent: "disclosure" };
+
+// Catalogue §1: one lifecycle for every type. "scheduled" is not part of it -
+// a planned re-check is a follow_up_due date on a row that has not been acted
+// on yet.
 const COUNTERMEASURE_STATUSES = {
   drafted: { label: "Drafted", taken: false, cls: "st-drafted" },
   pending_confirmation: { label: "Awaiting confirmation", taken: false, cls: "st-pending" },
@@ -126,14 +138,27 @@ const COUNTERMEASURE_STATUSES = {
   acknowledged: { label: "Acknowledged", taken: true, cls: "st-acknowledged" },
   responded: { label: "Responded", taken: true, cls: "st-responded" },
   closed: { label: "Closed", taken: true, cls: "st-closed" },
-  declined: { label: "Declined", taken: true, cls: "st-declined" },
-  // Not part of the lifecycle: a re-measurement that has a date but has not run.
-  scheduled: { label: "Scheduled", taken: false, cls: "st-scheduled" }
+  declined: { label: "Declined", taken: true, cls: "st-declined" }
 };
 
+// Catalogue §4. Which rungs are prerequisites for which; a page shows what has
+// been reached for a claim and what the next available rung is.
+const COUNTERMEASURE_LADDER = [
+  { key: "self", label: "No external party", types: ["catalog", "github"] },
+  { key: "give-first", label: "Give-first and mechanical", types: ["factcheck", "infra"] },
+  { key: "ask", label: "The primary ask", types: ["disclosure", "partner", "social"] },
+  { key: "pressure", label: "Public pressure", types: ["public", "feed"] },
+  { key: "formal", label: "Formal record", types: ["fimi", "national"] },
+  { key: "terminal", label: "Terminal escalation", types: ["dsa"] }
+];
+
+// Catalogue §1 / brief §4: these never leave the internal record. check.mjs
+// asserts they never reach the built site.
+const COUNTERMEASURE_PRIVATE_FIELDS = ["submission_content", "proof", "target_contact", "confirmed_by"];
+
 // The export still speaks the pre-restructure vocabulary. Anything already in
-// the twelve-type catalogue passes through untouched, so this table can be
-// deleted the day the exporter is updated.
+// the catalogue passes through untouched, so this table can be deleted the day
+// the exporter is updated.
 const LEGACY_TYPE = {
   platform_report: "disclosure",
   domain_complaint: "infra",
@@ -141,16 +166,18 @@ const LEGACY_TYPE = {
   partner_publication: "partner",
   authority_confirmation: "national",
   published: "public",
-  remeasured: "remeasurement"
+  // A re-measurement rides on the disclosure it tests (catalogue §2.1).
+  remeasured: "disclosure"
 };
-const LEGACY_SUBTYPE = { published: "Publication" };
+const LEGACY_SUBTYPE = { published: "publication", domain_complaint: "domain_takedown" };
 const LEGACY_STATUS = {
   actioned: "responded",
   no_response: "submitted",
   completed: "closed",
   live: "closed",
   published: "closed",
-  receipt_confirmed: "acknowledged"
+  receipt_confirmed: "acknowledged",
+  scheduled: "drafted"
 };
 
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -159,5 +186,6 @@ module.exports = {
   VERDICTS, BEHAVIOURS, STATUSES, ACTION_TYPES, NETWORKS, NETWORK_NAMES, NETWORK_CLASS,
   CHATBOTS, PERSONAS, MONTHS,
   LAYER_A, TIERS, TIER_NOTES, SPLICES, SPLICE_GROUPS, LAYER_B, WATCHLIST_CATEGORIES, CLAIM_STATUSES,
-  COUNTERMEASURE_TYPES, COUNTERMEASURE_STATUSES, LEGACY_TYPE, LEGACY_SUBTYPE, LEGACY_STATUS
+  COUNTERMEASURE_TYPES, COUNTERMEASURE_STATUSES, COUNTERMEASURE_LADDER,
+  COUNTERMEASURE_PRIVATE_FIELDS, REMEASUREMENT, LEGACY_TYPE, LEGACY_SUBTYPE, LEGACY_STATUS
 };

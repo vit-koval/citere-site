@@ -6,8 +6,7 @@ const path = require("node:path");
 const { readJson, ROOT } = require("../_lib/markdown.cjs");
 
 const site = readJson("data/site.json");
-const countermeasuresFile = readJson("data/countermeasures.json");
-const countermeasures = countermeasuresFile.actions || [];
+const countermeasures = require("./countermeasures.js");
 
 const claimDir = path.join(ROOT, "data/claims");
 const claims = fs.existsSync(claimDir)
@@ -17,12 +16,15 @@ const claims = fs.existsSync(claimDir)
       .map((f) => JSON.parse(fs.readFileSync(path.join(claimDir, f), "utf8")))
   : [];
 
-const OUTBOUND = new Set(["platform_report", "domain_complaint"]);
-const ANSWERED = new Set(["acknowledged", "actioned", "declined", "completed", "receipt_confirmed"]);
+// Catalogue §2.4 and §2.6 are internal: a catalog update and a dataset
+// publication are things we did to our own records, not things we sent anyone.
+// A re-measurement is our own re-run and is already excluded by `taken`.
+const INTERNAL = new Set(["catalog", "github"]);
+const ANSWERED = new Set(["acknowledged", "responded", "closed", "declined"]);
 
-const sent = countermeasures.filter((e) => OUTBOUND.has(e.type));
+const sent = countermeasures.actions.filter((e) => e.taken && !INTERNAL.has(e.type));
 const answered = sent.filter((e) => e.response_date || ANSWERED.has(e.status));
-const actioned = sent.filter((e) => e.status === "actioned");
+const actioned = sent.filter((e) => e.status === "responded" || e.status === "closed");
 
 const responseDays = answered
   .filter((e) => e.response_date)
@@ -57,7 +59,9 @@ module.exports = {
     countermeasures_sent: sent.length,
     countermeasures_answered: answered.length,
     countermeasures_actioned: actioned.length,
-    countermeasures_total: countermeasures.length,
+    countermeasures_taken: countermeasures.totals.taken,
+    countermeasures_total: countermeasures.totals.logged,
+    remeasurements: countermeasures.totals.remeasurements,
     median_response_days: median
   },
   last_update: lastUpdate

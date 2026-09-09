@@ -23,7 +23,7 @@ permalink: "{{ '/countermeasures/' | loc(lang) }}"
 
 <div class="filters" style="margin-top:22px">
   <span class="f active">All actions <span style="color:var(--dimmer)">{{ countermeasures.actions | length }}</span></span>
-  {%- for t in actionTypes %}<span class="f">{{ t.type | actionTypeLabel }} <span style="color:var(--dimmer)">{{ t.count }}</span></span>{% endfor %}
+  {%- for t in actionTypes %}<span class="f">{{ t.label }} <span style="color:var(--dimmer)">{{ t.count }}</span></span>{% endfor %}
 </div>
 
 <div class="panel"><table>
@@ -34,10 +34,10 @@ permalink: "{{ '/countermeasures/' | loc(lang) }}"
   {%- for e in countermeasures.actions | take(60) %}
     {%- set claim = claims | whereEq('id', e.claim_id) | first %}
     <tr><td class="num" style="color:var(--dim)"><time datetime="{{ e.date | isoDate }}">{{ e.date | shortDate }}</time></td>
-      <td>{{ e.type | actionTypeLabel }}</td>
+      <td>{{ e.typeLabel }}{% if e.subtypeLabel %} <span style="color:var(--dimmer)">&middot; {{ e.subtypeLabel }}</span>{% endif %}</td>
       <td>{{ e.target | defangCopy }}</td>
       <td>{% if claim %}<a href="{{ claim.url | url }}" style="color:var(--accent);font-weight:600">{{ e.claim_id }}</a>{% else %}<span style="color:var(--dimmer)">{{ e.claim_id }}</span>{% endif %}</td>
-      <td><span class="chip {{ 'ok' if e.status in ['acknowledged','actioned','completed','receipt_confirmed','published','live'] else ('wait' if e.status == 'submitted' else '') }}"><span class="dot"></span>{{ e.status | statusLabel }}</span></td>
+      <td><span class="chip {{ 'ok' if e.status in ['acknowledged','responded','closed'] else ('wait' if e.status in ['submitted','pending_confirmation'] else '') }}"><span class="dot"></span>{{ e.statusLabel }}</span></td>
       <td class="num" style="color:var(--dimmer)">{% if e.response_date %}<time datetime="{{ e.response_date | isoDate }}">{{ e.response_date | shortDate }}</time>{% else %}&mdash;{% endif %}</td></tr>
   {%- endfor %}
   </tbody></table>

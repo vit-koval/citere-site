@@ -7,11 +7,11 @@ module.exports = {
         ? `, median response time ${data.countermeasures.medianResponseDays} days`
         : ""
     }),
-    actionTypes: (data) => {
-      const counts = new Map();
-      for (const a of data.countermeasures.actions) counts.set(a.type, (counts.get(a.type) || 0) + 1);
-      return [...counts.entries()].sort((a, b) => b[1] - a[1]).map(([type, count]) => ({ type, count }));
-    },
+    // Grouped by what a table shows, so a re-measurement gets its own chip
+    // instead of inflating the disclosure count (Countermeasures Catalogue
+    // §2.1, Countries Index Business Logic §12).
+    actionTypes: (data) =>
+      data.countermeasures.types.filter((t) => t.count).sort((a, b) => b.count - a.count),
     dataset: (data) => ({
       name: "Citere countermeasures log",
       description:
