@@ -522,7 +522,12 @@ a:focus-visible,button:focus-visible,summary:focus-visible,[tabindex]:focus-visi
    cell below n = 20 is greyed rather than hidden (Calculation Methodology 5.6). */
 .cellstat{display:inline-block;min-width:78px;text-align:right;font-variant-numeric:tabular-nums;line-height:1.25}
 .cellstat small{display:block;font-size:10.5px;color:var(--dimmer);font-variant-numeric:tabular-nums}
-.cellstat.lown{opacity:.55}
+/* A low-n cell is "displayed greyed out" (Calculation Methodology 5.6). Doing
+   that with opacity drops the text to 2.2:1, which fails WCAG AA, so the cell
+   is greyed by its ground instead of by fading its type: the figure stays
+   readable and still reads as set aside. */
+.cellstat.lown{background:var(--bg);border-radius:5px;padding:1px 6px;color:var(--dim)}
+.cellstat.lown small{color:var(--dim)}
 .observations td .cellstat{white-space:nowrap}
 h3.ssub{font-size:13px;font-weight:600;color:var(--dim);margin:22px 0 8px;letter-spacing:.01em}
 
@@ -597,6 +602,9 @@ h3.ssub{font-size:13px;font-weight:600;color:var(--dim);margin:22px 0 8px;letter
 .rung.available .rdot{background:var(--mislead)}
 .rung.locked{background:var(--bg);color:var(--dimmer)}
 .rung .rbody{padding:0 14px 12px}
+/* --dimmer is 4.47:1 on the rung's tinted ground, just under AA. Small text
+   inside a rung uses --dim, which clears it. */
+.rung .rbody small,.rung .rbody time,.rung .rnote{color:var(--dim)}
 @media(max-width:820px){.rung>summary{grid-template-columns:auto 1fr;row-gap:4px}}
 
 /* Verdict distribution bar: the four outcomes of one cell, in order. */
