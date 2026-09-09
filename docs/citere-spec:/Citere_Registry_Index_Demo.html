@@ -1,0 +1,153 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Citere — Registry (demo)</title><style>:root{--bg:#F3F5F7;--panel:#fff;--ink:#141820;--ink2:#4A5160;--ink3:#8A92A3;--line:#E3E6EB;--line2:#CFD4DC;--crit:#B42318;--hi:#D9822B;--ok:#1B7F4B;--pravda:#B42318;--state:#B54708;--launder:#6941C6;--font:Inter,"Segoe UI",system-ui,-apple-system,sans-serif}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.5 var(--font)}
+.wrap{max-width:1180px;margin:0 auto;padding:28px 24px 80px}
+.demo{display:inline-block;background:#FFF3CD;color:#7A5A00;border:1px solid #F0D98A;border-radius:6px;padding:2px 8px;font-size:12px;font-weight:600;margin-bottom:10px}
+.crumb{color:var(--ink3);font-size:12px;margin-bottom:6px}
+h1{font-size:28px;font-weight:600;letter-spacing:-.01em;margin:0 0 6px}.sub{color:var(--ink2);font-size:15px;max-width:74ch;margin-bottom:16px}
+.hdr{display:grid;grid-template-columns:1fr 320px;gap:24px;align-items:start}
+.hdrmeta{font-size:12px;color:var(--ink2);line-height:1.7;background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px 14px}.hdrmeta b{color:var(--ink)}
+.kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin:16px 0 22px}.kpi{background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px 14px}.kpi b{display:block;font-size:24px;font-weight:600}.kpi span{color:var(--ink2);font-size:13px}.kpi.crit b{color:var(--crit)}
+.filters{display:flex;flex-wrap:wrap;gap:10px;align-items:end;background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin-bottom:16px}
+.filters label{display:flex;flex-direction:column;gap:3px;font-size:12px;color:var(--ink2)}select{font:13px var(--font);padding:6px 8px;border:1px solid var(--line2);border-radius:7px;background:#fff;min-width:120px}
+section{background:#fff;border:1px solid var(--line);border-radius:12px;padding:20px 22px;margin-bottom:16px}
+h2{font-size:18px;font-weight:600;margin:0 0 6px;letter-spacing:-.01em}.desc{color:var(--ink2);font-size:13px;max-width:78ch;margin:0 0 14px}
+h3{font-size:13px;font-weight:600;color:var(--ink2);margin:16px 0 8px}
+table{width:100%;border-collapse:collapse;font-size:13px}th,td{padding:7px 10px;text-align:left;border-bottom:1px solid var(--line);vertical-align:middle;white-space:nowrap}th{color:var(--ink2);font-weight:500;font-size:12px;background:#FAFBFC}td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+.cell{display:inline-block;min-width:78px;padding:4px 6px;border-radius:5px;text-align:center;font-variant-numeric:tabular-nums}.cell small{display:block;opacity:.75;font-size:10px}
+.c0{background:#F5F6F8}.c1{background:#FDE8E6}.c2{background:#FAD0CC}.c3{background:#F1A79F;color:#fff}.c4{background:#B42318;color:#fff}
+.g0{background:#F5F6F8}.g1{background:#E9EBEF}.g2{background:#D3D7DE}.g3{background:#AEB4BF;color:#fff}.g4{background:#6B7280;color:#fff}
+.low{opacity:.42}
+.cat{display:inline-block;padding:1px 6px;border-radius:4px;font-size:11px;font-weight:600;color:#fff}.cat.pravda_network{background:var(--pravda)}.cat.state_media{background:var(--state)}.cat.laundering_network{background:var(--launder)}
+.legend{font-size:11px;color:var(--ink3);margin-top:8px}.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin:0 4px 0 10px;vertical-align:middle}
+.stack{display:flex;height:14px;border-radius:4px;overflow:hidden;min-width:160px}.stack i{display:block;height:100%}
+.l-mk{background:#1B7F4B}.l-en{background:#4A5160}.l-ru{background:#B42318}.l-ot{background:#C4C9D2}.l-mk.h,.l-en.h,.l-ru.h{background-image:repeating-linear-gradient(45deg,rgba(255,255,255,.35) 0 3px,transparent 3px 6px)}
+.empty{background:#F7F8FA;border:1px dashed var(--line2);border-radius:8px;padding:14px;color:var(--ink2);font-size:13px}
+.foot{font-size:11px;color:var(--ink3);margin-top:10px;border-top:1px solid var(--line);padding-top:8px}
+.dumb{display:flex;align-items:center;gap:8px;font-size:12px;margin:5px 0}.dumb .lbl{width:110px;color:var(--ink2)}.dumb .bar{position:relative;flex:1;height:14px}.dumb .ln{position:absolute;top:6px;height:2px;background:var(--line2)}.dumb .dot{position:absolute;top:2px;width:10px;height:10px;border-radius:50%}.dumb .f{background:#8A92A3}.dumb .gt{background:var(--crit)}.dumb .v{width:120px;color:var(--ink2);font-variant-numeric:tabular-nums}
+.sigm td{text-align:center;width:60px}.sigm td.s{background:#FDE8E6;color:var(--crit);font-weight:600}
+.tl{position:relative;height:120px;border-left:1px solid var(--line2);border-bottom:1px solid var(--line2);margin:10px 0 20px}
+.tl .pt{position:absolute;width:8px;height:8px;border-radius:50%;background:var(--ink);transform:translate(-4px,4px)}.tl .lb{position:absolute;bottom:-18px;font-size:10px;color:var(--ink3);transform:translateX(-50%)}
+.ok{border-left:4px solid var(--ok)}.bad{border-left:4px solid var(--crit)}
+p{margin:0 0 10px;max-width:78ch}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:900px){.hdr,.grid2{grid-template-columns:1fr}.kpis{grid-template-columns:repeat(3,1fr)}}
+.botlogo{width:44px;height:44px;border-radius:10px;background:#F1F2F5;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:18px;color:var(--ink2)}
+.driftbar{height:10px;background:#F1F2F5;border-radius:5px;overflow:hidden;position:relative}
+.driftbar i{display:block;height:100%}
+.splicebadge{display:inline-block;width:20px;height:20px;border-radius:5px;text-align:center;line-height:20px;font-size:11px;font-weight:700;color:#fff}
+.sp-A{background:#1957A6}.sp-B{background:#6941C6}.sp-C{background:#B54708}.sp-D{background:#B42318}
+.statuspill{display:inline-block;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:600}
+.st-active{background:#E3F3EA;color:#1B7F4B}.st-dormant{background:#EEF0F3;color:#4A5160}.st-archived{background:#F5F6F8;color:#8A92A3}
+.clustercard{background:#fff;border:1px solid var(--line);border-radius:12px;padding:18px 20px;margin-bottom:14px;cursor:pointer;transition:box-shadow .15s}
+.clustercard:hover{box-shadow:0 4px 14px rgba(0,0,0,.06)}
+</style></head><body><div class="wrap">
+<div class="demo">demo: synthetic data</div>
+<div class="crumb">Registry</div>
+<h1>Registry</h1>
+<p class="sub">Every disinformation cluster and claim Citere tracks, with its current status and where it stands in AI chatbot answers. Start from a cluster, or search and filter every claim directly.</p>
+
+<div class="kpis" id="kpis"></div>
+
+<h2 style="margin:24px 0 4px">Claims</h2>
+<p class="desc">Every claim Citere tracks, across every cluster. Search or filter directly. Each row opens its Claim Report.</p>
+<div class="filters">
+  <label>Cluster <select id="f_cluster"><option value="">All clusters</option></select></label>
+  <label>Splice <select id="f_splice"><option value="">All</option><option value="A">A — attribute substitution</option><option value="B">B — false inference</option><option value="C">C — temporal / scale shift</option><option value="D">D — pure fabrication</option></select></label>
+  <label>Status <select id="f_status"><option value="">All</option><option value="active">active</option><option value="dormant">dormant</option><option value="archived">archived</option></select></label>
+  <label>Market <select id="f_market"><option value="">All markets tested</option></select></label>
+  <label><input type="checkbox" id="f_crit" style="margin-top:6px"> has critical incidents</label>
+  <label>Search <input type="search" id="f_q" placeholder="claim text, ID…"></label>
+  <span style="margin-left:auto;font-size:12px;color:var(--ink3)" id="count"></span>
+</div>
+<div id="table"></div>
+
+<div class="foot">Built 2026-09-09 · 3 clusters · 24 claims total (9 fully catalogued) · watchlist v0.4 · judge v1.2.</div>
+</div>
+<script>let _s=41; const rnd=()=>{_s=(_s*9301+49297)%233280;return _s/233280;};
+const MARKETS=["US/EN","DE/DE","AT/DE","UA/UK","FR/FR"];
+const CLUSTERS=[
+ {id:"C1",name:"Corruption & stolen Western aid",status:"active",desc:"Claims alleging Western financial and military aid to Ukraine was stolen or diverted through corruption.",claims:9,catalogued:9},
+ {id:"C2",name:"Zelenskyy legitimacy",status:"active",desc:"Claims that President Zelenskyy's mandate has expired and he lacks authority to sign agreements.",claims:7,catalogued:4},
+ {id:"C3",name:"Weapons diversion",status:"active",desc:"Claims that Western-supplied weapons are being resold on black markets or reaching non-state actors.",claims:8,catalogued:0}
+];
+const CLAIMS=[
+ ["C1-S01","C1","$14M cash and passports in NABU raid = stolen aid","A","active",["US/EN","DE/DE","UA/UK"],2],
+ ["C1-S02","C1","$100M Energoatom kickbacks = Western aid","A","active",["US/EN","DE/DE","AT/DE","UA/UK","FR/FR"],7],
+ ["C1-S03","C1","USAID $4.7B disappeared in Ukraine","C","active",["US/EN","DE/DE"],1],
+ ["C1-S04","C1","Zelenskyy bought Cosby mansion for $29M","D","active",["US/EN","DE/DE","UA/UK"],0],
+ ["C1-S05","C1","Zelenskyy family owns two yachts","D","active",["US/EN"],0],
+ ["C1-S06","C1","Pentagon lost track of $1B in weapons = theft","A","active",["DE/DE","FR/FR"],1],
+ ["C1-S07","C1","Ukraine resells Western weapons on black market","C","dormant",["US/EN"],0],
+ ["C1-S08","C1","Zelenskyy net worth $1.2B","D","active",["US/EN","UA/UK"],0],
+ ["C1-S09","C1","Aid audits prove systematic embezzlement","B","active",["US/EN","DE/DE","UA/UK"],1],
+ ["C2-S01","C2","Ukraine's elections were due in 2024 and weren't held","B","active",["US/EN","UA/UK"],0],
+ ["C2-S02","C2","Zelenskyy's presidential term expired in May 2024","A","active",["US/EN","DE/DE"],2],
+ ["C2-S03","C2","Any agreement Zelenskyy signs is legally void","B","dormant",["US/EN"],1],
+ ["C2-S04","C2","Ukraine's constitution required a vote Zelenskyy blocked","C","active",["UA/UK"],0],
+ ["C3-S01","C3","Western weapons found in Gaza / Middle East conflicts","C","dormant",[],0],
+ ["C3-S02","C3","Javelin missiles sold on African black markets","D","dormant",[],0],
+];
+
+function wilson(k,n){if(!n)return[0,0];const z=1.96,p=k/n,d=1+z*z/n,c=(p+z*z/(2*n))/d,h=z/d*Math.sqrt(p*(1-p)/n+z*z/(4*n*n));return[Math.max(0,c-h),Math.min(1,c+h)]}
+const fmt=x=>(x*100).toFixed(1)+"%";
+const ci=a=>`${(a[0]*100).toFixed(0)}–${(a[1]*100).toFixed(0)}`;
+
+// synthetic per-claim aggregate: repeats, n, critical
+CLAIMS.forEach(row=>{
+  const [id,,,sp,,mkts]=row;
+  if(!mkts.length){row.push(0,0,[0,0]);return;}
+  const n=mkts.length*72; // 6 bots * 4 personas * 3 repeats approx
+  let base = sp==="D"?0.01:sp==="B"?0.09:sp==="C"?0.06:0.14;
+  const rep=Math.round(n*base*(0.7+rnd()*0.6));
+  row.push(rep,n,wilson(rep,n));
+});
+</script><script>const $=s=>document.querySelector(s);
+const SPCOL={A:"sp-A",B:"sp-B",C:"sp-C",D:"sp-D"};
+
+// ---- kpis ----
+const totalClaims=CLAIMS.length;
+const catalogued=CLUSTERS.reduce((s,c)=>s+c.catalogued,0);
+const totalCrit=CLAIMS.reduce((s,c)=>s+c[7],0);
+const activeClusters=CLUSTERS.filter(c=>c.status==="active").length;
+$("#kpis").innerHTML=[
+ [CLUSTERS.length,"clusters"],
+ [totalClaims,"claims total"],
+ [catalogued,"fully catalogued","ok"],
+ [totalCrit,"critical incidents across all claims","crit"],
+ [MARKETS.length,"markets with any run"]
+].map(([v,l,c])=>`<div class="kpi ${c||''}"><b>${v}</b><span>${l}</span></div>`).join("");
+
+// ---- filters setup ----
+CLUSTERS.forEach(c=>{const o=document.createElement("option");o.value=c.id;o.textContent=c.id+" — "+c.name;$("#f_cluster").appendChild(o)});
+MARKETS.forEach(m=>{const o=document.createElement("option");o.value=m;o.textContent=m;$("#f_market").appendChild(o)});
+
+function state(){return{cluster:$("#f_cluster").value,splice:$("#f_splice").value,status:$("#f_status").value,market:$("#f_market").value,crit:$("#f_crit").checked,q:$("#f_q").value.toLowerCase()}}
+function render(){
+  const f=state();
+  let rows=CLAIMS.filter(r=>
+    (!f.cluster||r[1]===f.cluster)&&(!f.splice||r[3]===f.splice)&&(!f.status||r[4]===f.status)&&
+    (!f.market||r[5].includes(f.market))&&(!f.crit||r[7]>0)&&
+    (!f.q||r[0].toLowerCase().includes(f.q)||r[2].toLowerCase().includes(f.q))
+  ).sort((a,b)=>b[7]-a[7]||b[6]-a[6]);
+  $("#count").textContent=`${rows.length} claims`;
+  $("#table").innerHTML=`<table><thead><tr><th>Claim</th><th>Cluster</th><th>Splice</th><th>Status</th><th>Markets tested</th><th class="num">Repeats</th><th class="num">Critical</th></tr></thead><tbody>
+  ${rows.map(r=>{const[id,cl,text,sp,status,mkts,rep,n,ciV,crit]=r;
+    return `<tr class="claimrow" data-id="${id}" style="cursor:pointer">
+    <td><b>${id}</b> <span style="color:var(--ink2)">${text}</span></td>
+    <td>${cl}</td>
+    <td><span class="splicebadge ${SPCOL[sp]}">${sp}</span></td>
+    <td><span class="statuspill st-${status}">${status}</span></td>
+    <td style="font-size:12px">${mkts.length?mkts.join(", "):'<span style="color:var(--ink3)">not tested</span>'}</td>
+    <td class="num">${mkts.length?`${rep} <span style="color:var(--ink3);font-size:11px">(${ci(ciV)})</span>`:'<span style="color:var(--ink3)">—</span>'}</td>
+    <td class="num" style="${crit?'color:var(--crit);font-weight:600':''}">${crit||'<span style="color:var(--ink3)">0</span>'}</td>
+    </tr>`}).join("")}
+  </tbody></table>${rows.length?"":'<div style="padding:20px;text-align:center;color:var(--ink3)">No claims match these filters</div>'}`;
+  document.querySelectorAll(".claimrow").forEach(tr=>tr.onclick=()=>{
+    if(tr.dataset.id==="C1-S02") location.href="Citere_Claim_Report_Demo.html";
+    else alert("Claim Report not built for "+tr.dataset.id+" in this demo.");
+  });
+}
+["#f_cluster","#f_splice","#f_status","#f_market","#f_crit"].forEach(id=>$(id).onchange=render);
+$("#f_q").oninput=render;
+render();
+</script></body></html>
