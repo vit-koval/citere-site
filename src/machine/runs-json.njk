@@ -1,0 +1,5 @@
+---
+permalink: /runs.json
+eleventyExcludeFromCollections: true
+---
+{"publisher":{{ site.org.name | dump | safe }},"license":"https://creativecommons.org/licenses/by/4.0/","demo":{{ "true" if site.isDemo else "false" }},"count":{{ runs.all | length }},"runs":{{ runs.all | dump | safe }}}

@@ -604,3 +604,10 @@ h3.ssub{font-size:13px;font-weight:600;color:var(--dim);margin:22px 0 8px;letter
 .vbar i{display:block;height:100%}
 .vlegend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin:0 5px 0 12px;vertical-align:middle}
 .vlegend i:first-child{margin-left:0}
+
+/* Schema samples on /data: a real record, shown rather than described. */
+details.schema{margin:0 0 8px}
+details.schema>summary{display:inline-flex}
+.codebox{background:#0c1220;color:#d6dbe3;border-radius:10px;padding:12px 14px;margin:8px 0 0;
+  font:12px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;overflow-x:auto;white-space:pre}
+.codebox code{font:inherit;color:inherit;background:none;padding:0}

@@ -1,8 +1,9 @@
 ---
 h1: Data and downloads
 lead: >
-  Everything on this site is available as data: the claim registry, per-run observations, the domain
-  watchlist, and the countermeasures log. CC BY 4.0, with a DOI for each release.
+  Everything on this site is available as data, by entity: claims, runs, metric cells, the sources
+  registry, and the countermeasures log. Each is published as CSV and JSON under CC BY 4.0, and each
+  section below shows a real record from the table rather than describing it.
 ---
 
 ## How to cite {#cite}
@@ -11,7 +12,7 @@ Citere ({{ year }}). *AI Chatbot Disinformation Monitor — claim registry, {{ v
 
 ## Licence
 
-Aggregated data is published under CC BY 4.0 — reuse it freely with attribution. Raw response text is available to researchers on request; write to research@citere.ai with a short description of the work.
+Aggregated data is published under CC BY 4.0 — reuse it freely with attribution. The published unit is the metric cell, not the individual answer: raw response text is available to researchers on request, and we ask for a short description of the work.
 
 ## Machine access
 

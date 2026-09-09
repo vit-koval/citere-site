@@ -373,6 +373,23 @@ for (const file of allFiles.filter((f) => f.endsWith(".md"))) {
   if (!/citation drift/i.test(body)) err(page, "cleansing table with no citation-drift caveat");
 }
 
+// --- data exports ---------------------------------------------------------
+// /data prints each CSV's column list from src/_data/datasets.js. If a template
+// changes its columns and that list is not updated, the page documents a schema
+// the file does not have.
+{
+  const datasets = (await import("../src/_data/datasets.js")).default || {};
+  for (const file of datasets.all || []) {
+    if (!file.header) continue;
+    const target = join(SITE, file.url.replace(/^\//, ""));
+    if (!existsSync(target)) { err(file.url, "advertised on /data but not written"); continue; }
+    const first = readFileSync(target, "utf8").split(/\r?\n/).find((l) => l.trim());
+    if (first !== file.header) {
+      err(file.url, `columns differ from the list published on /data: ${first}`);
+    }
+  }
+}
+
 // --- generated response text ----------------------------------------------
 // A quote generated from the claim card reads exactly like a recorded one, so
 // it may never appear without the label saying it is not. Same rule as the

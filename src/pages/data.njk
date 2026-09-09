@@ -12,16 +12,36 @@ pagination:
   size: 1
 permalink: "{{ '/data/' | loc(lang) }}"
 ---
-{% if datasets.all | length %}
-<div class="panel"><table>
-  <caption class="visually-hidden">Datasets published from this site</caption>
-  <thead><tr><th scope="col">{{ 'col.dataset' | t }}</th><th scope="col">{{ 'col.format' | t }}</th><th scope="col">{{ 'col.period' | t }}</th><th scope="col"></th></tr></thead>
-  <tbody>
-  {% for item in datasets.all %}
-    <tr><td class="cl">{{ item.name }}<small>{{ item.description }}</small></td>
-      <td>{{ item.format }}</td>
-      <td style="color:var(--dim)">{{ item.period | default(site.last_update | year) }}</td>
-      <td><a href="{{ item.url | url }}" style="color:var(--accent);font-weight:600">{{ 'action.download' | t }}</a></td></tr>
-  {% endfor %}
-  </tbody></table></div>
-{% endif %}
+{%- for entity in datasets.entities %}
+<h2 id="{{ entity.key }}" style="margin:30px 0 6px">{{ entity.name }}</h2>
+<p class="note" style="margin:0 0 12px;max-width:78ch">{{ entity.blurb }}</p>
+{%- set sample = samples[entity.key] %}
+{%- if sample %}
+<p class="note" style="margin:0 0 6px">Domains are printed defanged here, as everywhere on this site; the exported file carries them as they are.</p>
+<details class="fdrop schema">
+  <summary class="f">A real record from this table &#8964;</summary>
+  <pre class="codebox"><code>{{ sample | dump(2) | defangCopy }}</code></pre>
+</details>
+{%- endif %}
+{%- for file in entity.files %}
+{%- if file.header %}
+<details class="fdrop schema">
+  <summary class="f">{{ file.name }} &mdash; columns &#8964;</summary>
+  <pre class="codebox"><code>{{ file.header }}</code></pre>
+</details>
+{%- endif %}
+{%- endfor %}
+<div class="exports" style="margin:10px 0 0">
+  {%- for file in entity.files %}
+  <a href="{{ file.url | url }}">{{ file.name }}</a>{% if not loop.last %}<span>&middot;</span>{% endif %}
+  {%- endfor %}
+</div>
+<p class="note" style="margin:8px 0 0">{% for file in entity.files %}<b>{{ file.name }}</b> &mdash; {{ file.description }}{% if not loop.last %}<br>{% endif %}{% endfor %}</p>
+{%- endfor %}
+
+<h2 id="not-published" style="margin:30px 0 6px">What is not published</h2>
+<p style="max-width:78ch">The prompt grid text, the text of chatbot responses, anything specific to the
+  hostile persona, the judge's prompt and rubric, and the content and proof of every countermeasure
+  submission. The aggregate is published; the raw material behind it is not. Researchers who need more can
+  write to us.</p>
+

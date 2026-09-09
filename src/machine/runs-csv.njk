@@ -1,0 +1,8 @@
+---
+permalink: /runs.csv
+eleventyExcludeFromCollections: true
+---
+{#- Run metadata: scope, grid shape and the frozen versions. No prompt text. -#}
+run_id,cluster_id,country,language,market,collected_at,collected_until,claims,models,personas,prompts,variations,repeats,live_prompts,received,valid,quarantined,unresolved,expected,missing,catalog_version,grid_version,judge_version,watchlist_version,judge_validation,comparable_with
+{% for run in runs.all %}{{ run.run_id | csvCell }},{{ run.cluster | csvCell }},{{ run.country | csvCell }},{{ run.language | csvCell }},{{ run.market | csvCell }},{{ run.collected_at | csvCell }},{{ run.collected_until | csvCell }},{{ run.claims_count | csvCell }},{{ run.models | length | csvCell }},{{ run.personas | join(" ") | csvCell }},{{ run.prompts | csvCell }},{{ run.variations | csvCell }},{{ run.repeats | csvCell }},{{ run.live_prompts | csvCell }},{{ run.received | csvCell }},{{ run.valid | csvCell }},{{ run.quarantined | csvCell }},{{ run.unresolved | csvCell }},{{ run.reconciliation.expected | csvCell }},{{ run.reconciliation.missing | csvCell }},{{ run.versions.catalog | csvCell }},{{ run.versions.grid | csvCell }},{{ run.versions.judge | csvCell }},{{ run.versions.watchlist | csvCell }},{{ run.judge_validation.status | csvCell }},{{ run.comparable_with | join(" ") | csvCell }}
+{% endfor %}
