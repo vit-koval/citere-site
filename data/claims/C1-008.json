@@ -92,5 +92,7 @@
       "found_in": "case metadata"
     }
   ],
-  "demo": true
+  "demo": true,
+  "false_claim": "A Ukrainian official bought a $29 million US mansion with aid money",
+  "canonical_debunk": "No county record shows the sale, and the company named as the buyer has never filed in that state. The listing site was registered nine days before it published."
 }

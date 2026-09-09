@@ -128,6 +128,8 @@ function grainDifferential(where) {
 module.exports = {
   raw: store,
   cells,
+  // The flagged answers, critical first (Claim Report Spec, Layer 3).
+  incidents: store.incidents || [],
   lowN: store.low_n || LOW_N,
   totals: store.totals || {},
   dimensions: store.dimensions || {},

@@ -173,6 +173,50 @@ wrap: wrap-narrow
   </tbody></table></div>
 {%- endif %}
 
+{%- if claim.incidents | length %}
+<h2 id="evidence" style="margin:36px 0 6px">Evidence &mdash; the flagged answers</h2>
+<p class="note" style="margin:0 0 6px">Every answer in which an assistant stated the claim as fact:
+  the question asked, what the assistant said, and what is actually true. Critical first &mdash; those
+  are the answers that also cited a listed source. Showing all
+  {{ claim.incidentCounts.critical }} critical and
+  {{ claim.incidentCounts.shown - claim.incidentCounts.critical }} of
+  {{ claim.incidentCounts.high }} high; the rest are in the per-claim export.</p>
+{%- if claim.hasSyntheticText %}
+<p class="note" data-notice="synthetic-quotes" style="border-left:3px solid var(--mislead);padding-left:10px;margin:0 0 14px">
+  <b>Response text in this demo is generated from the claim card; real runs carry verbatim responses.</b>
+  The question and the assistant's words below are built by template from this claim's own record, so they
+  read like an exchange that never happened. Everything else on this page &mdash; which assistant, which
+  market, which question type, what it cited, how it was coded &mdash; is from the run.</p>
+{%- endif %}
+{%- for incident in claim.incidents %}
+<div class="panel" style="padding:16px 18px;margin-bottom:12px;border-left:4px solid var({{ '--false' if incident.tier == 'critical' else '--mislead' }})"{% if incident.synthetic %} data-synthetic="true"{% endif %}>
+  <div style="font-size:12.5px;color:var(--dim);margin-bottom:8px" data-persona="{{ incident.persona }}">
+    <b>{{ incident.chatbot | botName }}</b> &middot; {{ incident.market | upper }} &middot;
+    {{ incident.persona }} {{ incident.persona | personaLabel }} &middot;
+    <time datetime="{{ incident.date | isoDate }}">{{ incident.date | shortDate }}</time> &middot;
+    repeat {{ incident.repeat_n }} &middot; <b style="color:var({{ '--false' if incident.tier == 'critical' else '--mislead' }})">{{ incident.tier | upper }}</b>
+    {%- if incident.review %} &middot; human-verified{% endif %}
+    {%- if incident.is_live %} &middot; live formulation{% endif %}</div>
+  {%- if incident.prompt_text %}
+  <div style="font-size:13px;color:var(--dim);margin-bottom:8px"><b>Question asked:</b>
+    {{ incident.prompt_text | defangCopy }}</div>
+  {%- endif %}
+  <div class="grid2" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:8px">
+    <div style="background:var(--false-bg);border-radius:8px;padding:10px 12px;font-size:13px">
+      <small style="display:block;font-weight:600;font-size:11px;color:var(--dim);margin-bottom:4px">What the assistant said</small>
+      {{ incident.quote | defangCopy | default("Not published.") }}</div>
+    <div style="background:var(--ok-bg);border-radius:8px;padding:10px 12px;font-size:13px">
+      <small style="display:block;font-weight:600;font-size:11px;color:var(--dim);margin-bottom:4px">What is actually the case</small>
+      {{ claim.canonical_debunk | default(claim.raw.canonical_debunk) }}</div>
+  </div>
+  <div style="font-size:12.5px;color:var(--dim)"><b>Cited:</b>
+    {%- if incident.domains | length %}{% for d in incident.domains %}<span{% if d in incident.listed %} class="domain"{% endif %}>{{ d | defang }}</span>{% if not loop.last %}, {% endif %}{% endfor %}
+    {%- else %}nothing &mdash; the claim came out of the model, not out of a search result{% endif %}
+    {%- if incident.judge_confidence %} &middot; judge confidence {{ incident.judge_confidence }}{% endif %}</div>
+</div>
+{%- endfor %}
+{%- endif %}
+
 <h2 id="which-chatbots-repeated-it" style="margin:36px 0 8px">{{ 'claim.whichChatbots' | t }}</h2>
 {% include "partials/observations-table.njk" %}
 

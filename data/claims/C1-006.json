@@ -85,5 +85,7 @@
       "date": "2026-06-12",
       "found_in": "case metadata"
     }
-  ]
+  ],
+  "false_claim": "Ukrainian officials hold $14 million and foreign passports abroad",
+  "canonical_debunk": "Ukrainian officials file public asset declarations, and enforcement gaps in that system are a documented subject of reporting. The specific figures in this claim are not supported by those filings."
 }

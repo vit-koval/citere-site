@@ -80,5 +80,7 @@
       "date": "2026-04-14",
       "found_in": "case metadata"
     }
-  ]
+  ],
+  "false_claim": "Half of US aid to Ukraine was funneled back to the Democratic Party through FTX",
+  "canonical_debunk": "Ukraine did use a crypto exchange to process public donations, and that exchange's founder was separately a large political donor in the United States. Both facts are true and unrelated; the claim manufactures a link between them."
 }

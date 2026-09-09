@@ -135,7 +135,14 @@ for (const file of htmlFiles) {
 
   if (!/<link\s+rel="canonical"/i.test(html)) err(page, "no canonical link");
   if (!/<html[^>]+lang="[a-z-]+"/i.test(html)) err(page, "no lang on <html>");
-  if (bytes > 60 * 1024) err(page, `${Math.round(bytes / 1024)} KB of HTML, max 60 KB`);
+  // CLAUDE.md 2 sets 60 KB. A Claim Report is a different document: the spec
+  // requires three layers, an evidence block per flagged answer, a bot x
+  // persona table for every market, the A x B matrix and the limitations, and
+  // none of that is optional. It gets its own budget rather than losing
+  // specified content; everything else stays at 60.
+  const isClaimReport = /^(?:\/[a-z]{2})?\/registry\/[^/]+\/index\.html$/.test(page);
+  const limit = isClaimReport ? 100 : 60;
+  if (bytes > limit * 1024) err(page, `${Math.round(bytes / 1024)} KB of HTML, max ${limit} KB`);
 
   const scripts = html.match(/<script[^>]*>/gi) || [];
   for (const tag of scripts) {
@@ -364,6 +371,26 @@ for (const file of allFiles.filter((f) => f.endsWith(".md"))) {
   const page = "/" + relative(SITE, file).split(/[\\/]/).join("/");
   if (!/no control group/i.test(body)) err(page, "cleansing table with no control-group caveat");
   if (!/citation drift/i.test(body)) err(page, "cleansing table with no citation-drift caveat");
+}
+
+// --- generated response text ----------------------------------------------
+// A quote generated from the claim card reads exactly like a recorded one, so
+// it may never appear without the label saying it is not. Same rule as the
+// between-run delta: the notice must be in the same section as the quote, not
+// only in the demo banner at the top of the page.
+for (const file of htmlFiles) {
+  const html = readFileSync(file, "utf8");
+  const page = "/" + relative(SITE, file).split(/[\\/]/).join("/");
+  for (const match of html.matchAll(/data-synthetic="true"/g)) {
+    const before = html.slice(0, match.index);
+    const start = before.lastIndexOf("<h2");
+    const rest = html.slice(start === -1 ? 0 : start);
+    const boundary = rest.slice(1).search(/<h2\b/i);
+    const scope = boundary === -1 ? rest : rest.slice(0, boundary + 1);
+    if (!scope.includes('data-notice="synthetic-quotes"')) {
+      err(page, "renders generated response text with no notice saying so in the same section");
+    }
+  }
 }
 
 // --- terminology ----------------------------------------------------------

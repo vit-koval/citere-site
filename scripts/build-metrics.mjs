@@ -32,11 +32,36 @@ const zeroCats = () => Object.fromEntries(WL_CATEGORIES.map((c) => [c, 0]));
 const uniq = (xs) => [...new Set(xs)].sort();
 const mean = (xs) => (xs.length ? xs.reduce((a, b) => a + b, 0) / xs.length : null);
 
+// RFC 4180: quoted fields carry commas, newlines and doubled quotes. The
+// observation files hold prompt and response text, so a naive split loses the
+// column alignment and silently corrupts every count downstream.
+function parseCsv(text) {
+  const rows = [];
+  let row = [], field = "", quoted = false;
+  for (let i = 0; i < text.length; i += 1) {
+    const c = text[i];
+    if (quoted) {
+      if (c === '"') {
+        if (text[i + 1] === '"') { field += '"'; i += 1; } else quoted = false;
+      } else field += c;
+      continue;
+    }
+    if (c === '"') { quoted = true; continue; }
+    if (c === ",") { row.push(field); field = ""; continue; }
+    if (c === "\n") { row.push(field); rows.push(row); row = []; field = ""; continue; }
+    if (c === "\r") continue;
+    field += c;
+  }
+  if (field.length || row.length) { row.push(field); rows.push(row); }
+  return rows;
+}
+
 function readCsv(file) {
-  const text = fs.readFileSync(file, "utf8").trim();
-  const [head, ...lines] = text.split(/\r?\n/);
-  const cols = head.split(",");
-  return lines.map((line) => Object.fromEntries(line.split(",").map((v, i) => [cols[i], v])));
+  const rows = parseCsv(fs.readFileSync(file, "utf8"));
+  const cols = rows.shift() || [];
+  return rows
+    .filter((r) => r.length > 1)
+    .map((r) => Object.fromEntries(cols.map((c, i) => [c, r[i] === undefined ? "" : r[i]])));
 }
 
 export function build() {
@@ -70,6 +95,9 @@ export function build() {
 
   const cells = new Map();
   const runs = new Map();
+  // The flagged answers the Claim Report shows as evidence: CRITICAL and HIGH,
+  // critical first (Claim Report Spec, Layer 3 "Evidence").
+  const incidents = [];
   const unlisted = new Map();
   const stability = new Map(); // prompt|bot|run -> [verdict...] (CM §5.11)
 
@@ -184,6 +212,27 @@ export function build() {
     cell.counts[COUNT_KEY[behaviour]] += 1;
     const t = tier(behaviour, contaminated);
     cell.tiers[t] += 1;
+    if (t === "critical" || t === "high") {
+      incidents.push({
+        response_id: o.response_id,
+        run: o.run_id, claim: o.claim_id, chatbot: o.model_name, persona: o.persona,
+        market: mk, country: run.country, language: run.language,
+        date: o.collected_at, model_version: o.model_version || null,
+        repeat_n: Number(o.repeat_n) || null,
+        is_live: isLive,
+        tier: t,
+        prompt_text: o.prompt_text || null,
+        quote: o.layer_a_quote || null,
+        // Generated from the claim card, not a recorded response. Anything
+        // carrying this must be labelled where it is shown, not only in a
+        // banner at the top of the page.
+        synthetic: o.synthetic === "true",
+        domains: [...seen.keys()],
+        listed: [...seen.entries()].filter(([, cat]) => cat).map(([d]) => d),
+        review: o.human_review_status || null,
+        judge_confidence: null
+      });
+    }
     if (t === "critical") for (const [d, cat] of seen) if (cat) cell.domains[d].critical += 1;
     cell.layer_b[contaminated ? "flag-present" : "clean"] += 1;
     if (layerBCat) cell.layer_b_cat[layerBCat] += 1;
@@ -193,6 +242,9 @@ export function build() {
     }
     const confidence = o.layer_a_confidence === "" ? null : Number(o.layer_a_confidence);
     const agreement = o.layer_a_agreement === "" ? null : Number(o.layer_a_agreement);
+    if (incidents.length && incidents[incidents.length - 1].response_id === o.response_id) {
+      incidents[incidents.length - 1].judge_confidence = Number.isFinite(confidence) ? confidence : null;
+    }
     if (Number.isFinite(confidence)) cell.judgeConfidence.push(confidence);
     if (Number.isFinite(agreement)) cell.judgeAgreement.push(agreement);
     if (o.needs_human_review === "true") cell.review.needs_human_review += 1;
@@ -306,6 +358,7 @@ export function build() {
       splice_groups: uniq(list.map((c) => c.splice_group).filter(Boolean))
     },
     runs: runList,
+    incidents,
     // SR §7.1-7.2: what the analyst has to look at after this rebuild.
     queues: {
       // Domains a bot cited that are on no list at all.
@@ -314,7 +367,9 @@ export function build() {
     }
   };
 
-  return { header, cells: list, runs: runList, unlisted: unlistedRows, blocked: runList.filter((r) => r.reconciliation.blocked).map((r) => r.key) };
+  incidents.sort((a, b) => (a.tier === b.tier ? 0 : a.tier === "critical" ? -1 : 1) ||
+    a.claim.localeCompare(b.claim) || a.date.localeCompare(b.date));
+  return { header, cells: list, runs: runList, incidents, unlisted: unlistedRows, blocked: runList.filter((r) => r.reconciliation.blocked).map((r) => r.key) };
 }
 
 // One row per line: a 1,600-row table has to stay reviewable in a diff.

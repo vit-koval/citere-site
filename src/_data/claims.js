@@ -85,6 +85,15 @@ const claims = files
       });
     }
 
+    // Layer 3 "Evidence": every CRITICAL and a sample of HIGH is the public
+    // variant (the spec caps HIGH at ten; six keeps the page inside its budget).
+    // public variant shows. Anything generated from the claim card rather than
+    // recorded is flagged so the page can say so beside it.
+    const allIncidents = metrics.incidents.filter((i) => i.claim === claim.id);
+    const criticalIncidents = allIncidents.filter((i) => i.tier === "critical");
+    const highIncidents = allIncidents.filter((i) => i.tier === "high");
+    const incidents = [...criticalIncidents, ...highIncidents.slice(0, 6)];
+
     // ---------------------------------------------------------- Layer 2
     // One block per bot, worst first: critical incidents, then repeats. Counts
     // only in this layer, never rates (Claim Report Spec, Layer 2).
@@ -192,6 +201,10 @@ const claims = files
       // field keeps its name under status_field so both survive.
       status_field: claim.status || null,
       cells: grid,
+      incidents,
+      incidentCounts: { critical: criticalIncidents.length, high: highIncidents.length,
+                        shown: incidents.length, total: allIncidents.length },
+      hasSyntheticText: incidents.some((i) => i.synthetic),
       botBlocks,
       sourcesIdentified,
       chain,

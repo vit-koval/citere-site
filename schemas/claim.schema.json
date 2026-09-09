@@ -257,6 +257,12 @@
           }
         }
       }
+    },
+    "false_claim": {
+      "type": "string"
+    },
+    "canonical_debunk": {
+      "type": "string"
     }
   },
   "definitions": {
