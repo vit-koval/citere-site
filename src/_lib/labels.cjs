@@ -68,13 +68,29 @@ const TIER_NOTES = {
   none: "refuted or hedged, no listed source"
 };
 
-// How the lie is built. Determines which prompts a claim gets.
+// Entity Model Part II. How the lie is attached to the truth; determines which
+// prompts a claim gets, and is the axis the grain-of-truth split runs on
+// (CM §5.7): D is a fabrication, A/B/C carry a real event.
 const SPLICES = {
   A: "attribute substitution",
   B: "false inference",
   C: "temporal / scale shift",
-  D: "pure fabrication"
+  D: "pure fabrication in real context"
 };
+const SPLICE_GROUPS = { GT: "claims built on a real event", F: "pure fabrications" };
+
+// Entity Model §8. Three levels are the target; "flag-dominant" has no
+// definition in any spec in docs/citere-spec, so nothing emits it yet.
+const LAYER_B = { clean: "clean", "flag-present": "listed source cited", "flag-dominant": "listed sources dominant" };
+
+// Pipeline guide §4.1, in priority order.
+const WATCHLIST_CATEGORIES = {
+  pravda_network: "Pravda network",
+  state_media: "state media",
+  laundering_network: "laundering network"
+};
+
+const CLAIM_STATUSES = { active: "active", dormant: "dormant", archived: "archived" };
 
 // ------------------------------------------------------- countermeasures
 // The twelve countermeasure types (CLAUDE_CODE_BRIEF §4, /countermeasures).
@@ -90,7 +106,14 @@ const COUNTERMEASURE_TYPES = {
   social: { label: "Social platform report", cls: "t-social" },
   fimi: { label: "FIMI registry report", cls: "t-fimi" },
   national: { label: "National authority complaint", cls: "t-national" },
-  dsa: { label: "DSA / AI Act complaint", cls: "t-dsa" }
+  dsa: { label: "DSA / AI Act complaint", cls: "t-dsa" },
+  // Not in the brief's twelve. The Claim Report Spec and the Countries pages
+  // both list re-measurement as a countermeasure type of its own, and CM §7
+  // makes it the unit of the cleansing calculation, so binning it under
+  // "disclosure" would inflate disclosure counts and lose the cleansing link.
+  // Citere_Countermeasures_Catalogue.md is not in the repo; when it lands, this
+  // entry is the one to reconcile.
+  remeasurement: { label: "Re-measurement", cls: "t-remeasure", catalogue: false }
 };
 
 // drafted -> pending_confirmation -> submitted -> acknowledged -> responded ->
@@ -118,9 +141,9 @@ const LEGACY_TYPE = {
   partner_publication: "partner",
   authority_confirmation: "national",
   published: "public",
-  remeasured: "disclosure"
+  remeasured: "remeasurement"
 };
-const LEGACY_SUBTYPE = { remeasured: "Re-measurement", published: "Publication" };
+const LEGACY_SUBTYPE = { published: "Publication" };
 const LEGACY_STATUS = {
   actioned: "responded",
   no_response: "submitted",
@@ -135,6 +158,6 @@ const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "
 module.exports = {
   VERDICTS, BEHAVIOURS, STATUSES, ACTION_TYPES, NETWORKS, NETWORK_NAMES, NETWORK_CLASS,
   CHATBOTS, PERSONAS, MONTHS,
-  LAYER_A, TIERS, TIER_NOTES, SPLICES,
+  LAYER_A, TIERS, TIER_NOTES, SPLICES, SPLICE_GROUPS, LAYER_B, WATCHLIST_CATEGORIES, CLAIM_STATUSES,
   COUNTERMEASURE_TYPES, COUNTERMEASURE_STATUSES, LEGACY_TYPE, LEGACY_SUBTYPE, LEGACY_STATUS
 };

@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Runs",
-  "description": "One record per run x market. Derived by scripts/build-metrics.mjs; never hand-edited.",
+  "description": "One record per run x market. A run is one cluster set, one country, one language, with frozen versions (Citere_Calculation_Methodology.md 0.2). Derived by scripts/build-metrics.mjs; never hand-edited.",
   "type": "object",
   "required": ["runs"],
   "properties": {
@@ -12,7 +12,9 @@
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["key", "run_id", "market", "country", "language", "collected_at", "responses"],
+        "required": ["key", "run_id", "market", "country", "language", "collected_at",
+                     "received", "valid", "quarantined", "unresolved", "reconciliation",
+                     "judge_validation", "versions", "comparable_with"],
         "properties": {
           "key": { "type": "string" },
           "run_id": { "type": "string" },
@@ -23,21 +25,46 @@
           "collected_until": { "type": "string", "format": "date" },
           "clusters": { "type": "array", "items": { "type": "string" } },
           "claims": { "type": "array", "items": { "type": "string" } },
+          "claims_count": { "type": "integer", "minimum": 0 },
           "models": { "type": "array", "items": { "type": "string" } },
           "model_versions": { "type": "array", "items": { "type": "string" } },
           "personas": { "type": "array", "items": { "type": "string" } },
-          "responses": { "type": "integer", "minimum": 0 },
+          "received": { "type": "integer", "minimum": 0 },
+          "valid": { "type": "integer", "minimum": 0 },
+          "quarantined": { "type": "integer", "minimum": 0 },
+          "unresolved": { "type": "integer", "minimum": 0 },
           "prompts": { "type": ["integer", "null"] },
           "repeats": { "type": ["integer", "null"] },
+          "reconciliation": {
+            "type": "object", "additionalProperties": false,
+            "required": ["expected", "received", "missing", "extra", "blocked", "known"],
+            "properties": {
+              "expected": { "type": ["integer", "null"] },
+              "received": { "type": "integer", "minimum": 0 },
+              "missing": { "type": ["integer", "null"] },
+              "extra": { "type": ["integer", "null"] },
+              "blocked": { "type": "boolean" },
+              "known": { "type": "boolean" }
+            }
+          },
+          "judge_validation": {
+            "type": "object", "additionalProperties": false,
+            "required": ["status"],
+            "properties": {
+              "status": { "type": "string", "enum": ["pending", "confirmed", "not_confirmed"] },
+              "alpha": { "type": ["number", "null"] }
+            }
+          },
           "versions": {
-            "type": "object",
+            "type": "object", "additionalProperties": false,
             "properties": {
               "catalog": { "type": ["string", "null"] },
               "grid": { "type": ["string", "null"] },
               "judge": { "type": ["string", "null"] },
               "watchlist": { "type": ["string", "null"] }
             }
-          }
+          },
+          "comparable_with": { "type": "array", "items": { "type": "string" } }
         }
       }
     }

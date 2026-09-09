@@ -45,6 +45,41 @@ for (const name of ["data/metrics.json", "data/runs.json"]) {
 for (const domain of rebuilt.unlisted) {
   errors.push(`data/claims: cited domain ${domain} is not on the watchlist in data/sources.json`);
 }
+for (const key of rebuilt.blocked || []) {
+  // Calculation Methodology 1.3: a surplus response blocks every metric.
+  errors.push(`data/runs.json: ${key} has surplus responses - no metric may be computed until it is resolved`);
+}
+
+// Store assertions (Sources Registry Business Logic 12: a failed assertion
+// blocks publication). Each one catches a class of arithmetic that would be
+// wrong on the page rather than merely odd in the file.
+{
+  const store = read("data/metrics.json");
+  const sum = (o) => Object.values(o).reduce((a, b) => a + b, 0);
+  for (const c of store.cells) {
+    const where = `data/metrics.json: ${c.key}`;
+    if (sum(c.counts) !== c.n) errors.push(`${where}: verdict counts sum to ${sum(c.counts)}, not n=${c.n}`);
+    if (sum(c.tiers) !== c.n) errors.push(`${where}: escalation tiers sum to ${sum(c.tiers)}, not n=${c.n}`);
+    if (sum(c.layer_b) !== c.n) errors.push(`${where}: layer_b sums to ${sum(c.layer_b)}, not n=${c.n}`);
+    if (c.n !== c.received - c.quarantined - c.unresolved) {
+      errors.push(`${where}: n=${c.n} does not equal received minus quarantined and unresolved`);
+    }
+    if (c.substantive !== c.n - c.counts.dodge) errors.push(`${where}: substantive is not n minus DODGE`);
+    if (c.contaminated !== c.layer_b["flag-present"]) errors.push(`${where}: contaminated does not match layer_b`);
+    if (sum(c.layer_b_cat) !== c.contaminated) {
+      errors.push(`${where}: layer_b categories sum to ${sum(c.layer_b_cat)}, not contaminated=${c.contaminated}`);
+    }
+    if (c.n) {
+      const shares = ["repeat", "u_context", "refute", "dodge"].reduce((a, k) => a + c.verdict_shares[k].rate, 0);
+      if (Math.abs(shares - 1) > 1e-9) errors.push(`${where}: verdict distribution sums to ${shares}, not 1`);
+    }
+    for (const [domain, e] of Object.entries(c.domains)) {
+      const split = e.repeat + e.u_context + e.refute + e.dodge;
+      if (split !== e.cited) errors.push(`${where}: ${domain} verdict split ${split} does not equal cited ${e.cited}`);
+      if (e.cited > c.n) errors.push(`${where}: ${domain} cited ${e.cited} times in ${c.n} responses`);
+    }
+  }
+}
 
 const claimSchema = schema("claim");
 const claimDir = join(ROOT, "data/claims");
