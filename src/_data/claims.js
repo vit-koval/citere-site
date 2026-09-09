@@ -11,7 +11,7 @@ const path = require("node:path");
 const { ROOT } = require("../_lib/markdown.cjs");
 const metrics = require("./metrics.js");
 const { normaliseDomain } = require("../_lib/metrics.cjs");
-const { CHATBOTS, SPLICES, SPLICE_LEDE } = require("../_lib/labels.cjs");
+const { CHATBOTS, SPLICES, SPLICE_LEDE, COUNTERMEASURE_LADDER } = require("../_lib/labels.cjs");
 const runs = require("./runs.js");
 const countermeasures = require("./countermeasures.js");
 
@@ -189,6 +189,40 @@ const claims = files
         .reduce((n, r) => n + (r.reconciliation.missing || 0), 0)
     } : null;
 
+    // The escalation ladder for this claim (Countermeasures Catalogue §4).
+    // A rung is done when something on it has been taken, available when its
+    // prerequisites are met, locked when they are not - and a locked rung says
+    // which prerequisite is missing rather than just greying out.
+    const takenOn = (types) => actions.filter((a) => a.taken && a.kind === "action" && types.includes(a.type));
+    const draftedOn = (types) => actions.filter((a) => !a.taken && a.kind === "action" && types.includes(a.type));
+    const remeasurements = actions.filter((a) => a.kind === "remeasurement");
+    const remeasured = remeasurements.filter((a) => a.status === "closed");
+    // CM §7 / catalogue §2.12: the terminal rung needs a disclosure, a public
+    // record, and a re-measurement that found no significant improvement.
+    const noRemediation = cleansing.some((block) =>
+      block.rows.some((r) => r.change && !r.change.significant));
+    const ladder = COUNTERMEASURE_LADDER.map((rung) => {
+      const done = takenOn(rung.types);
+      const drafted = draftedOn(rung.types);
+      let state = done.length ? "done" : "available";
+      let reason = null;
+      if (rung.key === "terminal") {
+        const missing = [];
+        if (!takenOn(["disclosure"]).length) missing.push("no disclosure to the platform on record");
+        if (!takenOn(["public"]).length) missing.push("no public report on record");
+        if (!remeasured.length) missing.push("no re-measurement has run yet");
+        else if (!noRemediation) missing.push("the re-measurement has not yet shown an absence of remediation");
+        if (!done.length && missing.length) { state = "locked"; reason = missing.join("; "); }
+      } else if (!done.length && !drafted.length) {
+        state = "available";
+        reason = "nothing of this kind has been done on this claim yet";
+      }
+      return { ...rung, state, done, drafted, all: [...done, ...drafted], reason,
+               label: rung.label,
+               types: rung.types };
+    });
+    const rungsReached = ladder.filter((r) => r.state === "done").length;
+
     // ---------------------------------------------------------- Layer 1
     // The headline is the finding, not the topic (Claim Report Spec, Layer 1).
     // Analyst-written where the prose supplies one; otherwise built from what
@@ -270,6 +304,10 @@ const claims = files
         responses: actions.filter((a) => a.response_date).length
       },
       countermeasures: actions,
+      ladder,
+      rungsReached,
+      remeasurements,
+      escalationUrl: `/registry/${claim.slug}/escalation/`,
       remeasuredOn: actions
         .filter((a) => a.kind === "remeasurement" && a.status === "closed")
         .map((a) => a.date).sort().pop() || null,

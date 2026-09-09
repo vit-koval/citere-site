@@ -1,0 +1,24 @@
+---
+pagination:
+  data: localised.countermeasureFacets
+  size: 1
+  alias: entry
+layout: layouts/base.njk
+permalink: "{{ entry.url }}"
+---
+<div class="phead"><h1>{{ facetHeading }}</h1>
+  <p class="plead">The countermeasures log, filtered. {{ activeFacet.actions | length }}
+    {{ activeFacet.actions | length | plural("action", "actions") }},
+    {{ activeFacet.taken }} taken, {{ activeFacet.awaiting }} waiting for a person to approve them.</p></div>
+
+{% include "partials/countermeasure-filters.njk" %}
+
+{%- set tableActions = activeFacet.actions %}
+{%- set tableTaken = activeFacet.taken %}
+{%- set tableAwaiting = activeFacet.awaiting %}
+{% include "partials/countermeasures-table.njk" %}
+
+<div class="exports" style="margin:18px 0 44px">
+  <a href="{{ '/countermeasures/' | url }}">The whole log</a>
+  {%- if datasets.has['countermeasures-csv'] %}<span>&middot;</span><a href="{{ '/countermeasures.csv' | url }}">{{ 'action.downloadCsv' | t }}</a>{% endif %}
+</div>

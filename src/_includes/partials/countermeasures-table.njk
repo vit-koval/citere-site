@@ -1,0 +1,43 @@
+{#- The countermeasures log (CLAUDE_CODE_BRIEF §4, Countermeasures Catalogue §1).
+    One row per action, newest first. A row opens to its evidence package and
+    its proof, and a draft is visibly not an action taken: the agent prepares,
+    a person confirms, and only then is anything sent (catalogue §0). -#}
+<div class="panel">
+  <div class="summary-line"><b>{{ tableActions | length }}</b> {{ tableActions | length | plural("action", "actions") }} logged
+    <span>&middot;</span><b>{{ tableTaken }}</b> taken<span>&middot;</span>
+    <b>{{ tableAwaiting }}</b> awaiting confirmation</div>
+  {%- for a in tableActions %}
+  <details class="cmrow">
+    <summary>
+      <span class="cmdate">{% if a.date %}<time datetime="{{ a.date | isoDate }}">{{ a.date | shortDate }}</time>{% else %}<span style="color:var(--dimmer)">not sent</span>{% endif %}</span>
+      <span class="cmtype"><i class="cmdot {{ a.typeClass }}"></i>{{ a.typeLabel }}{% if a.subtypeLabel %}<small>{{ a.subtypeLabel }}</small>{% endif %}</span>
+      <span class="cmtarget">{{ a.target | defangCopy }}</span>
+      <span class="cmmarket">{% if a.market %}{{ a.market | upper }}{% else %}<span style="color:var(--dimmer)">global</span>{% endif %}</span>
+      <span class="cmclaims">{% for id in a.claims %}{{ id }}{% if not loop.last %}, {% endif %}{% endfor %}</span>
+      <span class="cmstatus"><span class="cmpill {{ a.statusClass }}">{{ a.statusLabel }}</span></span>
+    </summary>
+    <div class="cmdetail">
+      <div><b>What</b><br>{{ a.what | defangCopy | default("Not recorded.") }}</div>
+      <div><b>Evidence package</b><br>
+        {%- for id in a.claims %}<a href="{{ (claims | whereEq('id', id) | first).url | url }}">{{ id }}</a>{% if not loop.last %}, {% endif %}{% endfor %}
+        {%- if not a.claims | length %}<span style="color:var(--dimmer)">no claim attached</span>{% endif %}
+        <br>{% if a.market %}Country: {{ a.market | upper }}{% else %}Scope: global{% endif %}
+        {%- if a.follow_up_due %}<br>Follow-up due <time datetime="{{ a.follow_up_due | isoDate }}">{{ a.follow_up_due | shortDate }}</time>{% endif %}</div>
+      <div><b>Submission and proof</b><br>
+        {%- if a.taken %}Submitted{% if a.response_date %}, answered <time datetime="{{ a.response_date | isoDate }}">{{ a.response_date | shortDate }}</time>{% else %}, no answer yet{% endif %}.
+          Proof of submission is held internally and is not published.
+        {%- elif a.awaitingConfirmation %}<b>Drafted and waiting for a person to approve it.</b> Nothing has
+          been sent.
+        {%- elif a.scheduled %}Scheduled, not yet run.
+        {%- else %}<b>Draft only.</b> Nothing has been sent, filed or published.{% endif %}</div>
+    </div>
+  </details>
+  {%- endfor %}
+  {%- if not tableActions | length %}
+  <div class="summary-line" style="color:var(--dimmer)">No actions match this filter.</div>
+  {%- endif %}
+</div>
+<p class="note">We publish the fact, date, target and status of each countermeasure. We do not publish what
+  was submitted, the proof of submission, correspondence with a platform, or the names of individuals.
+  Nothing leaves Citere without a person approving it, so a draft is listed as a draft and is not counted
+  as an action taken.</p>

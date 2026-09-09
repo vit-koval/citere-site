@@ -370,6 +370,8 @@ wrap: wrap-narrow
 {%- endif %}
 
 <h2 id="what-we-did" style="margin:36px 0 6px">{{ 'claim.whatWeDid' | t }}</h2>
+<p class="note" style="margin:0 0 14px">The full ladder &mdash; what has been tried, what it unlocked and
+  what is still blocked &mdash; is in this claim's <a href="{{ claim.escalationUrl | url }}">escalation report</a>.</p>
 {%- if claim.countermeasures | length %}
 {% include "partials/actions-table.njk" %}
 {%- else %}

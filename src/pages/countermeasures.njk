@@ -17,36 +17,24 @@ permalink: "{{ '/countermeasures/' | loc(lang) }}"
 <div class="phead"><h1>{{ doc.data.h1 }}</h1>
   <p class="plead">{{ doc.data.lead | fill(figures) | mdInline | safe }}</p></div>
 
-<div class="callout"><b>How we disclose.</b> We notify the platform first and privately. The fact, date
-  and status of a report are published immediately; the content of the exchange is not published at all.
-  We never publish prompts designed to bypass model safeguards.</div>
+<div class="callout"><b>How we work.</b> The agent prepares a countermeasure, assembles its evidence and
+  drafts the submission. A person confirms before anything is sent, filed or published. Everything below
+  is the public part of that log: the fact, the date, the target and the status &mdash; never the
+  submission, the proof, or correspondence with a platform.</div>
 
-<div class="filters" style="margin-top:22px">
-  <span class="f active">All actions <span style="color:var(--dimmer)">{{ countermeasures.actions | length }}</span></span>
-  {%- for t in actionTypes %}<span class="f">{{ t.label }} <span style="color:var(--dimmer)">{{ t.count }}</span></span>{% endfor %}
+<div class="metrics" style="grid-template-columns:repeat(6,1fr);margin:22px 0">
+{%- for tile in cmTiles %}
+  <div class="m"><div class="n num"{% if tile.tone %} style="color:var({{ tile.tone }})"{% endif %}>{{ tile.value }}</div>
+    <div class="l">{{ tile.label }}</div></div>
+{%- endfor %}
 </div>
 
-<div class="panel"><table>
-  <caption class="visually-hidden">Every logged action, newest first</caption>
-  <thead><tr><th scope="col">{{ 'col.date' | t }}</th><th scope="col">{{ 'col.type' | t }}</th><th scope="col">{{ 'col.target' | t }}</th>
-    <th scope="col">{{ 'col.claim' | t }}</th><th scope="col">{{ 'col.status' | t }}</th><th scope="col">{{ 'col.response' | t }}</th></tr></thead>
-  <tbody>
-  {%- for e in countermeasures.actions | take(60) %}
-    {%- set claim = claims | whereEq('id', e.claim_id) | first %}
-    <tr><td class="num" style="color:var(--dim)"><time datetime="{{ e.date | isoDate }}">{{ e.date | shortDate }}</time></td>
-      <td>{{ e.typeLabel }}{% if e.subtypeLabel %} <span style="color:var(--dimmer)">&middot; {{ e.subtypeLabel }}</span>{% endif %}</td>
-      <td>{{ e.target | defangCopy }}</td>
-      <td>{% if claim %}<a href="{{ claim.url | url }}" style="color:var(--accent);font-weight:600">{{ e.claim_id }}</a>{% else %}<span style="color:var(--dimmer)">{{ e.claim_id }}</span>{% endif %}</td>
-      <td><span class="chip {{ 'ok' if e.status in ['acknowledged','responded','closed'] else ('wait' if e.status in ['submitted','pending_confirmation'] else '') }}"><span class="dot"></span>{{ e.statusLabel }}</span></td>
-      <td class="num" style="color:var(--dimmer)">{% if e.response_date %}<time datetime="{{ e.response_date | isoDate }}">{{ e.response_date | shortDate }}</time>{% else %}&mdash;{% endif %}</td></tr>
-  {%- endfor %}
-  </tbody></table>
-  {%- if countermeasures.actions | length > 60 %}
-  <div class="summary-line" style="border-bottom:0;border-top:1px solid var(--line2)">
-    Showing 60 of {{ countermeasures.actions | length }} actions
-    {%- if datasets.has['countermeasures-csv'] %}<a style="margin-left:auto;color:var(--accent);font-weight:600" href="{{ '/countermeasures.csv' | url }}">The full log as CSV &rarr;</a>{% endif %}</div>
-  {%- endif %}
-</div>
+{% include "partials/countermeasure-filters.njk" %}
+
+{%- set tableActions = countermeasures.actions %}
+{%- set tableTaken = countermeasures.totals.taken %}
+{%- set tableAwaiting = countermeasures.totals.awaitingConfirmation %}
+{% include "partials/countermeasures-table.njk" %}
 
 <div class="exports" style="margin:18px 0 40px">
   {%- if datasets.has['countermeasures-csv'] %}<a href="{{ '/countermeasures.csv' | url }}">{{ 'action.downloadLog' | t }}</a><span>&middot;</span>{% endif %}

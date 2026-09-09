@@ -1,0 +1,92 @@
+---
+pagination:
+  data: localised.claims
+  size: 1
+  alias: entry
+layout: layouts/base.njk
+wrap: wrap-narrow
+permalink: "{{ entry.item.escalationUrl | loc(entry.lang) }}"
+---
+{%- from "partials/cleansing.njk" import deltaCell, deltaCaveats -%}
+{#- The escalation report for one claim (CLAUDE_CODE_BRIEF §4). The ladder is
+    computed from the actions actually logged, and a locked rung says which
+    prerequisite is missing. -#}
+<div class="phead">
+  <div class="tiles" style="margin-bottom:12px"><span class="tile">{{ claim.id }}</span>
+    <a class="tile" href="{{ claim.url | url }}">Claim report</a></div>
+  <h1 style="font-size:27px;line-height:1.26;max-width:34ch">Escalation report &mdash;
+    &ldquo;{{ claim.titles[lang] | default(claim.title_en) }}&rdquo;</h1>
+  <p class="plead" style="max-width:70ch">Everything tried to get this claim out of chatbot answers: every
+    action in the order it was taken, what it unlocked, and what is still blocked and why. The agent
+    prepares and drafts; a person confirms before anything is sent.</p>
+</div>
+
+<div class="metrics" style="grid-template-columns:repeat(6,1fr);margin:0 0 26px">
+  <div class="m"><div class="n num">{{ claim.countermeasures | length }}</div><div class="l">actions logged</div></div>
+  <div class="m"><div class="n num">{{ claim.counts.actions }}</div><div class="l">taken</div></div>
+  <div class="m"><div class="n num" style="color:var(--mislead)">{{ claim.countermeasures | whereEq('awaitingConfirmation', true) | length }}</div>
+    <div class="l">awaiting your confirmation</div></div>
+  <div class="m"><div class="n num">{{ claim.counts.responses }}</div><div class="l">responses received</div></div>
+  <div class="m"><div class="n num">{{ claim.remeasurements | length }}</div><div class="l">re-measurements</div></div>
+  <div class="m"><div class="n num">{{ claim.rungsReached }} of {{ claim.ladder | length }}</div><div class="l">rungs reached</div></div>
+</div>
+
+<h2 id="ladder" style="margin:0 0 6px">The escalation ladder</h2>
+<p class="note" style="margin:0 0 14px">The twelve countermeasure types, grouped by weight. A rung is
+  reached once something on it has been done; a locked rung names the prerequisite it is waiting on.
+  The terminal rung &mdash; a complaint to a regulator &mdash; stays locked until the platform has been
+  disclosed to, the finding is on the public record, and a re-measurement has found no remediation.</p>
+<div class="ladder">
+{%- for rung in claim.ladder %}
+  <details class="rung {{ rung.state }}"{% if rung.done | length or rung.drafted | length %} open{% endif %}>
+    <summary><span class="rdot"></span><b>{{ rung.label }}</b>
+      <span class="rnote">{% if rung.done | length %}{{ rung.done | length }} taken{% if rung.drafted | length %}, {{ rung.drafted | length }} drafted{% endif %}
+        {%- elif rung.drafted | length %}{{ rung.drafted | length }} drafted, none sent
+        {%- else %}{{ rung.reason }}{% endif %}</span>
+      <span class="rstate">{{ rung.state }}</span></summary>
+    <div class="rbody">
+      {%- if rung.state == "locked" %}
+      <p class="note" style="margin:0 0 8px"><b>Blocked:</b> {{ rung.reason }}.</p>
+      {%- endif %}
+      {%- for a in rung.all %}
+      <div class="actrow">
+        <div class="what">{{ a.typeLabel }}{% if a.subtypeLabel %} &middot; {{ a.subtypeLabel }}{% endif %}
+          <small>{{ a.target | defangCopy }}{% if a.market %} &middot; {{ a.market | upper }}{% endif %}
+            {%- if a.what %} &middot; {{ a.what | defangCopy }}{% endif %}</small></div>
+        <span class="cmpill {{ a.statusClass }}">{{ a.statusLabel }}</span>
+        <div class="when">{% if a.date %}<time datetime="{{ a.date | isoDate }}">{{ a.date | shortDate }}</time>{% else %}<span style="color:var(--dimmer)">not sent</span>{% endif %}</div>
+      </div>
+      {%- endfor %}
+      {%- if not rung.all | length %}
+      <p class="note" style="margin:0">Nothing of this kind has been done on this claim.</p>
+      {%- endif %}
+    </div>
+  </details>
+{%- endfor %}
+</div>
+
+<h2 id="log" style="margin:36px 0 6px">Chronological log</h2>
+<p class="note" style="margin:0 0 14px">Every action above, in the order it happened, across every market
+  this claim was tested in.</p>
+{%- set tableActions = claim.countermeasures %}
+{%- set tableTaken = claim.counts.actions %}
+{%- set tableAwaiting = claim.countermeasures | whereEq('awaitingConfirmation', true) | length %}
+{% include "partials/countermeasures-table.njk" %}
+
+<h2 id="effect" style="margin:36px 0 6px">Effect so far</h2>
+{%- if claim.cleansing | length %}
+<p class="note" style="margin:0 0 14px">Repeat rate before and after the disclosure, in the markets where a
+  second comparable run exists.</p>
+{% include "partials/before-after-table.njk" %}
+{%- else %}
+<p class="note">No market has been measured twice under the same grid yet, so there is nothing to compare.
+  A re-measurement is scheduled at least fourteen days after a disclosure; until it has run, this section
+  stays empty rather than showing a change that has not been measured.</p>
+{%- endif %}
+
+<div class="exports" style="margin:28px 0 40px">
+  <a href="{{ claim.url | url }}">Back to the claim report</a>
+  {%- if claim.countermeasures | length %}<span>&middot;</span>
+  <a href="{{ ('/countermeasures/claim/' + (claim.id | lower) + '/') | url }}">This claim in the countermeasures log</a>{% endif %}
+  <span>&middot;</span><a href="{{ '/countermeasures/' | url }}">The whole log</a>
+</div>
