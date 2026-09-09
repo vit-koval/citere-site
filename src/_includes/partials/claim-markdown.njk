@@ -66,7 +66,10 @@ Persona {{ block.persona }} · {{ block.persona | personaLabel }}, {{ block.befo
 {% for r in block.rows %}| {{ r.chatbot | botName }} | {{ r.before.rate | rate }} ({{ r.before.ci | ciLabel }}, n={{ r.before.n }}) | {{ r.after.rate | rate }} ({{ r.after.ci | ciLabel }}, n={{ r.after.n }}) | {{ r.change.delta | pp }}, {{ "significant" if r.change.significant else "not significant" }} |
 {% endfor %}
 A change is called real only when the two intervals do not overlap. There is no control group: this is the
-change observed after the disclosure, not the effect of it.
+change observed after the disclosure, not the effect of it, and model versions are recorded on both sides.
+Citation drift puts the noise floor higher still — {{ drift.source }} measures {{ drift.min | rate }} to
+{{ drift.max | rate }} of an assistant's cited domains changing from one month to the next, so a change that
+clears significance is still not on its own evidence that the fault was fixed.
 {% endfor %}{% if claim.changelog | length %}
 ## Changelog
 

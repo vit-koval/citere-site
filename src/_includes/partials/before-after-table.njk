@@ -1,6 +1,8 @@
+{%- from "partials/cleansing.njk" import deltaCell, deltaCaveats -%}
 {#- Observed change after escalation (Calculation Methodology 7). Two runs in
     one market, same grid and same repeats, at one persona. Never a single
-    figure "improved by X%". -#}
+    figure "improved by X%", and never a delta without both caveats beside it
+    - the render rule lives in partials/cleansing.njk. -#}
 {%- for block in claim.cleansing %}
 <div class="panel"><table>
   <caption class="visually-hidden">Repeat rate before and after the disclosure in {{ block.before.country | countryName }}, persona {{ block.persona }} only, never averaged across personas</caption>
@@ -14,15 +16,9 @@
       <th scope="row" style="font-weight:400">{{ row.chatbot | botName }}</th>
       <td class="num"><span class="cellstat{% if row.before.low_n %} lown{% endif %}">{{ row.before.rate | rate }}<small>{{ row.before.ci | ciLabel }} &middot; n={{ row.before.n }}</small></span></td>
       <td class="num"><span class="cellstat{% if row.after.low_n %} lown{% endif %}">{{ row.after.rate | rate }}<small>{{ row.after.ci | ciLabel }} &middot; n={{ row.after.n }}</small></span></td>
-      <td class="rmeta" style="color:var({{ '--ok' if row.change.significant and row.change.delta < 0 else '--dim' }})">
-        {{ row.change.delta | pp }}
-        <small style="display:block;color:var(--dimmer)">{{ "significant" if row.change.significant else "not significant" }}</small></td>
+      <td>{{ deltaCell(row.change) }}</td>
     </tr>
   {%- endfor %}
   </tbody></table></div>
-<p class="note">Measured under persona {{ block.persona }} &middot; {{ block.persona | personaLabel }}, in
-  {{ block.before.country | countryName }} only. A change is called real only when the two intervals do not
-  overlap. There is no control group: a change here cannot be separated from a model update in the same
-  window, so this is the change observed after the disclosure, not the effect of it. Model versions are
-  recorded on both sides.</p>
+{{ deltaCaveats(drift, block.bots, block.persona, block.before.country | countryName) }}
 {%- endfor %}

@@ -317,6 +317,55 @@ if (sitemapFiles.length) {
   }
 }
 
+// --- between-run deltas ---------------------------------------------------
+// A change between two runs may never stand on its own. Calculation
+// Methodology 7.6 forbids calling it an effect, and citation drift means a
+// large share of the cited-domain set would have moved anyway. Both caveats
+// must sit in the same section as the delta - the render rule is
+// src/_includes/partials/cleansing.njk; this is what makes it a rule.
+const CAVEATS = ["no-control-group", "citation-drift"];
+for (const file of htmlFiles) {
+  const html = readFileSync(file, "utf8");
+  const page = "/" + relative(SITE, file).split(/[\\/]/).join("/");
+  for (const match of html.matchAll(/data-delta="cleansing"/g)) {
+    // The section a delta belongs to: from the delta to the next H2 or the
+    // end of the document.
+    const rest = html.slice(match.index);
+    const boundary = rest.search(/<h2\b/i);
+    const scope = boundary === -1 ? rest : rest.slice(0, boundary);
+    for (const caveat of CAVEATS) {
+      if (!scope.includes(`data-caveat="${caveat}"`)) {
+        err(page, `renders a before/after delta with no "${caveat}" caveat in the same section`);
+      }
+    }
+  }
+  // The same rule without relying on the marker: a percentage-point change is
+  // only ever a between-run delta, so one printed outside the render rule is
+  // caught here rather than shipping bare.
+  for (const match of html.matchAll(/[+\u2212-]?\d+(?:\.\d+)?pp\b/g)) {
+    const rest = html.slice(match.index);
+    const boundary = rest.search(/<h2\b/i);
+    const scope = boundary === -1 ? rest : rest.slice(0, boundary);
+    const missing = CAVEATS.filter((c) => !scope.includes(`data-caveat="${c}"`));
+    if (missing.length) {
+      err(page, `prints the change ${match[0]} with no ${missing.join(" or ")} caveat in the same section`);
+    }
+  }
+  // The wording itself, not only the marker.
+  if (/effects? of (the )?(escalation|disclosure|report)/i.test(html)) {
+    err(page, 'claims an "effect of escalation"; the finding is an observed change after it (CM 7.6)');
+  }
+}
+
+// The Markdown exports carry the same tables and the same duty.
+for (const file of allFiles.filter((f) => f.endsWith(".md"))) {
+  const body = readFileSync(file, "utf8");
+  if (!/^## What changed/m.test(body) && !/[+\u2212-]?\d+(?:\.\d+)?pp\b/.test(body)) continue;
+  const page = "/" + relative(SITE, file).split(/[\\/]/).join("/");
+  if (!/no control group/i.test(body)) err(page, "cleansing table with no control-group caveat");
+  if (!/citation drift/i.test(body)) err(page, "cleansing table with no citation-drift caveat");
+}
+
 // --- terminology ----------------------------------------------------------
 // Claim Report Spec, "Terminology rules": domains bots cite are "listed
 // sources" or "watchlisted sources", never "Kremlin-linked" - the watchlist

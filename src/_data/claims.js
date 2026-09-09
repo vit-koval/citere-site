@@ -74,7 +74,7 @@ const claims = files
       const [before, after] = [inMarket[0], inMarket[inMarket.length - 1]];
       if (!before.comparable_with.includes(after.key)) continue;
       cleansing.push({
-        market, before, after, persona: "P2",
+        market, before, after, persona: "P2", bots,
         rows: bots.map((chatbot) => {
           const b = metrics.poolOf({ claim: claim.id, chatbot, persona: "P2", run: before.key, is_live: false });
           const a = metrics.poolOf({ claim: claim.id, chatbot, persona: "P2", run: after.key, is_live: false });

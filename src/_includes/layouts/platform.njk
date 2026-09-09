@@ -3,6 +3,7 @@ layout: layouts/base.njk
 wrap: wrap-narrow
 ---
 {%- from "partials/bot-mark.njk" import botMark -%}
+{%- from "partials/cleansing.njk" import deltaCell, deltaCaveats -%}
 <div class="phead" style="display:flex;align-items:center;gap:16px">
   {{ botMark(logos, profile.key, "lg", true) }}
   <div><h1 style="font-size:29px;margin:0 0 4px">{{ profile.name }}</h1>
@@ -66,14 +67,12 @@ wrap: wrap-narrow
       <th scope="row" style="font-weight:400"><time datetime="{{ point.run.collected_at | isoDate }}">{{ point.run.collected_at | displayDate }}</time>
         <span style="color:var(--dimmer)">&middot; {{ point.run.country | countryName }}</span></th>
       <td class="num"><span class="cellstat{% if point.repeat_rate.low_n %} lown{% endif %}">{{ point.repeat_rate.rate | rate }}<small>{{ point.repeat_rate.ci | ciLabel }} &middot; n={{ point.repeat_rate.n }}</small></span></td>
-      <td class="rmeta" style="color:var(--dim)">{% if not loop.first %}{{ line.change.delta | pp }} &middot; {{ "significant" if line.change.significant else "not significant" }}{% endif %}</td>
+      <td>{% if not loop.first %}{{ deltaCell(line.change) }}{% endif %}</td>
     </tr>
   {%- endfor %}
   </tbody></table></div>
+{{ deltaCaveats(drift, [profile.key], profile.persona, line.market | upper) }}
 {%- endfor %}
-<p class="note">A change is called real only when the two intervals do not overlap. Search-grounded
-  assistants also reshuffle the sources they cite between runs for reasons unrelated to anything we do,
-  so a movement here is not on its own evidence that anything was fixed.</p>
 {%- endif %}
 
 {%- if profile.repeatedClaims | length %}

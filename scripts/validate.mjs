@@ -31,6 +31,7 @@ validate("data/clusters.json", schema("clusters"), read("data/clusters.json"));
 validate("data/benchmarks.json", schema("benchmarks"), read("data/benchmarks.json"));
 validate("data/countermeasures.json", schema("countermeasures"), read("data/countermeasures.json"));
 validate("data/reports.json", schema("reports"), read("data/reports.json"));
+validate("data/citation-drift.json", schema("citation-drift"), read("data/citation-drift.json"));
 validate("data/metrics.json", schema("metrics"), read("data/metrics.json"));
 validate("data/runs.json", schema("runs"), read("data/runs.json"));
 

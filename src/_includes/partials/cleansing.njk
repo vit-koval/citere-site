@@ -1,0 +1,42 @@
+{#
+  cleansing.njk — the render rule for any before/after change between two runs.
+
+  A delta between runs may never appear on its own. Two things have to stand
+  next to it, and this file is what puts them there:
+
+    1. There is no control group (Calculation Methodology 7.6). The wording is
+       "observed change after escalation", never "effect of escalation".
+    2. Citation drift. A large share of the domains an assistant cites changes
+       from month to month regardless of anything we or the platform do, so a
+       significant delta is not on its own evidence that anything was fixed.
+
+  Every delta carries data-delta="cleansing"; the caveats carry
+  data-caveat="no-control-group" and data-caveat="citation-drift".
+  scripts/check.mjs fails the build if a delta appears in a section that does
+  not also carry both. Do not print a delta without calling deltaCaveats().
+#}
+
+{% macro deltaCell(change) %}
+  <span class="rmeta" data-delta="cleansing"
+    style="color:var({{ '--ok' if change.significant and change.delta < 0 else '--dim' }})">{{ change.delta | pp }}
+    <small style="display:block;color:var(--dimmer)">{{ "significant" if change.significant else "not significant" }}</small></span>
+{% endmacro %}
+
+{% macro deltaCaveats(drift, bots, persona, market) %}
+  {%- set named = [] -%}
+  {%- for key in bots %}{% if drift.byKey[key] %}{% set named = (named.push(drift.byKey[key]), named) %}{% endif %}{% endfor -%}
+  <p class="note" data-caveat="no-control-group">There is no control group. A change here cannot be
+    separated from a model update in the same window, so this is the change <b>observed after</b> the
+    disclosure, not the effect of it. Model versions are recorded on both sides
+    {%- if persona %}, and the figures are persona {{ persona }} only{% endif %}
+    {%- if market %} in {{ market }} only{% endif %}.</p>
+  <p class="note" data-caveat="citation-drift">Between two runs a month apart, much of the source set
+    would have changed on its own:
+    {%- if named | length %} {{ drift.source }} puts month-to-month citation drift at
+      {%- for p in named %} <b>{{ p.rate | rate }}</b> for {{ p.label }}{% if not loop.last %},{% endif %}{% endfor %}
+    {%- else %} {{ drift.source }} puts month-to-month citation drift between
+      <b>{{ drift.min | rate }}</b> and <b>{{ drift.max | rate }}</b> across assistants
+    {%- endif %} &mdash; an external figure, not one of ours. Roughly half the domains cited in July
+    would be gone by September without anyone touching anything, so a change that clears significance
+    is still not, on its own, evidence that the fault was fixed.</p>
+{% endmacro %}

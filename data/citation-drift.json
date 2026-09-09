@@ -1,0 +1,12 @@
+{
+  "demo": false,
+  "note_en": "External figure, not a Citere measurement. The share of domains an assistant cites that changes from one month to the next, independent of anything Citere or the platform does.",
+  "source": "Cross-industry GEO tooling (Peec.ai, Profound, Otterly)",
+  "updated": "2026-09-09",
+  "products": [
+    { "key": "perplexity", "label": "Perplexity", "rate": 0.405 },
+    { "key": "chatgpt", "label": "ChatGPT", "rate": 0.541 },
+    { "key": "copilot", "label": "Copilot", "rate": 0.534 },
+    { "key": null, "label": "Google AI Overviews", "rate": 0.593 }
+  ]
+}
