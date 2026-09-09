@@ -12,6 +12,7 @@ module.exports = {
       for (const p of data.profiles.chatbots) entries.push({ url: p.url, lastmod: d });
       for (const p of data.profiles.countries) entries.push({ url: p.url, lastmod: d });
       for (const s of data.sources) entries.push({ url: s.url, lastmod: d });
+      for (const f of data.sourceFacets) entries.push({ url: f.url, lastmod: d });
       return entries;
     }
   }

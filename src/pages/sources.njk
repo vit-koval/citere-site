@@ -20,24 +20,19 @@ permalink: "{{ '/sources/' | loc(lang) }}"
   attribution by Viginum, DFRLab, NewsGuard or EU DisinfoLab. Domains are written in defanged form and
   never hyperlinked, so this page never sends traffic to them.</p>
 
-<div class="filters">
-  <span class="f active">All networks</span>
-  {%- for net in networkList %}<span class="f">{{ net | networkLabel }} <span style="color:var(--dimmer)">{{ net | networkCount }}</span></span>{% endfor %}
+{% include "partials/source-filters.njk" %}
+
+<div class="metrics" style="grid-template-columns:repeat(5,1fr);margin:0 0 22px">
+{%- for tile in sourceTiles %}
+  <div class="m"><div class="n num"{% if tile.tone == "bad" %} style="color:var(--false)"{% endif %}>{{ tile.value }}</div>
+    <div class="l">{{ tile.label }}</div></div>
+{%- endfor %}
 </div>
 
-<div class="panel"><table>
-  <caption class="visually-hidden">Watchlisted domains, most cited first</caption>
-  <thead><tr><th scope="col">{{ 'col.domain' | t }}</th><th scope="col">{{ 'col.network' | t }}</th><th scope="col">{{ 'col.firstSeen' | t }}</th>
-    <th scope="col">{{ 'col.citedIn' | t }}</th><th scope="col">{{ 'col.citations' | t }}</th></tr></thead>
-  <tbody>
-  {%- for s in sources %}
-    <tr><td><a href="{{ s.url | url }}"><span class="domain">{{ s.defanged }}</span></a></td>
-      <td><span class="netchip {{ s.network | networkClass }}">{{ s.network | networkLabel }}</span></td>
-      <td style="color:var(--dimmer)"><time datetime="{{ s.first_seen | isoDate }}">{{ s.first_seen | displayDate }}</time></td>
-      <td>{% for id in s.cited_in | take(3) %}{% set c = claims | whereEq('id', id) | first %}{% if c %}<a href="{{ c.url | url }}" style="color:var(--accent);font-weight:600;font-size:13px">{{ id }}</a>{% if not loop.last %}, {% endif %}{% endif %}{% endfor %}{% if s.cited_in | length > 3 %} <span style="color:var(--dimmer)">+{{ s.cited_in | length - 3 }}</span>{% endif %}</td>
-      <td class="rmeta">{{ s.citedCount }}</td></tr>
-  {%- endfor %}
-  </tbody></table></div>
+{%- set tableSources = sources %}
+{%- set tableCaption = "Watchlisted domains, most cited first" %}
+{%- set tableFoot = "All " + (sources | length) + " domains on the watchlist" %}
+{% include "partials/sources-table.njk" %}
 
 {%- if articleEvidence | length %}
 <h2 id="article-evidence" style="margin:36px 0 8px">Article evidence

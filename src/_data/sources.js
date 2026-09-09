@@ -81,6 +81,12 @@ function record(domain, meta) {
     claimsReachedOnly: reached.filter((id) => !dist.some((d) => d.claim.id === id))
       .map((id) => byId.get(id)).filter(Boolean),
     claims: reached.map((id) => byId.get(id)).filter(Boolean),
+    // SR §5: first and last time it was cited, and which runs it appears in.
+    runs: edge ? Object.keys(edge.byRun).sort() : [],
+    markets: edge ? Object.keys(edge.byMarket).sort() : [],
+    injectionCount: injection.length,
+    // SR §7.4: on the watchlist, cited by nobody in any run held here.
+    status: (edge && edge.cited ? "active" : "dormant"),
     complaintStatus: (meta.complaints || []).map((c) => c.status).pop() || null
   };
 }
@@ -99,7 +105,10 @@ const unclassified = [...distributed.keys()]
     attribution: [], complaints: [], article_evidence: []
   }));
 
-const registry = [...watchlisted, ...unclassified]
+// SR §11: an unclassified domain is internal. It stays out of the public
+// registry and gets no page; it still appears on a claim card as a surface
+// object, because the card is the claim's own record.
+const registry = [...watchlisted]
   .sort((a, b) => b.citedCount - a.citedCount || a.domain.localeCompare(b.domain));
 
 // SR §7: the analyst work lists, rebuilt with the registry.
@@ -118,5 +127,7 @@ module.exports = registry;
 module.exports.version = raw.version;
 module.exports.updated = raw.updated;
 module.exports.queues = queues;
-module.exports.byDomain = Object.fromEntries(registry.map((s) => [s.domain, s]));
+module.exports.byDomain = Object.fromEntries([...registry, ...unclassified].map((s) => [s.domain, s]));
+module.exports.lastRun = (metrics.raw.runs || [])
+  .map((r) => r.collected_until || r.collected_at).sort().pop() || null;
 module.exports.watchlisted = watchlisted;

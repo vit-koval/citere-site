@@ -1,0 +1,38 @@
+{#- The sources registry table (Sources Registry Business Logic 10.1). One row
+    per domain, sorted by citations. Counts only: a share of responses citing a
+    domain needs a denominator that lives in the metrics store, not here (SR 5).
+    Domains are printed defanged and never linked to. -#}
+<div class="panel"><table>
+  <caption class="visually-hidden">{{ tableCaption }}</caption>
+  <thead><tr>
+    <th scope="col">{{ 'col.domain' | t }}</th><th scope="col">{{ 'col.network' | t }}</th>
+    <th scope="col">Attributed by</th><th scope="col" class="num">Cited</th>
+    <th scope="col" class="num">Assistants</th><th scope="col" class="num">Markets</th>
+    <th scope="col" class="num">Claims reached</th><th scope="col" class="num">Source-to-answer</th>
+    <th scope="col" class="num">Critical</th><th scope="col">Last cited</th>
+  </tr></thead>
+  <tbody>
+  {%- for s in tableSources %}
+    <tr>
+      <th scope="row" style="font-weight:400"><a href="{{ s.url | url }}"><span class="domain">{{ s.defanged }}</span></a>
+        {%- if s.status == "dormant" %} <span class="statuspill st-dormant">dormant</span>{% endif %}</th>
+      <td><span class="netchip {{ s.network | networkClass }}">{{ s.network | networkLabel }}</span></td>
+      <td style="color:var(--dim);font-size:12.5px">{% for a in s.attribution | take(2) %}{{ a.org }}{% if not loop.last %}, {% endif %}{% endfor %}</td>
+      <td class="num"><b>{{ s.citedCount }}</b></td>
+      <td class="num">{{ s.citedBy | length }}</td>
+      <td class="num">{{ s.markets | length }}</td>
+      <td class="num">{{ s.claimsReached | length }}</td>
+      <td class="num">{% if s.injectionCount %}<b style="color:var(--false)">{{ s.injectionCount }}</b>{% else %}<span style="color:var(--dimmer)">0</span>{% endif %}</td>
+      <td class="num">{% if s.criticalCount %}<b style="color:var(--false)">{{ s.criticalCount }}</b>{% else %}<span style="color:var(--dimmer)">0</span>{% endif %}</td>
+      <td class="num" style="color:var(--dimmer)">{% if s.citedCount %}<time datetime="{{ sources.lastRun | isoDate }}">{{ sources.lastRun | shortDate }}</time>{% else %}&mdash;{% endif %}</td>
+    </tr>
+  {%- endfor %}
+  </tbody></table>
+  {%- if tableFoot %}
+  <div class="summary-line" style="border-bottom:0;border-top:1px solid var(--line2)">{{ tableFoot | safe }}</div>
+  {%- endif %}
+</div>
+<p class="note">A citation is counted once per answer per domain, however many times that answer linked to
+  it. <b>Source-to-answer</b> counts the claims where this domain both published the falsehood and was cited
+  by an assistant answering about it &mdash; the strongest single piece of evidence here.
+  <b>Critical</b> counts the answers that repeated a claim while citing this domain.</p>

@@ -1,0 +1,26 @@
+---
+pagination:
+  data: localised.sourceFacets
+  size: 1
+  alias: entry
+layout: layouts/base.njk
+permalink: "{{ entry.url }}"
+---
+<div class="phead"><h1>{{ facetHeading }}</h1>
+  <p class="plead">The sources registry, filtered. {{ activeFacet.sources | length }}
+    {{ activeFacet.sources | length | plural("domain", "domains") }},
+    {{ activeFacet.citations }} {{ activeFacet.citations | plural("citation", "citations") }} recorded in
+    chatbot answers, {{ activeFacet.critical }} of them in an answer that repeated a documented false
+    claim.</p></div>
+
+{% include "partials/source-filters.njk" %}
+
+{%- set tableSources = activeFacet.sources %}
+{%- set tableCaption = facetHeading %}
+{%- set tableFoot = false %}
+{% include "partials/sources-table.njk" %}
+
+<div class="exports" style="margin:18px 0 44px">
+  <a href="{{ '/sources/' | url }}">All watchlisted domains</a><span>&middot;</span>
+  {%- if datasets.has['sources-csv'] %}<a href="{{ '/sources.csv' | url }}">{{ 'action.downloadCsv' | t }}</a>{% endif %}
+</div>
