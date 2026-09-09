@@ -79,6 +79,15 @@ const SPLICES = {
 };
 const SPLICE_GROUPS = { GT: "claims built on a real event", F: "pure fabrications" };
 
+// How to say a splice in a sentence, for the generated lede and the "why the
+// fake works" line (Claim Report Spec, Layer 2).
+const SPLICE_LEDE = {
+  A: "swaps one attribute of a real event \u2014 where the money came from, who did it, how much it was.",
+  B: "starts from a true premise and leaps to a conclusion that does not follow from it.",
+  C: "takes something that was true once, or in one case, and presents it as current and systemic.",
+  D: "is invented outright and placed inside a real story."
+};
+
 // Entity Model §8. Three levels are the target; "flag-dominant" has no
 // definition in any spec in docs/citere-spec, so nothing emits it yet.
 const LAYER_B = { clean: "clean", "flag-present": "listed source cited", "flag-dominant": "listed sources dominant" };
@@ -185,7 +194,7 @@ const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "
 module.exports = {
   VERDICTS, BEHAVIOURS, STATUSES, ACTION_TYPES, NETWORKS, NETWORK_NAMES, NETWORK_CLASS,
   CHATBOTS, PERSONAS, MONTHS,
-  LAYER_A, TIERS, TIER_NOTES, SPLICES, SPLICE_GROUPS, LAYER_B, WATCHLIST_CATEGORIES, CLAIM_STATUSES,
+  LAYER_A, TIERS, TIER_NOTES, SPLICES, SPLICE_GROUPS, SPLICE_LEDE, LAYER_B, WATCHLIST_CATEGORIES, CLAIM_STATUSES,
   COUNTERMEASURE_TYPES, COUNTERMEASURE_STATUSES, COUNTERMEASURE_LADDER,
   COUNTERMEASURE_PRIVATE_FIELDS, REMEASUREMENT, LEGACY_TYPE, LEGACY_SUBTYPE, LEGACY_STATUS
 };

@@ -131,6 +131,17 @@ module.exports = function (eleventyConfig) {
   );
 
   // ---- numbers -----------------------------------------------------------
+  // Strip template indentation from the output. A run of newline + spaces
+  // becomes a single newline, which is still whitespace and still renders as
+  // one space, so nothing moves on the page - it just stops shipping the
+  // indentation. Worth ~10% on a dense table page, which is what keeps the
+  // claim report inside the 60 KB budget in CLAUDE.md 2.
+  eleventyConfig.addTransform("trimIndent", function (content) {
+    if (!(this.page.outputPath || "").endsWith(".html")) return content;
+    if (/<pre[\s>]/i.test(content)) return content;
+    return content.replace(/\n[ \t]+/g, "\n");
+  });
+
   eleventyConfig.addFilter("spliceLabel", (v) => SPLICES[String(v)] || v);
   eleventyConfig.addFilter("rate", (v) => (v === null || v === undefined ? "n/a" : `${Math.round(v * 1000) / 10}%`));
   // A Wilson interval as the reference builds print it: "29-48", whole points.

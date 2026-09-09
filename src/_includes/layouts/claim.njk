@@ -2,24 +2,70 @@
 layout: layouts/base.njk
 wrap: wrap-narrow
 ---
+{%- from "partials/bot-mark.njk" import botMark -%}
+{#- Claim Report, three layers, in the order of Citere_Claim_Report_Spec.md:
+    why is this false, what did the chatbots do with it, show me, where did it
+    come from, what are the numbers, what have we done. -#}
+
+{# ------------------------------------------------------ Layer 1 #}
 <div class="phead">
-  <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:14px;font-size:13px;color:var(--dimmer)">
+  <div class="tiles" style="margin-bottom:12px">
+    <span class="tile">{{ claim.id }}</span>
+    <a class="tile" href="{{ ('/registry/cluster/' + claim.cluster + '/') | url }}">{{ clusters[claim.cluster].name_en | default(claim.cluster) }}</a>
+    {%- if claim.splice %}<a class="tile" href="{{ ('/registry/splice/' + claim.splice + '/') | url }}">Splice {{ claim.splice }} &middot; {{ claim.splice_label }}</a>{% endif %}
+    {%- if claim.status_field %}<span class="tile">{{ claim.status_field }}</span>{% endif %}
+    {%- if claim.status %}<span class="tile">{{ claim.status.label }}</span>{% endif %}
+  </div>
+  {%- if claim.headline %}
+  <h1 style="font-size:29px;line-height:1.24;max-width:34ch">{{ claim.headline }}</h1>
+  <p class="plead" style="max-width:66ch">{% for sentence in claim.lede %}{{ sentence }} {% endfor %}</p>
+  <p class="note" style="margin-top:2px">The claim, as it circulates:
+    &ldquo;{{ claim.titles[lang] | default(claim.title_en) }}&rdquo;</p>
+  {%- else %}
+  <h1 style="font-size:29px;line-height:1.24;max-width:34ch">&ldquo;{{ claim.titles[lang] | default(claim.title_en) }}&rdquo;</h1>
+  <p class="plead" style="max-width:66ch">Catalogued, and not yet put to any assistant. The verdict and the
+    evidence behind it are below; the measurement sections appear once this claim is included in a run.</p>
+  {%- endif %}
+  <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:12px;font-size:13px;color:var(--dimmer)">
     <span class="badge {{ claim.verdict | verdictClass }}" style="font-size:12px;padding:5px 11px">{{ claim.verdict | verdictLabel }}</span>
     <span>Verdict issued <time datetime="{{ claim.verdict_date | isoDate }}">{{ claim.verdict_date | displayDate }}</time></span><span>&middot;</span>
-    <span>Updated <time datetime="{{ claim.updated | isoDate }}">{{ claim.updated | displayDate }}</time></span>
-    <span>&middot;</span><span>ID {{ claim.id }}</span></div>
-  <h1 style="font-size:29px;line-height:1.24;max-width:30ch">&ldquo;{{ claim.titles[lang] | default(claim.title_en) }}&rdquo;</h1>
-  <div class="tiles" style="margin-top:4px">
-    <a class="tile" href="{{ ('/registry/cluster/' + claim.cluster + '/') | url }}">{{ clusters[claim.cluster].name_en | default(claim.cluster) }}</a>
-    <span class="tile">{% for l in claim.languages %}{{ l | upper }}{% if not loop.last %} &middot; {% endif %}{% endfor %}</span>
-    <span class="tile">Grain of truth: {{ "yes" if claim.grain_of_truth else "no" }}</span></div>
+    <span>Updated <time datetime="{{ claim.updated | isoDate }}">{{ claim.updated | displayDate }}</time></span></div>
 </div>
 
+{%- if claim.tested %}
+<div class="panel" style="padding:14px 16px;margin-bottom:22px;font-size:12.5px;color:var(--dim);line-height:1.75">
+  <b>Countries:</b> {{ claim.markets | length }} &mdash; {% for m in claim.markets %}{{ m | upper }}{% if not loop.last %}, {% endif %}{% endfor %}<br>
+  <b>Runs:</b> {% for r in claim.runs %}{{ r.run_id }}{% if not loop.last %} &middot; {% endif %}{% endfor %}<br>
+  <b>Assistants:</b> {% for b in claim.chatbots %}{{ b | botName }}{% if not loop.last %}, {% endif %}{% endfor %}<br>
+  <b>Per run:</b> {{ claim.runs[0].prompts }} prompts &times; {{ claim.runs[0].models | length }} assistants
+    &times; {{ claim.runs[0].repeats }} repeats<br>
+  <b>Versions:</b> catalog {{ claim.runs[0].versions.catalog }} &middot; grid {{ claim.runs[0].versions.grid }}
+    &middot; judge {{ claim.runs[0].versions.judge }} &middot; watchlist {{ claim.runs[0].versions.watchlist }}<br>
+  <b>Judge validation:</b> {{ claim.runs[0].judge_validation.status }}
+</div>
+
+<div class="metrics" style="grid-template-columns:repeat(6,1fr);margin:0 0 26px">
+  <div class="m"><div class="n num">{{ claim.botsTested }}</div><div class="l">assistants tested</div></div>
+  <div class="m"><div class="n num">{{ claim.counts.observations }}</div><div class="l">answers, {{ claim.markets | length }} markets</div></div>
+  <div class="m"><div class="n num">{{ claim.counts.repeated }}</div><div class="l">repeated the claim</div></div>
+  <div class="m"><div class="n num" style="color:var(--false)">{{ claim.counts.critical }}</div><div class="l">critical</div></div>
+  <div class="m"><div class="n num"><a href="#sources-identified" style="color:inherit">{{ claim.sourcesIdentified.traced | length + claim.sourcesIdentified.found | length }}</a></div>
+    <div class="l">disinformation sources identified</div></div>
+  <div class="m"><div class="n num"><a href="#what-we-did" style="color:inherit">{{ claim.counts.actions }}</a></div>
+    <div class="l">countermeasures taken</div></div>
+</div>
+{%- endif %}
+
+{# ------------------------------------------------------ Layer 2 #}
+<h2 id="why-this-is-false" style="margin:0 0 6px">Why this is false</h2>
+<p class="note" style="margin:0 0 14px">What the claim says, what is actually true, and the evidence for
+  each point. Everything below this section is about how assistants handled it.</p>
+
 <div class="prose" style="max-width:none">
-  <h2 id="the-verdict">{{ 'claim.verdict' | t }}</h2>
+  <h3 id="the-verdict" style="font-size:15px;margin:18px 0 6px">{{ 'claim.verdict' | t }}</h3>
   {{ prose.sections['verdict'].html | prefixLinks | defangCopy | safe }}
 
-  <h2 id="what-is-true">{{ 'claim.whatIsTrue' | t }}</h2>
+  <h3 id="what-is-true" style="font-size:15px;margin:22px 0 6px">{{ 'claim.whatIsTrue' | t }}</h3>
   {{ prose.sections['what-is-true'].html | prefixLinks | defangCopy | safe }}
 
   {%- if claim.grain_of_truth and benchmarks.headline %}
@@ -28,13 +74,90 @@ wrap: wrap-narrow
     grain of truth in <b>{{ benchmarks.headline.grain_repeated | rate }}</b> of non-evasive answers.</div>
   {%- endif %}
 
-  <h2 id="where-the-claim-comes-from">{{ 'claim.origin' | t }}</h2>
+  {%- if claim.debunk_argument | length %}
+  </div>
+  <div class="panel"><table>
+    <caption class="visually-hidden">What the claim asserts, what is true instead, and the evidence for each</caption>
+    <thead><tr><th scope="col" style="width:36%">The claim says</th><th scope="col">What is true</th><th scope="col" style="width:22%">Evidence</th></tr></thead>
+    <tbody>
+    {%- for row in claim.debunk_argument %}
+      <tr><th scope="row" style="font-weight:400;color:var(--false)">{{ row.assertion }}</th>
+        <td>{{ row.refutation }}</td>
+        <td style="color:var(--dim);font-size:12.5px">{{ row.source }}</td></tr>
+    {%- endfor %}
+    </tbody></table></div>
+  <div class="prose" style="max-width:none">
+  {%- endif %}
+
+  <h3 id="why-the-fake-works" style="font-size:15px;margin:22px 0 6px">Why it works</h3>
+  <p>{% if claim.splice == "D" %}Nothing in the claim happened. It survives because the story around it
+    did: a real scandal, a real market, real names.{% else %}Most of it is true. The claim
+    {{ claim.splice_label }}, and that single change turns a story about something that happened into a
+    story about something that did not.{% endif %}
+    Assistants fall for it because they find the real event and this version of it in the same search,
+    and cannot tell which sentence is the forged one.</p>
+
+  <h3 id="where-the-claim-comes-from" style="font-size:15px;margin:22px 0 6px">{{ 'claim.origin' | t }}</h3>
   {{ prose.sections['where-the-claim-comes-from'].html | prefixLinks | defangCopy | safe }}
   <p>First seen <time datetime="{{ claim.origin.first_seen | isoDate }}">{{ claim.origin.first_seen | displayDate }}</time>
     on the {{ claim.origin.network | networkName }} network{% if claim.origin.attribution | length %}, attributed by
     {% for a in claim.origin.attribution %}{% if a.url %}<a href="{{ a.url }}">{{ a.org }}</a>{% else %}{{ a.org }}{% endif %}
     (<time datetime="{{ a.date | isoDate }}">{{ a.date | displayDate }}</time>){% if not loop.last %} and {% endif %}{% endfor %}{% endif %}.</p>
 </div>
+
+{%- if claim.chain | length %}
+<h3 class="ssub">How it moved</h3>
+<div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:13px;margin-bottom:10px">
+  {%- for node in claim.chain %}
+  <span class="tile" style="{% if node.injection %}border-color:var(--false);color:var(--false);font-weight:600{% endif %}">{{ node.domain | defang }}<br>
+    <small style="font-weight:400;color:var(--dimmer)"><time datetime="{{ node.date | isoDate }}">{{ node.date | shortDate }}</time></small></span>
+  <span style="color:var(--dimmer)">&rarr;</span>
+  {%- endfor %}
+  <span class="tile">chatbot answers<br><small style="color:var(--dimmer)">{{ claim.runs[0].collected_at | monthLabel }}</small></span>
+</div>
+<p class="note">A domain shown in red both carried this claim and was later cited by an assistant
+  answering about it &mdash; the source-to-answer line.</p>
+{%- endif %}
+
+{%- if claim.tested %}
+<h2 id="what-the-chatbots-did" style="margin:36px 0 6px">What the chatbots did with it</h2>
+<p class="note" style="margin:0 0 14px">Each assistant's behaviour on this claim in plain terms, worst
+  first. Counts only in this section: the rates, with their intervals, are further down.</p>
+{%- for bot in claim.botBlocks %}
+<div class="panel" style="padding:16px 18px;margin-bottom:12px;border-left:4px solid var({{ '--false' if bot.tone == 'bad' else '--ok' }})">
+  <div style="display:flex;align-items:center;gap:9px;margin-bottom:6px">
+    {{ botMark(logos, bot.key, "sm", true) }}
+    <b>{{ bot.name }} &mdash; {{ bot.repeat }} {{ bot.repeat | plural("repeat", "repeats") }} out of {{ bot.n }} answers{% if bot.critical %}, {{ bot.critical }} with a listed source cited{% endif %}</b>
+  </div>
+  <p style="margin:0;font-size:13.5px;color:var(--dim)">
+    {%- if not bot.repeat %}It did not state the claim as fact in any market, under any of the four
+      question types.
+    {%- elif bot.dominantPersona == "P2" %}Most of its repeats came on news-style questions &mdash; the
+      phrasing that sends an assistant to search, where this claim sits beside legitimate coverage of the
+      same story.
+    {%- elif bot.dominantPersona == "P3" %}Most of its repeats came where the question already assumed
+      the claim. It accepted the premise rather than correcting it.
+    {%- elif bot.dominantPersona == "P4" %}Most of its repeats came when asked to write the claim up,
+      which it did without a disclaimer.
+    {%- else %}Its repeats were spread across question types, including neutral ones.{% endif %}
+    {%- if bot.critical %} In {{ bot.critical }} of them it also cited
+      {% for d in bot.listedWhileRepeating %}{{ d.domain | defang }}{% if not loop.last %}, {% endif %}{% endfor %}.
+    {%- elif bot.repeat %} It cited no listed source while doing so: this claim is coming out of the
+      model, not out of a search result.{% endif %}
+    {%- if bot.marketConcentrated and bot.worstMarket %} {{ bot.worstMarket.market | upper }} carries most
+      of them.{% endif %}
+  </p>
+</div>
+{%- endfor %}
+
+<h3 class="ssub">What this shows</h3>
+<p style="max-width:74ch">Listed domains were cited in {{ claim.pooled.contaminated }} of
+  {{ claim.counts.observations }} answers. {% if claim.sourcesIdentified.injection %}{{ claim.sourcesIdentified.injection }}
+  of the domains recorded as carrying this claim were cited by an assistant answering about it &mdash; a
+  direct line from where the claim was published to what a user was told.{% else %}None of the domains
+  recorded as carrying this claim was cited by an assistant answering about it: what repeats here comes
+  out of the models, not out of a search result.{% endif %}</p>
+{%- endif %}
 
 {%- if claim.confirmations | length %}
 <h2 id="who-else-has-checked-this" style="margin:36px 0 12px">{{ 'claim.whoElse' | t }}</h2>

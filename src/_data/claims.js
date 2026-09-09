@@ -10,6 +10,8 @@ const fs = require("node:fs");
 const path = require("node:path");
 const { ROOT } = require("../_lib/markdown.cjs");
 const metrics = require("./metrics.js");
+const { normaliseDomain } = require("../_lib/metrics.cjs");
+const { CHATBOTS, SPLICES, SPLICE_LEDE } = require("../_lib/labels.cjs");
 const runs = require("./runs.js");
 const countermeasures = require("./countermeasures.js");
 
@@ -83,6 +85,102 @@ const claims = files
       });
     }
 
+    // ---------------------------------------------------------- Layer 2
+    // One block per bot, worst first: critical incidents, then repeats. Counts
+    // only in this layer, never rates (Claim Report Spec, Layer 2).
+    const botBlocks = bots.map((key) => {
+      const own = grid.filter((c) => c.chatbot === key);
+      const pooled = metrics.pool(own);
+      const byPersona = personas
+        .map((persona) => ({ persona, repeat: own.filter((c) => c.persona === persona)
+          .reduce((n, c) => n + c.counts.repeat, 0) }))
+        .sort((a, b) => b.repeat - a.repeat);
+      const byMarket = [...new Set(own.map((c) => c.market))]
+        .map((market) => ({ market, repeat: own.filter((c) => c.market === market)
+          .reduce((n, c) => n + c.counts.repeat, 0) }))
+        .sort((a, b) => b.repeat - a.repeat);
+      const listed = pooled.listedDomains.filter((d) => d.repeat > 0);
+      return {
+        key,
+        name: (CHATBOTS[key] || {}).name || key,
+        n: pooled.n,
+        repeat: pooled.counts.repeat,
+        critical: pooled.tiers.critical,
+        high: pooled.tiers.high,
+        dodge: pooled.counts.dodge,
+        dominantPersona: byPersona[0] && byPersona[0].repeat ? byPersona[0].persona : null,
+        worstMarket: byMarket[0] && byMarket[0].repeat ? byMarket[0] : null,
+        // One market carrying most of the repeats is worth naming.
+        marketConcentrated: byMarket[0] && pooled.counts.repeat
+          ? byMarket[0].repeat / pooled.counts.repeat > 0.6 : false,
+        listedWhileRepeating: listed,
+        tone: pooled.counts.repeat ? "bad" : "ok"
+      };
+    }).sort((a, b) => b.critical - a.critical || b.repeat - a.repeat || a.name.localeCompare(b.name));
+
+    // The domains this claim reached, against the ones its card records as
+    // having carried it (Sources Registry §6: the intersection is the
+    // source-to-answer line).
+    const distributed = (claim.surface_objects || [])
+      .filter((o) => o.type === "outlet" || o.type === "clone")
+      .map((o) => ({ ...o, domain: normaliseDomain(o.object) }));
+    const distributedSet = new Set(distributed.map((d) => d.domain));
+    const reached = all.listedDomains;
+    const reachedSet = new Set(reached.map((d) => d.domain));
+    const sourcesIdentified = {
+      traced: distributed.map((d) => ({
+        ...d,
+        ...(reached.find((r) => r.domain === d.domain) || { cited: 0, repeat: 0, critical: 0 }),
+        injection: reachedSet.has(d.domain)
+      })),
+      found: reached.filter((d) => !distributedSet.has(d.domain)),
+      injection: distributed.filter((d) => reachedSet.has(d.domain)).length
+    };
+
+    // The dated chain the claim travelled, ending where a chatbot answer is.
+    const chain = [...distributed]
+      .filter((d) => d.date)
+      .sort((a, b) => String(a.date).localeCompare(String(b.date)))
+      .map((d) => ({ ...d, injection: reachedSet.has(d.domain) }));
+
+    // ---------------------------------------------------------- Layer 1
+    // The headline is the finding, not the topic (Claim Report Spec, Layer 1).
+    // Analyst-written where the prose supplies one; otherwise built from what
+    // the run found, so it always names what happened.
+    const listOf = (items, join = "and") => items.length < 2
+      ? (items[0] || "")
+      : `${items.slice(0, -1).join(", ")} ${join} ${items[items.length - 1]}`;
+    const withCritical = botBlocks.filter((b) => b.critical);
+    const fromMemory = botBlocks.filter((b) => b.repeat && !b.critical);
+    const clean = botBlocks.filter((b) => !b.repeat);
+    const networks = [...new Set(sourcesIdentified.traced
+      .filter((d) => d.injection).map((d) => d.domain))];
+
+    let headline = null;
+    if (grid.length) {
+      headline = withCritical.length
+        ? `${listOf(withCritical.map((b) => b.name))} stated this as fact and cited ` +
+          `${networks.length ? "a source that had carried it" : "a listed source"} in the same answer`
+        : fromMemory.length
+          ? `${listOf(fromMemory.map((b) => b.name))} stated this as fact, with no source behind it`
+          : "No assistant stated this as fact in any market we tested";
+    }
+
+    // Four sentences, fixed order. The first two describe the claim, the last
+    // two what the assistants did with it.
+    const lede = grid.length ? [
+      `The claim ${SPLICE_LEDE[claim.splice] || "distorts a real event."}`,
+      `We put it to ${bots.length} assistants in ${[...new Set(grid.map((c) => c.market))].length} markets, ` +
+        `four ways each, three times over: ${all.n} answers.`,
+      withCritical.length
+        ? `${listOf(withCritical.map((b) => b.name))} repeated it and cited a listed source in the same answer.`
+        : "No assistant both repeated it and cited a listed source.",
+      fromMemory.length
+        ? `${listOf(fromMemory.map((b) => b.name))} repeated it with no source attached` +
+          (clean.length ? `; ${listOf(clean.map((b) => b.name))} did not repeat it at all.` : ".")
+        : clean.length ? `${listOf(clean.map((b) => b.name))} did not repeat it at all.` : ""
+    ].filter(Boolean) : [];
+
     return {
       ...claim,
       raw: claim,
@@ -94,6 +192,12 @@ const claims = files
       // field keeps its name under status_field so both survive.
       status_field: claim.status || null,
       cells: grid,
+      botBlocks,
+      sourcesIdentified,
+      chain,
+      splice_label: SPLICES[claim.splice] || null,
+      headline,
+      lede,
       tables,
       cleansing,
       liveCells: cells.filter((c) => c.is_live),
