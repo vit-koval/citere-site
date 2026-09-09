@@ -15,126 +15,61 @@ permalink: "{{ '/benchmarks/' | loc(lang) }}"
 ---
 {%- set doc = copy.en.benchmarks -%}
 <div class="phead"><h1>{{ doc.data.h1 }}</h1>
-  <p class="plead">{{ doc.data.lead | fill(figures) | mdInline | safe }}</p></div>
+  <p class="plead">{{ doc.data.lead | mdInline | safe }}</p></div>
 
-<section style="padding-top:8px">
-  <div class="shead"><h2>{{ 'section.leaderboards' | t }}</h2>
-    {%- if navigation.has.data %}<a href="{{ '/data/' | url }}">Download all figures &rarr;</a>{% endif %}</div>
-  <div class="grid3">
-  {%- for card in leaderboardCards %}
-    {%- set lbRows = benchmarks.leaderboards[card.key] %}
-    {%- if lbRows | length %}
-    {%- set lbTitle = card.title %}{% set lbSub = card.sub %}
-    {%- set lbShowIdx = card.idx %}{% set lbShowBar = card.bar %}{% set lbFlag = card.flag %}
-    {%- set lbMore = card.more %}{% set lbMoreLabel = card.moreLabel %}
-    {% include "partials/leaderboard.njk" %}
-    {%- endif %}
+<div class="callout"><b>This page is a shell.</b> A benchmark is one cluster over one month, and the full
+  issue is not specified yet. What is published below is the figure set that is settled: the coverage of
+  each issue, the grain-of-truth split, and the A&times;B matrix. Everything per-assistant and per-market
+  lives on the pages that own it &mdash; each assistant, each market, and each claim &mdash; and is
+  reached from the issue below.</div>
+
+<h2 id="issues" style="margin:30px 0 6px">Issues</h2>
+<p class="note" style="margin:0 0 14px">One issue per cluster per month. An issue holds every run of that
+  cluster in that month; the runs are compared side by side inside it and never merged.</p>
+<div class="panel"><table>
+  <caption class="visually-hidden">Benchmark issues, newest first</caption>
+  <thead><tr><th scope="col">Issue</th><th scope="col">Cluster</th><th scope="col" class="num">Markets</th>
+    <th scope="col" class="num">Claims</th><th scope="col" class="num">Answers</th></tr></thead>
+  <tbody>
+  {%- for issue in benchmarks.issues %}
+    <tr><th scope="row" style="font-weight:400"><a href="{{ issue.url | url }}">{{ issue.monthLabel }}</a></th>
+      <td style="color:var(--dim)">{{ issue.clusterName }}</td>
+      <td class="num">{{ issue.markets | length }}</td>
+      <td class="num">{{ issue.claims | length }}</td>
+      <td class="num">{{ issue.responses }}</td></tr>
   {%- endfor %}
-  </div>
-</section>
+  </tbody></table></div>
 
-{%- if benchmarks.heatmapRows | length %}
-<section>
-  <div class="shead"><h2>Repeat-rate &middot; chatbot &times; question type</h2></div>
-  <p class="lead">The persona gradient per assistant. Cells with fewer than 20 observations are
-    reported as low-confidence rather than hidden.</p>
-  {% include "partials/heatmap.njk" %}
-</section>
-{%- endif %}
+<h2 id="grain" style="margin:30px 0 6px">The grain-of-truth split</h2>
+<p class="note" style="margin:0 0 14px">Claims built on a real event against claims invented outright, by
+  question type, in {{ benchmarks.marketName }} in {{ benchmarks.label }}. The split runs on how the lie is
+  spliced onto the truth, not on whether a claim has a grain-of-truth field: after the field rules were
+  tightened that field is filled even for pure fabrications.</p>
+<div class="panel"><table>
+  <caption class="visually-hidden">Repeat rate on claims built on a real event against pure fabrications, by question type</caption>
+  <thead><tr><th scope="col">{{ 'col.persona' | t }}</th><th scope="col" class="num">Real event underneath</th>
+    <th scope="col" class="num">Invented outright</th><th scope="col">Difference</th></tr></thead>
+  <tbody>
+  {%- for row in benchmarks.grain_of_truth %}
+    <tr data-persona="{{ row.persona }}">
+      <th scope="row" class="mono" style="font-weight:400;font-size:12px;color:var(--dimmer)">{{ row.persona }} &middot; {{ row.persona | personaLabel }}</th>
+      <td class="num">{{ row.with_grain | rate }}</td>
+      <td class="num">{{ row.pure | rate }}</td>
+      <td style="color:var(--dim);font-size:12.5px">{{ "significant" if row.significant else "not significant" }}</td></tr>
+  {%- endfor %}
+  </tbody></table></div>
 
-<section>
-  <div class="shead"><h2>{{ 'section.signature' | t }}</h2>
-    <a href="{{ '/methodology/' | url }}">How each is computed &rarr;</a></div>
-  <div class="vizgrid2">
+<h2 id="abx" style="margin:30px 0 6px">A&times;B matrix</h2>
+<p class="note" style="margin:0 0 14px">Every answer in {{ benchmarks.marketName }}, {{ benchmarks.label }},
+  placed by what the assistant did and whether it cited a listed source.</p>
+{% include "partials/abx-matrix.njk" %}
 
-    {%- if benchmarks.grain_of_truth | length %}
-    <div class="vizcard">
-      <div class="vh"><h3>Chatbots don&rsquo;t fall for lies. They fall for half-truths.</h3>
-        <p>Repeat-rate on claims spliced onto a real fact, versus pure fabrications — same assistants,
-          same run, same question types.</p></div>
-      <div class="vb">
-        {%- set dumbbellRows = grainRows %}{% set dumbbellMax = grainMax %}{% set dumbbellLegend = true %}
-        {% include "partials/dumbbell.njk" %}
-        <p class="vnote">Assistants handle clean fakes well and fail on the blends: the real case
-          underneath gives the model something true to over-extend. <b>This is the single most important
-          finding in our data.</b></p>
-      </div>
-      <a class="vf" href="{{ '/registry/' | url }}">See the claims involved &rarr;</a></div>
-    {%- endif %}
+<h2 id="funnel" style="margin:30px 0 6px">From answers to incidents</h2>
+<p class="note" style="margin:0 0 14px">Across every run held here. The A&times;B intersection is the filter:
+  it is what turns raw source flags into the few cases worth a person's time.</p>
+{% include "partials/funnel.njk" %}
 
-    {%- if benchmarks.abx %}
-    <div class="vizcard">
-      <div class="vh"><h3>A&times;B matrix</h3>
-        <p>What the answer said, crossed with what it cited. The intersection turns raw flags into a
-          short list a human can act on.</p></div>
-      <div class="vb">
-        {% include "partials/abx-matrix.njk" %}
-        <p class="vnote"><b>HIGH</b> means the assistant produced it from memory — a training-data signal.
-          <b>CRITICAL</b> means it repeated the claim <i>and</i> cited a listed source — a
-          retrieval-poisoning signal. Two different attacks, two different fixes.</p>
-      </div>
-      {%- if navigation.has.countermeasures %}<a class="vf" href="{{ '/countermeasures/' | url }}">See the countermeasures queue &rarr;</a>{% endif %}</div>
-    {%- endif %}
-
-    {%- if benchmarks.funnel | length %}
-    <div class="vizcard">
-      <div class="vh"><h3>From {{ (benchmarks.funnel | first).n }} answers to {{ (benchmarks.funnel | last).n }} critical signals</h3>
-        <p>How raw collection narrows into something worth a human&rsquo;s attention — and a
-          platform&rsquo;s.</p></div>
-      <div class="vb">
-        {% include "partials/funnel.njk" %}
-        <p class="vnote">Layer B alone flagged {{ funnelFlagged }} responses. Crossing content with source
-          collapsed that to {{ (benchmarks.funnel | last).n }} truly critical cases. That is the product:
-          focusing attention instead of drowning it.</p>
-      </div>
-      <a class="vf" href="{{ '/methodology/' | url }}">How tiers are assigned &rarr;</a></div>
-    {%- endif %}
-
-    {%- if benchmarks.verdict_split | length %}
-    <div class="vizcard">
-      <div class="vh"><h3>What assistants did with the claim</h3>
-        <p>Layer A verdict distribution per question type, across all {{ benchmarks.responses }} responses.</p></div>
-      <div class="vb">
-        {% include "partials/stacked-verdicts.njk" %}
-        <p class="vnote">Refusal stays high everywhere. What changes with hostility is the split between
-          repeating and dodging.</p>
-      </div>
-      <a class="vf" href="{{ '/methodology/' | url }}">Verdict definitions &rarr;</a></div>
-    {%- endif %}
-
-    {%- if benchmarks.contamination_by_persona | length %}
-    <div class="vizcard">
-      <div class="vh"><h3>Where contamination enters</h3>
-        <p>Share of answers citing a watchlisted domain, by question type.</p></div>
-      <div class="vb">
-        {%- set dumbbellRows = contaminationRows %}{% set dumbbellMax = contaminationMax %}{% set dumbbellLegend = false %}
-        {% include "partials/dumbbell.njk" %}
-        <p class="vnote"><b>Contamination peaks on the innocent question, not the hostile one.</b> An
-          ordinary news question sends the assistant to live web search, where watchlisted mirrors are
-          waiting. A malicious prompt rarely triggers a search at all. This is why both layers are needed —
-          they catch different attacks.</p>
-      </div>
-      {%- if navigation.has.sources %}<a class="vf" href="{{ '/sources/' | url }}">Which domains &rarr;</a>{% endif %}</div>
-    {%- endif %}
-
-    {%- if benchmarks.trend | length %}
-    <div class="vizcard">
-      <div class="vh"><h3>Repeat-rate over time</h3>
-        <p>Median across all eight assistants, P2 topical news, run by run.</p></div>
-      <div class="vb">
-        {% include "partials/trend-bars.njk" %}
-        <p class="vnote">Assistants update continuously and independently of our reports — we record model
-          versions at every measurement and publish the change without claiming causation we cannot
-          demonstrate.</p>
-      </div>
-      {%- if navigation.has.reports %}<a class="vf" href="{{ '/monitor/' | url }}">Read the monthly reports &rarr;</a>{% endif %}</div>
-    {%- endif %}
-
-  </div>
-</section>
-
-<div class="exports" style="margin:0 0 44px">
-  {%- if datasets.has['benchmarks-json'] %}<a href="{{ '/benchmarks.json' | url }}">Download every figure (JSON)</a><span>&middot;</span>{% endif %}
-  <a href="{{ '/methodology/' | url }}">How we compute these</a><span>&middot;</span>
-  <a href="{{ '/data/#cite' | url }}">Cite the benchmarks</a>
-</div>
+<div class="exports" style="margin:26px 0 44px">
+  {%- if datasets.has['registry-csv'] %}<a href="{{ '/registry.csv' | url }}">Every metric cell as CSV</a><span>&middot;</span>{% endif %}
+  <a href="{{ '/countries/full/' | url }}">The full market breakdown</a><span>&middot;</span>
+  <a href="{{ '/data/' | url }}">All exports</a></div>

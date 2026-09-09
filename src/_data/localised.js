@@ -6,6 +6,7 @@ const facets = require("./facets.js");
 const sources = require("./sources.js");
 const sourceFacets = require("./sourceFacets.js");
 const countermeasureFacets = require("./countermeasureFacets.js");
+const benchmarks = require("./benchmarks.js");
 const profiles = require("./profiles.js");
 const reports = require("./reports.js");
 
@@ -21,6 +22,7 @@ module.exports = {
   sources: expand(sources, (s) => s.url),
   sourceFacets: expand(sourceFacets, (f) => f.url),
   countermeasureFacets: expand(countermeasureFacets, (f) => f.url),
+  benchmarkIssues: expand(benchmarks.issues, (i) => i.url),
   chatbots: expand(profiles.chatbots, (p) => p.url),
   countries: expand(profiles.countries, (p) => p.url),
   reports: expand(reports, (r) => r.url)

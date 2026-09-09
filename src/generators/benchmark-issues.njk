@@ -1,0 +1,91 @@
+---
+pagination:
+  data: localised.benchmarkIssues
+  size: 1
+  alias: entry
+layout: layouts/base.njk
+permalink: "{{ entry.url }}"
+---
+<div class="phead">
+  <div class="tiles" style="margin-bottom:12px"><span class="tile">{{ issue.clusterName }}</span>
+    <span class="tile">{{ issue.monthLabel }}</span></div>
+  <h1>{{ issue.clusterName }} &mdash; {{ issue.monthLabel }}</h1>
+  <p class="plead" style="max-width:72ch">One benchmark issue is one cluster over one month.
+    {{ issue.claims | length }} claims put to {{ issue.runs[0].models | length }} assistants in
+    {{ issue.markets | length }} {{ issue.markets | length | plural("market", "markets") }},
+    {{ issue.responses }} valid answers. Markets are set side by side and never merged.</p>
+</div>
+
+<div class="callout">The full benchmark issue is not specified yet. What is published here is the coverage
+  of this issue and the two figure sets that are settled &mdash; the escalation matrix and the
+  grain-of-truth split &mdash; with links to the pages that own the rest.</div>
+
+<h2 id="coverage" style="margin:30px 0 6px">Coverage</h2>
+<div class="panel"><table>
+  <caption class="visually-hidden">Runs in this issue, with their scope and frozen versions</caption>
+  <thead><tr><th scope="col">Run</th><th scope="col">Market</th><th scope="col">Collected</th>
+    <th scope="col" class="num">Claims</th><th scope="col" class="num">Answers</th>
+    <th scope="col">Grid</th><th scope="col">Judge validation</th></tr></thead>
+  <tbody>
+  {%- for run in issue.runs %}
+    <tr><th scope="row" style="font-weight:400">{{ run.run_id }}</th>
+      <td><a href="{{ ('/countries/' + run.country + '/') | url }}">{{ run.country | countryName }}</a>
+        <span style="color:var(--dimmer)">{{ run.language | upper }}</span></td>
+      <td class="num" style="color:var(--dimmer)"><time datetime="{{ run.collected_at | isoDate }}">{{ run.collected_at | shortDate }}</time></td>
+      <td class="num">{{ run.claims_count }}</td>
+      <td class="num">{{ run.valid }}</td>
+      <td style="color:var(--dim)">{{ run.versions.grid }}</td>
+      <td style="color:var(--dim);font-size:12.5px">{{ run.judge_validation.status }}</td></tr>
+  {%- endfor %}
+  </tbody></table></div>
+
+<h2 id="matrix" style="margin:30px 0 6px">Escalation matrix, by market</h2>
+<p class="note" style="margin:0 0 14px">Counts, per market. What the assistant did with the claim against
+  whether it cited a listed source.</p>
+<div class="panel"><table>
+  <caption class="visually-hidden">Escalation tiers per market in this issue</caption>
+  <thead><tr><th scope="col">Market</th><th scope="col" class="num">Answers</th>
+    <th scope="col" class="num">CRITICAL</th><th scope="col" class="num">HIGH</th>
+    <th scope="col" class="num">REVIEW</th><th scope="col" class="num">LOW</th></tr></thead>
+  <tbody>
+  {%- for run in issue.runs %}
+  {%- set cell = metrics.poolOf({ "run": run.key, "cluster": issue.cluster, "is_live": false }) %}
+    <tr><th scope="row" style="font-weight:400">{{ run.country | countryName }}</th>
+      <td class="num">{{ cell.n }}</td>
+      <td class="num"><b style="color:var(--false)">{{ cell.tiers.critical }}</b></td>
+      <td class="num">{{ cell.tiers.high }}</td>
+      <td class="num">{{ cell.tiers.review }}</td>
+      <td class="num">{{ cell.tiers.low }}</td></tr>
+  {%- endfor %}
+  </tbody></table></div>
+
+<h2 id="grain" style="margin:30px 0 6px">Grain-of-truth split, by market</h2>
+<p class="note" style="margin:0 0 14px">Claims built on a real event against claims invented outright, at
+  the news-style question. The split runs on how the lie is spliced onto the truth.</p>
+<div class="panel"><table>
+  <caption class="visually-hidden">Repeat rate on claims with a real event underneath against pure fabrications, per market</caption>
+  <thead><tr><th scope="col">Market</th><th scope="col" class="num">Real event underneath</th>
+    <th scope="col" class="num">Invented outright</th><th scope="col">Difference</th></tr></thead>
+  <tbody>
+  {%- for run in issue.runs %}
+  {%- set d = metrics.grainDifferential({ "run": run.key, "cluster": issue.cluster, "persona": "P2", "is_live": false }) %}
+  {%- if d %}
+    <tr data-persona="P2"><th scope="row" style="font-weight:400">{{ run.country | countryName }}</th>
+      <td class="num"><span class="cellstat{% if d.grain.low_n %} lown{% endif %}">{{ d.grain.rate | rate }}<small>{{ d.grain.ci | ciLabel }} &middot; n={{ d.grain.n }}</small></span></td>
+      <td class="num"><span class="cellstat{% if d.fabrication.low_n %} lown{% endif %}">{{ d.fabrication.rate | rate }}<small>{{ d.fabrication.ci | ciLabel }} &middot; n={{ d.fabrication.n }}</small></span></td>
+      <td style="color:var(--dim);font-size:12.5px">{{ "significant" if d.significant else "not significant" }}</td></tr>
+  {%- endif %}
+  {%- endfor %}
+  </tbody></table></div>
+
+<h2 id="claims" style="margin:30px 0 6px">Claims in this issue</h2>
+{%- set tableClaims = [] %}
+{%- for claim in claims %}{% if claim.id in issue.claims %}{% set tableClaims = (tableClaims.push(claim), tableClaims) %}{% endif %}{% endfor %}
+{%- set tableCaption = "Claims tested in this issue" %}
+{%- set tableFoot = false %}
+{% include "partials/registry-table.njk" %}
+
+<div class="exports" style="margin:26px 0 44px">
+  <a href="{{ '/benchmarks/' | url }}">All issues</a><span>&middot;</span>
+  <a href="{{ '/countries/full/' | url }}">The full market breakdown</a>
+</div>

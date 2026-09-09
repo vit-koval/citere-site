@@ -14,6 +14,7 @@ module.exports = {
       for (const s of data.sources) entries.push({ url: s.url, lastmod: d });
       for (const f of data.sourceFacets) entries.push({ url: f.url, lastmod: d });
       for (const f of data.countermeasureFacets) entries.push({ url: f.url, lastmod: d });
+      for (const i of data.benchmarks.issues) entries.push({ url: i.url, lastmod: d });
       return entries;
     }
   }

@@ -39,7 +39,6 @@ const lastUpdate = [site.last_update, ...claims.map((c) => c.updated)].filter(Bo
 
 const { CHATBOTS } = require("../_lib/labels.cjs");
 const sources = readJson("data/sources.json").domains || [];
-const benchmarks = readJson("data/benchmarks.json");
 
 module.exports = {
   ...site,

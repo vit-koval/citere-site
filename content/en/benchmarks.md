@@ -1,8 +1,7 @@
 ---
 h1: Benchmarks
 lead: >
-  Every measurement we publish, in one place. All figures come from recorded chatbot answers and link
-  back to the run that produced them. Personas are reported separately and never averaged into a
-  single score — a hostile prompt and an innocent news question measure different things.
-  **{{ label }}**, {{ responses }} responses, {{ chatbots }} assistants, {{ markets }} markets.
+  A benchmark is one narrative cluster over one month. Every figure comes from recorded chatbot answers
+  and names the market and the question type it belongs to — a hostile prompt and an innocent news
+  question measure different things, and averaging them describes nobody.
 ---
