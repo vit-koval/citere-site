@@ -38,7 +38,7 @@ Every catalogue entry records whether the claim is spliced onto a real fact, and
 
 ## How we measure change
 
-Four weeks after an escalation we run the identical prompts against the same assistants and publish the before-and-after. Model versions are recorded at both measurements. We report the change; we do not claim causation we cannot demonstrate.
+Four weeks after a disclosure we run the identical prompts against the same assistants and publish the before-and-after. Model versions are recorded at both measurements. We report the change; we do not claim causation we cannot demonstrate.
 
 ## What we do not publish
 

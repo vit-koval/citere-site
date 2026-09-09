@@ -10,7 +10,7 @@ module.exports = {
     }),
     quoteFigures: (data) => data.benchmarks.headline || null,
     // The four metric cards. A card appears only once its counter has a
-    // source: domains and reports arrive with sources and escalations.
+    // source: domains and reports arrive with sources and countermeasures.
     metricCards: (data) => {
       const c = data.site.counters;
       const b = data.benchmarks;
@@ -27,9 +27,9 @@ module.exports = {
         cards.push({ value: c.domains, label: "Kremlin-linked domains seen",
           sub: `watchlist ${data.site.watchlist_version}` });
       }
-      if (c.escalations_sent) {
-        cards.push({ value: c.escalations_sent, label: "reports sent to platforms",
-          sub: `${c.escalations_answered} answered · ${c.escalations_actioned} actioned` });
+      if (c.countermeasures_sent) {
+        cards.push({ value: c.countermeasures_sent, label: "reports sent to platforms",
+          sub: `${c.countermeasures_answered} answered · ${c.countermeasures_actioned} actioned` });
       }
       return cards;
     },
@@ -63,21 +63,9 @@ module.exports = {
       }
       return cards;
     },
-    // The cluster tiles and country cards on the homepage, from the claims
-    // that actually exist. Countries link out only once /countries/ is built.
-    clusterTiles: (data) => {
-      const counts = new Map();
-      for (const claim of data.claims) {
-        counts.set(claim.cluster, (counts.get(claim.cluster) || 0) + 1);
-      }
-      return [...counts.entries()]
-        .sort((a, b) => b[1] - a[1])
-        .map(([key, count]) => ({
-          name: (data.clusters[key] && data.clusters[key].name_en) || key,
-          count,
-          url: `/registry/cluster/${key}/`
-        }));
-    },
+    // Cluster is a field on a claim, used for filtering and for grouping in
+    // Benchmarks. It is not navigation, so the homepage no longer offers it as
+    // a section (CLAUDE_CODE_BRIEF §1 "Remove entirely").
     // The four market cards, straight from the country profiles.
     countryCards: (data) =>
       (data.navigation.has.countries ? data.profiles.countries : []).slice(0, 4).map((c) => ({
@@ -92,7 +80,7 @@ module.exports = {
     trustCards: (data) => [
       { key: "trust-method", href: "/methodology/", label: "Methodology", on: data.navigation.has.methodology },
       { key: "trust-data", href: "/data/", label: "Data", on: data.navigation.has.data },
-      { key: "trust-actions", href: "/escalations/", label: "Escalations", on: data.navigation.has.escalations },
+      { key: "trust-actions", href: "/countermeasures/", label: "Countermeasures", on: data.navigation.has.countermeasures },
       { key: "trust-corrections", href: "/about/#corrections", label: "Corrections", on: data.navigation.has.about }
     ].map((c) => (c.on ? c : { ...c, href: null }))
   }

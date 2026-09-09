@@ -74,7 +74,7 @@ for (const [file, schemaName] of [
   ["sources.json", "sources"],
   ["platforms.json", "platforms"],
   ["countries.json", "countries"],
-  ["escalations.json", "escalations"],
+  ["countermeasures.json", "countermeasures"],
   ["reports.json", "reports"]
 ]) {
   const src = join(exportDir, file);
@@ -96,6 +96,17 @@ if (existsSync(inObs)) {
     added.push(`observations/${file}`);
     if (!dryRun) copyFileSync(join(inObs, file), join(ROOT, "data/observations", basename(file)));
   }
+}
+
+// The metrics store is derived from the claims that just landed, so it is
+// rebuilt here rather than left for someone to remember (build-metrics.mjs).
+if (!dryRun) {
+  const { files: metricsFiles } = await import("./build-metrics.mjs");
+  const out = metricsFiles();
+  for (const name of ["data/metrics.json", "data/runs.json"]) {
+    writeFileSync(join(ROOT, name), out[name]);
+  }
+  updated.push(`metrics.json (${out.header.totals.cells} cells)`, "runs.json");
 }
 
 console.log(`import: ${dryRun ? "dry run of " : ""}${exportDir}\n`);

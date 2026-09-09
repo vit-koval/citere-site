@@ -1,9 +1,9 @@
 ---
 layout: layouts/base.njk
-pageKey: escalations
-navKey: escalations
-crumbKey: crumb.escalations
-title: "Escalation log — Citere"
+pageKey: countermeasures
+navKey: countermeasures
+crumbKey: crumb.countermeasures
+title: "Countermeasures — Citere"
 description: "Every report Citere sent to a platform or registrar about disinformation in AI chatbot answers: the fact, the date and the status, never the correspondence."
 schemas:
   - dataset
@@ -11,9 +11,9 @@ pagination:
   data: build.languages
   alias: lang
   size: 1
-permalink: "{{ '/escalations/' | loc(lang) }}"
+permalink: "{{ '/countermeasures/' | loc(lang) }}"
 ---
-{%- set doc = copy.en.escalations -%}
+{%- set doc = copy.en.countermeasures -%}
 <div class="phead"><h1>{{ doc.data.h1 }}</h1>
   <p class="plead">{{ doc.data.lead | fill(figures) | mdInline | safe }}</p></div>
 
@@ -22,7 +22,7 @@ permalink: "{{ '/escalations/' | loc(lang) }}"
   We never publish prompts designed to bypass model safeguards.</div>
 
 <div class="filters" style="margin-top:22px">
-  <span class="f active">All actions <span style="color:var(--dimmer)">{{ escalations.actions | length }}</span></span>
+  <span class="f active">All actions <span style="color:var(--dimmer)">{{ countermeasures.actions | length }}</span></span>
   {%- for t in actionTypes %}<span class="f">{{ t.type | actionTypeLabel }} <span style="color:var(--dimmer)">{{ t.count }}</span></span>{% endfor %}
 </div>
 
@@ -31,7 +31,7 @@ permalink: "{{ '/escalations/' | loc(lang) }}"
   <thead><tr><th scope="col">{{ 'col.date' | t }}</th><th scope="col">{{ 'col.type' | t }}</th><th scope="col">{{ 'col.target' | t }}</th>
     <th scope="col">{{ 'col.claim' | t }}</th><th scope="col">{{ 'col.status' | t }}</th><th scope="col">{{ 'col.response' | t }}</th></tr></thead>
   <tbody>
-  {%- for e in escalations.actions | take(60) %}
+  {%- for e in countermeasures.actions | take(60) %}
     {%- set claim = claims | whereEq('id', e.claim_id) | first %}
     <tr><td class="num" style="color:var(--dim)"><time datetime="{{ e.date | isoDate }}">{{ e.date | shortDate }}</time></td>
       <td>{{ e.type | actionTypeLabel }}</td>
@@ -41,13 +41,13 @@ permalink: "{{ '/escalations/' | loc(lang) }}"
       <td class="num" style="color:var(--dimmer)">{% if e.response_date %}<time datetime="{{ e.response_date | isoDate }}">{{ e.response_date | shortDate }}</time>{% else %}&mdash;{% endif %}</td></tr>
   {%- endfor %}
   </tbody></table>
-  {%- if escalations.actions | length > 60 %}
+  {%- if countermeasures.actions | length > 60 %}
   <div class="summary-line" style="border-bottom:0;border-top:1px solid var(--line2)">
-    Showing 60 of {{ escalations.actions | length }} actions
-    {%- if datasets.has['escalations-csv'] %}<a style="margin-left:auto;color:var(--accent);font-weight:600" href="{{ '/escalations.csv' | url }}">The full log as CSV &rarr;</a>{% endif %}</div>
+    Showing 60 of {{ countermeasures.actions | length }} actions
+    {%- if datasets.has['countermeasures-csv'] %}<a style="margin-left:auto;color:var(--accent);font-weight:600" href="{{ '/countermeasures.csv' | url }}">The full log as CSV &rarr;</a>{% endif %}</div>
   {%- endif %}
 </div>
 
 <div class="exports" style="margin:18px 0 40px">
-  {%- if datasets.has['escalations-csv'] %}<a href="{{ '/escalations.csv' | url }}">{{ 'action.downloadLog' | t }}</a><span>&middot;</span>{% endif %}
+  {%- if datasets.has['countermeasures-csv'] %}<a href="{{ '/countermeasures.csv' | url }}">{{ 'action.downloadLog' | t }}</a><span>&middot;</span>{% endif %}
   <a href="{{ '/methodology/' | url }}">What we do not publish</a></div>

@@ -1,0 +1,45 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Runs",
+  "description": "One record per run x market. Derived by scripts/build-metrics.mjs; never hand-edited.",
+  "type": "object",
+  "required": ["runs"],
+  "properties": {
+    "demo": { "type": "boolean" },
+    "low_n": { "type": "integer" },
+    "runs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["key", "run_id", "market", "country", "language", "collected_at", "responses"],
+        "properties": {
+          "key": { "type": "string" },
+          "run_id": { "type": "string" },
+          "market": { "type": "string", "pattern": "^[a-z]{2}-[a-z]{2}$" },
+          "country": { "type": "string", "pattern": "^[a-z]{2}$" },
+          "language": { "type": "string", "pattern": "^[a-z]{2}$" },
+          "collected_at": { "type": "string", "format": "date" },
+          "collected_until": { "type": "string", "format": "date" },
+          "clusters": { "type": "array", "items": { "type": "string" } },
+          "claims": { "type": "array", "items": { "type": "string" } },
+          "models": { "type": "array", "items": { "type": "string" } },
+          "model_versions": { "type": "array", "items": { "type": "string" } },
+          "personas": { "type": "array", "items": { "type": "string" } },
+          "responses": { "type": "integer", "minimum": 0 },
+          "prompts": { "type": ["integer", "null"] },
+          "repeats": { "type": ["integer", "null"] },
+          "versions": {
+            "type": "object",
+            "properties": {
+              "catalog": { "type": ["string", "null"] },
+              "grid": { "type": ["string", "null"] },
+              "judge": { "type": ["string", "null"] },
+              "watchlist": { "type": ["string", "null"] }
+            }
+          }
+        }
+      }
+    }
+  }
+}

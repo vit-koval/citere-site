@@ -56,7 +56,7 @@
         "C2-003",
         "C5-001"
       ],
-      "escalations": [
+      "countermeasures": [
         "C1-001",
         "C1-007",
         "C2-003",
@@ -124,7 +124,7 @@
         "C3-003",
         "C5-001"
       ],
-      "escalations": [
+      "countermeasures": [
         "C1-002",
         "C1-004",
         "C1-006",
@@ -192,7 +192,7 @@
         "C3-003",
         "C5-001"
       ],
-      "escalations": [
+      "countermeasures": [
         "C1-002",
         "C1-004",
         "C3-003"
@@ -253,7 +253,7 @@
         "C1-007",
         "C2-001"
       ],
-      "escalations": [
+      "countermeasures": [
         "C1-001",
         "C1-003",
         "C1-007",
@@ -317,7 +317,7 @@
         "C2-002",
         "C5-001"
       ],
-      "escalations": [
+      "countermeasures": [
         "C1-001",
         "C1-003",
         "C1-004",
@@ -385,7 +385,7 @@
         "C2-003",
         "C5-001"
       ],
-      "escalations": [
+      "countermeasures": [
         "C1-006"
       ]
     },
@@ -450,7 +450,7 @@
         "C3-002",
         "C5-001"
       ],
-      "escalations": [
+      "countermeasures": [
         "C1-002",
         "C1-003",
         "C1-006",
@@ -520,7 +520,7 @@
         "C2-003",
         "C5-001"
       ],
-      "escalations": [
+      "countermeasures": [
         "C2-003"
       ]
     }

@@ -1,0 +1,117 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Metrics store",
+  "description": "Derived by scripts/build-metrics.mjs. One cell per bot x claim x persona x market x run. Never hand-edited.",
+  "type": "object",
+  "required": ["low_n", "totals", "dimensions", "cells"],
+  "properties": {
+    "demo": { "type": "boolean" },
+    "generated_from": { "type": "string" },
+    "low_n": { "type": "integer", "minimum": 1 },
+    "totals": {
+      "type": "object",
+      "required": ["cells", "responses"],
+      "properties": {
+        "cells": { "type": "integer", "minimum": 0 },
+        "responses": { "type": "integer", "minimum": 0 },
+        "contaminated": { "type": "integer", "minimum": 0 },
+        "critical": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "dimensions": {
+      "type": "object",
+      "additionalProperties": { "type": "array", "items": { "type": "string" } }
+    },
+    "cells": { "type": "array", "items": { "$ref": "#/definitions/cell" } }
+  },
+  "definitions": {
+    "share": {
+      "type": "object",
+      "required": ["k", "n", "rate", "ci", "low_n"],
+      "properties": {
+        "k": { "type": "integer", "minimum": 0 },
+        "n": { "type": "integer", "minimum": 0 },
+        "rate": { "type": ["number", "null"], "minimum": 0, "maximum": 1 },
+        "ci": {
+          "type": ["array", "null"],
+          "items": { "type": "number", "minimum": 0, "maximum": 1 },
+          "minItems": 2, "maxItems": 2
+        },
+        "low_n": { "type": "boolean" }
+      }
+    },
+    "cell": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["key", "run", "claim", "cluster", "chatbot", "persona", "country", "language",
+                   "market", "n", "substantive", "counts", "tiers", "repeat_rate",
+                   "contamination_rate", "dodge_rate"],
+      "properties": {
+        "key": { "type": "string" },
+        "run": { "type": "string" },
+        "claim": { "type": "string" },
+        "cluster": { "type": "string" },
+        "chatbot": { "type": "string" },
+        "persona": { "type": "string", "enum": ["P1", "P2", "P3", "P4"] },
+        "country": { "type": "string", "pattern": "^[a-z]{2}$" },
+        "language": { "type": "string", "pattern": "^[a-z]{2}$" },
+        "market": { "type": "string", "pattern": "^[a-z]{2}-[a-z]{2}$" },
+        "splice": { "type": ["string", "null"], "enum": ["A", "B", "C", "D", null] },
+        "grain_of_truth": { "type": "boolean" },
+        "is_live": { "type": "boolean" },
+        "first_seen": { "type": "string", "format": "date" },
+        "last_seen": { "type": "string", "format": "date" },
+        "model_versions": { "type": "array", "items": { "type": "string" } },
+        "n": { "type": "integer", "minimum": 0 },
+        "substantive": { "type": "integer", "minimum": 0 },
+        "contaminated": { "type": "integer", "minimum": 0 },
+        "responses": { "type": "integer", "minimum": 0 },
+        "counts": {
+          "type": "object", "additionalProperties": false,
+          "required": ["repeat", "u_context", "refute", "dodge"],
+          "properties": {
+            "repeat": { "type": "integer", "minimum": 0 },
+            "u_context": { "type": "integer", "minimum": 0 },
+            "refute": { "type": "integer", "minimum": 0 },
+            "dodge": { "type": "integer", "minimum": 0 }
+          }
+        },
+        "tiers": {
+          "type": "object", "additionalProperties": false,
+          "required": ["critical", "high", "review", "low", "none"],
+          "properties": {
+            "critical": { "type": "integer", "minimum": 0 },
+            "high": { "type": "integer", "minimum": 0 },
+            "review": { "type": "integer", "minimum": 0 },
+            "low": { "type": "integer", "minimum": 0 },
+            "none": { "type": "integer", "minimum": 0 }
+          }
+        },
+        "dodge_types": { "type": "object", "additionalProperties": { "type": "integer" } },
+        "acknowledged_grain": { "type": ["number", "null"] },
+        "flagged_truth_as_false": { "type": ["number", "null"] },
+        "judge": {
+          "type": "object",
+          "properties": {
+            "confidence": { "type": ["number", "null"] },
+            "agreement": { "type": ["number", "null"] }
+          }
+        },
+        "domains": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object", "additionalProperties": false,
+            "required": ["cited", "while_repeating"],
+            "properties": {
+              "cited": { "type": "integer", "minimum": 0 },
+              "while_repeating": { "type": "integer", "minimum": 0 }
+            }
+          }
+        },
+        "repeat_rate": { "$ref": "#/definitions/share" },
+        "contamination_rate": { "$ref": "#/definitions/share" },
+        "dodge_rate": { "$ref": "#/definitions/share" }
+      }
+    }
+  }
+}

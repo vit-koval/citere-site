@@ -39,7 +39,7 @@
 </section>
 {%- endif %}
 
-{%- if clusterTiles | length %}
+{%- if countryCards | length %}
 <section>
   <div class="shead"><h2>{{ 'section.markets' | t }}</h2>
     {%- if navigation.has.countries %}<a href="{{ '/countries/' | url }}">{{ 'action.allCountries' | t }} &rarr;</a>{% endif %}</div>
@@ -52,10 +52,5 @@
   {%- endfor %}
   </div>
   {%- endif %}
-  <div class="tiles" style="margin-top:14px">
-  {%- for tile in clusterTiles %}
-    <a class="tile" href="{{ tile.url | url }}"><b>{{ tile.name }}</b> — {{ tile.count }} {{ tile.count | plural("claim", "claims") }}</a>
-  {%- endfor %}
-  </div>
 </section>
 {%- endif %}

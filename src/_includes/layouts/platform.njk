@@ -68,10 +68,10 @@ wrap: wrap-narrow
   </tbody></table></div>
 {%- endif %}
 
-<h2 id="escalations" style="margin:36px 0 12px">Escalations to {{ profile.company }}</h2>
-{%- if profile.escalations | length %}
+<h2 id="countermeasures" style="margin:36px 0 12px">Escalations to {{ profile.company }}</h2>
+{%- if profile.countermeasures | length %}
 <div class="panel">
-  {%- for e in profile.escalations %}
+  {%- for e in profile.countermeasures %}
   {%- set claim = claims | whereEq('id', e.claim_id) | first %}
   <div class="actrow">
     <div class="what">{{ e.claim_id }} — {{ e.type | actionTypeLabel | lower }}<small>{{ e.target | defangCopy }}</small></div>

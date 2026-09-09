@@ -14,7 +14,7 @@ const P = {
   chatbots: "pages/platforms.njk",
   countries: "pages/countries.njk",
   sources: "pages/sources.njk",
-  escalations: "pages/escalations.njk",
+  countermeasures: "pages/countermeasures.njk",
   methodology: "pages/methodology.njk",
   data: "pages/data.njk",
   about: "pages/about.njk",
@@ -37,7 +37,7 @@ const MAIN = [
   entry("reports", "Reports", "/monitor/", P.reports),
   entry("chatbots", "Chatbots", "/platforms/", P.chatbots),
   entry("sources", "Sources", "/sources/", P.sources),
-  entry("escalations", "Escalations", "/escalations/", P.escalations),
+  entry("countermeasures", "Countermeasures", "/countermeasures/", P.countermeasures),
   entry("methodology", "Methodology", "/methodology/", P.methodology)
 ];
 
@@ -51,7 +51,7 @@ const FOOTER = [
       entry("chatbots", "Chatbots", "/platforms/", P.chatbots),
       entry("countries", "Countries", "/countries/", P.countries),
       entry("sources", "Sources", "/sources/", P.sources),
-      entry("escalationLog", "Escalation log", "/escalations/", P.escalations)
+      entry("countermeasuresLog", "Countermeasures", "/countermeasures/", P.countermeasures)
     ]
   },
   {

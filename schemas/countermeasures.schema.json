@@ -1,5 +1,5 @@
 {
-  "title": "Public escalation log",
+  "title": "Public countermeasures log",
   "type": "object",
   "required": [
     "actions"
@@ -81,5 +81,5 @@
     }
   },
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://citere.ai/schemas/escalations.schema.json"
+  "$id": "https://citere.ai/schemas/countermeasures.schema.json"
 }

@@ -73,7 +73,7 @@ permalink: "{{ '/benchmarks/' | loc(lang) }}"
           <b>CRITICAL</b> means it repeated the claim <i>and</i> cited a Kremlin-linked source — a
           retrieval-poisoning signal. Two different attacks, two different fixes.</p>
       </div>
-      {%- if navigation.has.escalations %}<a class="vf" href="{{ '/escalations/' | url }}">See the escalation queue &rarr;</a>{% endif %}</div>
+      {%- if navigation.has.countermeasures %}<a class="vf" href="{{ '/countermeasures/' | url }}">See the countermeasures queue &rarr;</a>{% endif %}</div>
     {%- endif %}
 
     {%- if benchmarks.funnel | length %}

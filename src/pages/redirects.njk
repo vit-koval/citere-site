@@ -1,0 +1,19 @@
+---
+# 301s are Cloudflare's job; this is the static fallback so a link to a
+# pre-restructure URL still lands on the page that replaced it. Redirect stubs
+# carry no content, are absent from the sitemap and are skipped by
+# scripts/check.mjs, which recognises them by the refresh meta.
+pagination:
+  data: redirects
+  alias: redirect
+  size: 1
+permalink: "{{ redirect.from }}index.html"
+eleventyExcludeFromCollections: true
+---
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta http-equiv="refresh" content="0; url={{ redirect.to | url }}">
+<link rel="canonical" href="{{ site.url }}{{ redirect.to }}">
+<meta name="robots" content="noindex">
+<title>Moved</title></head>
+<body><p>This page is now at <a href="{{ redirect.to | url }}">{{ redirect.to }}</a>.</p></body></html>

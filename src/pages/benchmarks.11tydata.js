@@ -26,8 +26,8 @@ module.exports = {
       { key: "most_repeated_claims", title: "Most-repeated claims", sub: "all runs, all personas pooled",
         idx: true, bar: false, more: "/registry/", moreLabel: "Full registry" },
       { key: "biggest_change", title: "Biggest change after we reported", sub: "P2 · before → after",
-        idx: false, bar: false, more: data.navigation.has.escalations ? "/escalations/" : null,
-        moreLabel: "Escalation log" }
+        idx: false, bar: false, more: data.navigation.has.countermeasures ? "/countermeasures/" : null,
+        moreLabel: "Countermeasures" }
     ],
     // The dumbbell takes two series; grain-of-truth compares blended claims
     // against pure fabrications, contamination plots a single series.

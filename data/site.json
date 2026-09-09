@@ -39,9 +39,9 @@
     "claims": 18,
     "responses": 1600,
     "domains": 10,
-    "escalations_sent": 84,
-    "escalations_answered": 24,
-    "escalations_actioned": 12
+    "countermeasures_sent": 84,
+    "countermeasures_answered": 24,
+    "countermeasures_actioned": 12
   },
   "used_by": [],
   "last_update": "2026-10-24",

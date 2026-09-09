@@ -6,8 +6,8 @@ const path = require("node:path");
 const { readJson, ROOT } = require("../_lib/markdown.cjs");
 
 const site = readJson("data/site.json");
-const escalationsFile = readJson("data/escalations.json");
-const escalations = escalationsFile.actions || [];
+const countermeasuresFile = readJson("data/countermeasures.json");
+const countermeasures = countermeasuresFile.actions || [];
 
 const claimDir = path.join(ROOT, "data/claims");
 const claims = fs.existsSync(claimDir)
@@ -20,7 +20,7 @@ const claims = fs.existsSync(claimDir)
 const OUTBOUND = new Set(["platform_report", "domain_complaint"]);
 const ANSWERED = new Set(["acknowledged", "actioned", "declined", "completed", "receipt_confirmed"]);
 
-const sent = escalations.filter((e) => OUTBOUND.has(e.type));
+const sent = countermeasures.filter((e) => OUTBOUND.has(e.type));
 const answered = sent.filter((e) => e.response_date || ANSWERED.has(e.status));
 const actioned = sent.filter((e) => e.status === "actioned");
 
@@ -54,10 +54,10 @@ module.exports = {
     languages: new Set(claims.flatMap((c) => c.languages || [])).size,
     domains: sources.length,
     responses: claims.reduce((n, c) => n + (c.observations || []).length, 0),
-    escalations_sent: sent.length,
-    escalations_answered: answered.length,
-    escalations_actioned: actioned.length,
-    escalations_total: escalations.length,
+    countermeasures_sent: sent.length,
+    countermeasures_answered: answered.length,
+    countermeasures_actioned: actioned.length,
+    countermeasures_total: countermeasures.length,
     median_response_days: median
   },
   last_update: lastUpdate

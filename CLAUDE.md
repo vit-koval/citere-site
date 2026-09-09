@@ -10,6 +10,18 @@ Companion documents in `docs/`:
 
 When this file conflicts with a companion, this file wins. Where the mockup conflicts with a written spec on **visual** matters, the mockup wins. Where they conflict on **rules** (what may be published, how numbers are computed), the spec wins.
 
+### Restructure in progress (from 2026-09-09)
+
+`docs/citere-spec/CLAUDE_CODE_BRIEF.md` is a later brief that **replaces the page set in §4 below**, together with ten reference HTML prototypes in the same folder. Where the brief and this file disagree about *what pages exist and what a figure means*, the brief wins; this file still governs the stack, the prose rules and the pre-publish checks. Work through the brief's §6 "Order of work"; §13 below describes the build that came before it.
+
+Landed so far (step 1):
+
+- **Metrics store.** `data/metrics.json` — one cell per bot × claim × persona × market × run, with counts, Wilson bounds and the cited-domain edges — plus `data/runs.json`, one record per run × market. Derived by `scripts/build-metrics.mjs` (`npm run metrics`), rebuilt by the importer, and re-derived by `npm run validate`, which fails on drift. Read it through `src/_data/metrics.js`: `pool()` returns counts for any set of cells but returns a **rate only inside one persona, one market and one run** — pool across those and the rate comes back `null` with the reason in `blocked`.
+- **Escalations → Countermeasures.** `/countermeasures/`, `data/countermeasures.json`, `countermeasures.csv`; `/escalations/` is a redirect stub (`src/_data/redirects.js`). The twelve countermeasure types and the `drafted → … → closed` lifecycle live in `src/_lib/labels.cjs`; `src/_data/countermeasures.js` maps the exporter's older vocabulary onto them.
+- **Clusters are not navigation.** `cluster` survives only as a field on a claim, used for filtering and for grouping in Benchmarks.
+
+Seven specification Markdown files the brief references (entity model, calculation methodology, sources-registry and countries business logic, claim-report spec, countermeasures catalogue) are **not in the repo**. Everything above follows the brief's own §2–§3 summary; anything those specs pin down more tightly may still move.
+
 ---
 
 ## 1. What this site is

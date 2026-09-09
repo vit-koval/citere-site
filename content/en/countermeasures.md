@@ -1,5 +1,5 @@
 ---
-h1: Escalation log
+h1: Countermeasures
 lead: >
   Every action we take on a documented claim is recorded here: reports to AI platforms, abuse complaints
   to registrars and hosts, data handed to state and fact-checking partners, and re-measurements.

@@ -5,7 +5,7 @@ module.exports = {
       const d = data.site.last_update;
       const entries = [
         "/", "/registry/", "/benchmarks/", "/monitor/", "/platforms/", "/countries/",
-        "/sources/", "/escalations/", "/methodology/", "/data/", "/about/",
+        "/sources/", "/countermeasures/", "/methodology/", "/data/", "/about/",
         "/mission/", "/manifesto/", "/press/", "/terms/", "/privacy/"
       ].map((url) => ({ url, lastmod: d }));
       for (const r of data.reports) entries.push({ url: r.url, lastmod: r.date });

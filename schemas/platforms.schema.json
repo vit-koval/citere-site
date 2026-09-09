@@ -139,7 +139,7 @@
               }
             }
           },
-          "escalations": {
+          "countermeasures": {
             "type": "array",
             "items": {
               "type": "string"

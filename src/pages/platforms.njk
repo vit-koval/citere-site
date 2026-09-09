@@ -22,7 +22,7 @@ permalink: "{{ '/platforms/' | loc(lang) }}"
   <caption class="visually-hidden">Assistants ranked by repeat-rate on the P2 topical-news persona</caption>
   <thead><tr><th scope="col">#</th><th scope="col">{{ 'col.chatbot' | t }}</th><th scope="col">{{ 'col.company' | t }}</th>
     <th scope="col">{{ 'col.repeatRate' | t }}</th><th scope="col">{{ 'col.contamination' | t }}</th>
-    <th scope="col">{{ 'col.claimsRepeated' | t }}</th><th scope="col">{{ 'col.escalations' | t }}</th><th scope="col">{{ 'col.change' | t }}</th></tr></thead>
+    <th scope="col">{{ 'col.claimsRepeated' | t }}</th><th scope="col">{{ 'col.countermeasures' | t }}</th><th scope="col">{{ 'col.change' | t }}</th></tr></thead>
   <tbody>
   {%- for bot in profiles.chatbots %}
     <tr data-persona="{{ bot.repeatPersona }}">
@@ -32,7 +32,7 @@ permalink: "{{ '/platforms/' | loc(lang) }}"
       <td><div style="display:flex;align-items:center;gap:9px"><span class="barm"><i style="width:{{ bot.repeatRate | barWidth(profiles.chatbots[0].repeatRate) }}%"></i></span><span class="rmeta">{{ bot.repeatRate | rate }}</span></div></td>
       <td class="rmeta">{{ bot.contaminationRate | rate }}</td>
       <td class="num">{{ bot.claimsRepeated }}</td>
-      <td class="num">{{ bot.escalationClaims | length }}</td>
+      <td class="num">{{ bot.countermeasureClaims | length }}</td>
       <td class="rmeta" style="color:var({{ '--false' if bot.repeatDelta > 0.0005 else ('--ok' if bot.repeatDelta < -0.0005 else '--dim') }})">
         {%- if bot.repeatDelta > 0.0005 %}&uarr; {% elif bot.repeatDelta < -0.0005 %}&darr; {% else %}&ndash; {% endif %}{{ (bot.repeatDelta | abs * 100) | round(1) }}</td>
     </tr>

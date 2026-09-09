@@ -20,14 +20,14 @@ const HEADING = {
 
 const LEAD = {
   en: {
-    cluster: (f) => `This cluster groups the claims that share one narrative: ${f.label}.`,
+    cluster: (f) => `The registry filtered to one narrative: ${f.label}.`,
     country: (f) => `These are the claims we recorded in chatbot answers served to users in ${f.label}.`,
     language: (f) => `These are the claims we recorded in chatbot answers given in ${f.label}.`,
     chatbot: (f) => `These are the claims ${f.label} handled in our runs.`,
     verdict: (f) => `These are the claims we rated ${f.label}.`
   },
   uk: {
-    cluster: (f) => `Цей кластер об'єднує твердження одного наративу: ${f.label}.`,
+    cluster: (f) => `Реєстр, відфільтрований за одним наративом: ${f.label}.`,
     country: (f) => `Це твердження, які ми зафіксували у відповідях чат-ботів для користувачів у країні ${f.label}.`,
     language: (f) => `Це твердження, які ми зафіксували у відповідях чат-ботів цією мовою: ${f.label}.`,
     chatbot: (f) => `Це твердження, з якими ${f.label} мав справу в наших прогонах.`,

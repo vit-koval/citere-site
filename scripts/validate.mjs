@@ -4,6 +4,7 @@ import { readFileSync, readdirSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import Ajv from "ajv";
 import addFormats from "ajv-formats";
+import { files as metricsFiles } from "./build-metrics.mjs";
 
 const ROOT = new URL("..", import.meta.url).pathname;
 const ajv = new Ajv({ allErrors: true, strict: false });
@@ -28,8 +29,22 @@ validate("data/platforms.json", schema("platforms"), read("data/platforms.json")
 validate("data/countries.json", schema("countries"), read("data/countries.json"));
 validate("data/clusters.json", schema("clusters"), read("data/clusters.json"));
 validate("data/benchmarks.json", schema("benchmarks"), read("data/benchmarks.json"));
-validate("data/escalations.json", schema("escalations"), read("data/escalations.json"));
+validate("data/countermeasures.json", schema("countermeasures"), read("data/countermeasures.json"));
 validate("data/reports.json", schema("reports"), read("data/reports.json"));
+validate("data/metrics.json", schema("metrics"), read("data/metrics.json"));
+validate("data/runs.json", schema("runs"), read("data/runs.json"));
+
+// The metrics store is derived. Rebuild it here and fail on any drift, so a
+// hand-edit or a forgotten `npm run metrics` cannot ship stale numbers.
+const rebuilt = metricsFiles();
+for (const name of ["data/metrics.json", "data/runs.json"]) {
+  if (readFileSync(join(ROOT, name), "utf8") !== rebuilt[name]) {
+    errors.push(`${name}: stale - does not match a rebuild from data/claims. Run: npm run metrics`);
+  }
+}
+for (const domain of rebuilt.unlisted) {
+  errors.push(`data/claims: cited domain ${domain} is not on the watchlist in data/sources.json`);
+}
 
 const claimSchema = schema("claim");
 const claimDir = join(ROOT, "data/claims");
@@ -63,9 +78,9 @@ for (const file of claimFiles) {
     if (!claimIds.has(rel)) errors.push(`data/claims/${file}: related claim ${rel} does not exist`);
   }
 }
-for (const entry of read("data/escalations.json").actions) {
+for (const entry of read("data/countermeasures.json").actions) {
   if (!claimIds.has(entry.claim_id)) {
-    errors.push(`data/escalations.json: claim_id ${entry.claim_id} does not exist`);
+    errors.push(`data/countermeasures.json: claim_id ${entry.claim_id} does not exist`);
   }
 }
 for (const source of read("data/sources.json").domains) {

@@ -58,7 +58,12 @@ function walk(dir, out = []) {
 }
 
 const allFiles = walk(SITE);
-const htmlFiles = allFiles.filter((f) => f.endsWith(".html"));
+// Redirect stubs (src/pages/redirects.njk) are pages only in the sense that a
+// browser lands on them. They carry no content, so they are exempt from the
+// per-page checks and from sitemap coverage - but their paths still resolve,
+// so a link to an old URL is not reported as broken.
+const isRedirect = (f) => /<meta http-equiv="refresh"/i.test(readFileSync(f, "utf8"));
+const htmlFiles = allFiles.filter((f) => f.endsWith(".html")).filter((f) => !isRedirect(f));
 const sitePaths = new Set(
   allFiles.map((f) => "/" + relative(SITE, f).split(/[\\/]/).join("/"))
 );

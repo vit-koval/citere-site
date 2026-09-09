@@ -8,6 +8,7 @@
     "node": ">=20"
   },
   "scripts": {
+    "metrics": "node scripts/build-metrics.mjs",
     "validate": "node scripts/validate.mjs",
     "build": "rm -rf _site && eleventy",
     "check": "node scripts/check.mjs",

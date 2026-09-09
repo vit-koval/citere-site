@@ -4,7 +4,7 @@
 const platforms = require("./platforms.js");
 const countriesData = require("./countries.js");
 const claims = require("./claims.js");
-const escalations = require("./escalations.js");
+const countermeasures = require("./countermeasures.js");
 const benchmarks = require("./benchmarks.js");
 const { CHATBOTS } = require("../_lib/labels.cjs");
 
@@ -37,11 +37,11 @@ const chatbots = Object.entries(platforms).map(([key, meta]) => {
       .sort((a, b) => b.repeat_rate - a.repeat_rate),
     repeatedClaims,
     claimsRepeated: repeatedClaims.length,
-    // The escalation log names the company we wrote to.
-    escalations: escalations.actions.filter(
-      (e) => e.target === meta.company || (meta.escalations || []).includes(e.claim_id) && e.target === meta.company
+    // The countermeasures log names the company we wrote to.
+    countermeasures: countermeasures.actions.filter(
+      (e) => e.target === meta.company || (meta.countermeasures || []).includes(e.claim_id) && e.target === meta.company
     ),
-    escalationClaims: meta.escalations || []
+    countermeasureClaims: meta.countermeasures || []
   };
 }).sort((a, b) => (b.repeatRate ?? -1) - (a.repeatRate ?? -1));
 

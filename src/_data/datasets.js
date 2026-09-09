@@ -40,12 +40,12 @@ const ENTRIES = [
     template: "machine/sources-stix.njk"
   },
   {
-    key: "escalations-csv",
-    name: "Escalation log (CSV)",
+    key: "countermeasures-csv",
+    name: "Countermeasures (CSV)",
     description: "Every report we sent, to whom, on what date, and the status of the response.",
     format: "CSV",
-    url: "/escalations.csv",
-    template: "machine/escalations-csv.njk"
+    url: "/countermeasures.csv",
+    template: "machine/countermeasures-csv.njk"
   }
 ];
 

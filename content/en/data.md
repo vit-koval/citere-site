@@ -2,7 +2,7 @@
 h1: Data and downloads
 lead: >
   Everything on this site is available as data: the claim registry, per-run observations, the domain
-  watchlist, and the escalation log. CC BY 4.0, with a DOI for each release.
+  watchlist, and the countermeasures log. CC BY 4.0, with a DOI for each release.
 ---
 
 ## How to cite {#cite}

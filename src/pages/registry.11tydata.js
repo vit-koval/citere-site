@@ -14,7 +14,7 @@ module.exports = {
     dataset: (data) => ({
       name: "Citere claim registry",
       description:
-        "Documented false claims about Ukraine found in public AI chatbot answers, with per-answer observations, escalations and re-measurements.",
+        "Documented false claims about Ukraine found in public AI chatbot answers, with per-answer observations, countermeasures and re-measurements.",
       keywords: ["disinformation", "AI chatbots", "Ukraine", "fact-checking", "Russian influence operations"],
       spatialCoverage:
         [...new Set(data.claims.flatMap((c) => c.countries))].map((c) => c.toUpperCase()).join(", ") || undefined

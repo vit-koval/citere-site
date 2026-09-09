@@ -9,7 +9,7 @@ const dir = path.join(ROOT, "data/claims");
 const files = fs.existsSync(dir) ? fs.readdirSync(dir).filter((f) => f.endsWith(".json")) : [];
 
 // The registry status chip in the mockup, derived from what we actually did.
-function escalationStatus(actions) {
+function countermeasureStatus(actions) {
   const reports = actions.filter((a) => a.type === "platform_report");
   if (actions.some((a) => a.type === "remeasured" && a.status === "completed")) {
     return { label: "Re-measured", cls: "ok" };
@@ -53,7 +53,7 @@ const claims = files
       observationsShown: observations.slice(0, 24),
       observationsTruncated: observations.length > 24,
       remeasuredOn: actions.filter((a) => a.type === "remeasured").map((a) => a.date).pop() || null,
-      status: escalationStatus(actions)
+      status: countermeasureStatus(actions)
     };
   });
 
