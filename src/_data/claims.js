@@ -90,6 +90,9 @@ const claims = files
       titles: { en: claim.title_en, uk: claim.title_uk || claim.title_en },
       hasProse: fs.existsSync(proseFile),
       tested: grid.length > 0,
+      // `status` is the derived countermeasure chip; the card's own lifecycle
+      // field keeps its name under status_field so both survive.
+      status_field: claim.status || null,
       cells: grid,
       tables,
       cleansing,

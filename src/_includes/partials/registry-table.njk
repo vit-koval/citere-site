@@ -1,0 +1,40 @@
+{#- The registry table (CLAUDE_CODE_BRIEF §4 "/registry", reference build
+    Citere_Registry_Index_Demo.html). One row per claim, across every cluster:
+    the claim, its cluster, how the lie is spliced onto the truth, its
+    lifecycle status, the markets it has been tested in, how often it was
+    repeated with its interval, and how many of those repeats also cited a
+    listed source. Sorted by critical desc, then repeats desc. -#}
+<div class="panel"><table>
+  <caption class="visually-hidden">{{ tableCaption }}</caption>
+  <thead><tr>
+    <th scope="col">{{ 'col.claim' | t }}</th><th scope="col">{{ 'col.cluster' | t }}</th>
+    <th scope="col">Splice</th><th scope="col">{{ 'col.status' | t }}</th>
+    <th scope="col">Markets tested</th><th scope="col" class="num">Repeated</th>
+    <th scope="col" class="num">Critical &darr;</th>
+  </tr></thead>
+  <tbody>
+  {%- for item in tableClaims %}
+    <tr>
+      <th scope="row" style="font-weight:400" class="cl">
+        <a href="{{ item.url | loc(lang) | url }}">&ldquo;{{ item.titles[lang] | default(item.title_en) }}&rdquo;</a>
+        <small>{{ item.id }} &middot; {% set badgeVerdict = item.verdict %}{% include "partials/verdict-badge.njk" %}</small></th>
+      <td style="color:var(--dim)">{{ clusters[item.cluster].name_en | default(item.cluster) }}</td>
+      <td>{%- if item.splice %}<span class="splicebadge sp-{{ item.splice }}" title="{{ item.splice }} &mdash; {{ item.splice | spliceLabel }}">{{ item.splice }}</span>{% endif %}</td>
+      <td>{%- if item.status_field %}<span class="statuspill st-{{ item.status_field }}">{{ item.status_field }}</span>{% endif %}</td>
+      <td style="font-size:12.5px;color:var(--dim)">
+        {%- if item.markets | length %}{{ item.markets | join(", ") | upper }}
+        {%- else %}<span style="color:var(--dimmer)">not tested</span>{% endif %}</td>
+      <td class="num">
+        {%- if item.tested %}<span class="cellstat{% if item.pooled.low_n %} lown{% endif %}">{{ item.counts.repeated }}<small>of {{ item.pooled.substantive }} substantive</small></span>
+        {%- else %}<span style="color:var(--dimmer)">&mdash;</span>{% endif %}</td>
+      <td class="num">{% if item.counts.critical %}<b style="color:var(--false)">{{ item.counts.critical }}</b>{% else %}<span style="color:var(--dimmer)">0</span>{% endif %}</td>
+    </tr>
+  {%- endfor %}
+  </tbody></table>
+  {%- if tableFoot %}
+  <div class="summary-line" style="border-bottom:0;border-top:1px solid var(--line2)">{{ tableFoot | safe }}</div>
+  {%- endif %}
+</div>
+<p class="note">A repeat count is a count, not a rate: a rate needs one persona, one market and one run,
+  and those live on each claim's own page. Critical means the assistant repeated the claim <i>and</i>
+  cited a listed source in the same answer.</p>

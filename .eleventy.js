@@ -2,7 +2,7 @@ const { md: markdown } = require("./src/_lib/markdown.cjs");
 const ui = require("./src/_data/ui.js");
 const {
   VERDICTS, BEHAVIOURS, STATUSES, ACTION_TYPES, NETWORKS, NETWORK_NAMES, NETWORK_CLASS,
-  CHATBOTS, PERSONAS, MONTHS
+  CHATBOTS, PERSONAS, MONTHS, SPLICES
 } = require("./src/_lib/labels.cjs");
 
 // Comment strip + whitespace collapse only. Deliberately conservative: nothing
@@ -131,6 +131,7 @@ module.exports = function (eleventyConfig) {
   );
 
   // ---- numbers -----------------------------------------------------------
+  eleventyConfig.addFilter("spliceLabel", (v) => SPLICES[String(v)] || v);
   eleventyConfig.addFilter("rate", (v) => (v === null || v === undefined ? "n/a" : `${Math.round(v * 1000) / 10}%`));
   // A Wilson interval as the reference builds print it: "29-48", whole points.
   eleventyConfig.addFilter("ciLabel", (ci) =>

@@ -3,7 +3,7 @@
     (CLAUDE.md 2). -#}
 <div class="filters">
   <a class="f{% if not activeFacet %} active{% endif %}" href="{{ '/registry/' | url }}">All claims</a>
-  {%- for group in ['cluster','country','language','chatbot','verdict'] %}
+  {%- for group in ['cluster','splice','status','market','chatbot','verdict','language'] %}
   {%- set items = facets | whereEq('type', group) %}
   {%- if items | length %}
   <details class="fdrop"{% if activeFacet and activeFacet.type == group %} open{% endif %}>

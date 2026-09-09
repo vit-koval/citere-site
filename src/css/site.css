@@ -525,3 +525,13 @@ a:focus-visible,button:focus-visible,summary:focus-visible,[tabindex]:focus-visi
 .cellstat.lown{opacity:.55}
 .observations td .cellstat{white-space:nowrap}
 h3.ssub{font-size:13px;font-weight:600;color:var(--dim);margin:22px 0 8px;letter-spacing:.01em}
+
+/* Registry table: the splice letter and the claim's lifecycle status, from the
+   approved reference build for the registry index. */
+.splicebadge{display:inline-block;min-width:20px;height:20px;border-radius:5px;text-align:center;line-height:20px;
+  font-size:11px;font-weight:700;color:#fff;font-variant-numeric:tabular-nums}
+.sp-A{background:#1957a6}.sp-B{background:#5b3fb0}.sp-C{background:#96591a}.sp-D{background:#c4291d}
+.statuspill{display:inline-block;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:600}
+.st-active{background:var(--ok-bg);color:var(--ok)}
+.st-dormant{background:#eef0f3;color:var(--dim)}
+.st-archived{background:#f5f6f8;color:var(--dimmer)}

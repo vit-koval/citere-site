@@ -7,14 +7,20 @@ const HEADING = {
     country: (f) => `Russian disinformation in AI chatbot answers: ${f.label}`,
     language: (f) => `False claims found in AI chatbot answers in ${f.label}`,
     chatbot: (f) => `False claims about Ukraine repeated by ${f.label}`,
-    verdict: (f) => `Claims we rated ${f.label}`
+    verdict: (f) => `Claims we rated ${f.label}`,
+    splice: (f) => `Claims built by ${f.label.split(" — ")[1]}`,
+    status: (f) => `Claims currently ${f.label}`,
+    market: (f) => `Claims tested in ${f.label}`
   },
   uk: {
     cluster: (f) => `Неправдиві твердження про Україну: ${f.label}`,
     country: (f) => `Російська дезінформація у відповідях чат-ботів: ${f.label}`,
     language: (f) => `Неправдиві твердження у відповідях чат-ботів (${f.label})`,
     chatbot: (f) => `Неправдиві твердження про Україну, які повторив ${f.label}`,
-    verdict: (f) => `Твердження з вердиктом ${f.label}`
+    verdict: (f) => `Твердження з вердиктом ${f.label}`,
+    splice: (f) => `Твердження, побудовані так: ${f.label}`,
+    status: (f) => `Твердження зі статусом ${f.label}`,
+    market: (f) => `Твердження, перевірені на ринку ${f.label}`
   }
 };
 
@@ -24,14 +30,20 @@ const LEAD = {
     country: (f) => `These are the claims we recorded in chatbot answers served to users in ${f.label}.`,
     language: (f) => `These are the claims we recorded in chatbot answers given in ${f.label}.`,
     chatbot: (f) => `These are the claims ${f.label} handled in our runs.`,
-    verdict: (f) => `These are the claims we rated ${f.label}.`
+    verdict: (f) => `These are the claims we rated ${f.label}.`,
+    splice: (f) => `The registry filtered to one way of attaching a lie to the truth: ${f.label}.`,
+    status: (f) => `The registry filtered to claims whose status is ${f.label}.`,
+    market: (f) => `The registry filtered to the claims tested in ${f.label}.`
   },
   uk: {
     cluster: (f) => `Реєстр, відфільтрований за одним наративом: ${f.label}.`,
     country: (f) => `Це твердження, які ми зафіксували у відповідях чат-ботів для користувачів у країні ${f.label}.`,
     language: (f) => `Це твердження, які ми зафіксували у відповідях чат-ботів цією мовою: ${f.label}.`,
     chatbot: (f) => `Це твердження, з якими ${f.label} мав справу в наших прогонах.`,
-    verdict: (f) => `Це твердження, яким ми дали вердикт ${f.label}.`
+    verdict: (f) => `Це твердження, яким ми дали вердикт ${f.label}.`,
+    splice: (f) => `Реєстр, відфільтрований за способом побудови брехні: ${f.label}.`,
+    status: (f) => `Реєстр, відфільтрований за статусом: ${f.label}.`,
+    market: (f) => `Реєстр, відфільтрований за ринком: ${f.label}.`
   }
 };
 

@@ -2,7 +2,7 @@
 // is also a static URL. One page per facet value with at least one claim.
 const claims = require("./claims.js");
 const clusters = require("./clusters.js");
-const { CHATBOTS, VERDICTS } = require("../_lib/labels.cjs");
+const { CHATBOTS, VERDICTS, SPLICES, CLAIM_STATUSES } = require("../_lib/labels.cjs");
 
 const region = new Intl.DisplayNames(["en"], { type: "region" });
 const language = new Intl.DisplayNames(["en"], { type: "language" });
@@ -11,6 +11,14 @@ const safe = (fn, v) => { try { return fn(v) || v; } catch { return v; } };
 const TYPES = [
   { type: "cluster", heading: "Cluster", values: (c) => [c.cluster],
     label: (v) => (clusters[v] && clusters[v].name_en) || v.replace(/-/g, " ") },
+  // How the lie is attached to the truth (Entity Model Part II). This is the
+  // axis the grain-of-truth split runs on, so it is worth filtering by.
+  { type: "splice", heading: "Splice", values: (c) => (c.splice ? [c.splice] : []),
+    label: (v) => `${v} — ${SPLICES[v] || v}` },
+  { type: "status", heading: "Status", values: (c) => (c.status_field ? [c.status_field] : []),
+    label: (v) => CLAIM_STATUSES[v] || v },
+  { type: "market", heading: "Market", values: (c) => c.markets || [],
+    label: (v) => v.toUpperCase() },
   { type: "country", heading: "Country", values: (c) => c.countries,
     label: (v) => safe((x) => region.of(x.toUpperCase()), v) },
   { type: "language", heading: "Language", values: (c) => c.languages,
