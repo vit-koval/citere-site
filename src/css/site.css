@@ -535,3 +535,20 @@ h3.ssub{font-size:13px;font-weight:600;color:var(--dim);margin:22px 0 8px;letter
 .st-active{background:var(--ok-bg);color:var(--ok)}
 .st-dormant{background:#eef0f3;color:var(--dim)}
 .st-archived{background:#f5f6f8;color:var(--dimmer)}
+
+/* Evidence blocks on a Claim Report: one per flagged answer. Styling lives here
+   rather than inline because a claim page carries up to two dozen of them. */
+.ev{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin-bottom:12px}
+.ev.crit{border-left:4px solid var(--false)}
+.ev.high{border-left:4px solid var(--mislead)}
+.ev .who{font-size:12.5px;color:var(--dim);margin-bottom:8px}
+.ev .q{font-size:13px;color:var(--dim);margin-bottom:8px}
+.ev .sbs{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:8px}
+.ev .sbs>div{border-radius:8px;padding:10px 12px;font-size:13px}
+.ev .said{background:var(--false-bg)}
+.ev .truth{background:var(--ok-bg)}
+.ev .sbs small{display:block;font-weight:600;font-size:11px;color:var(--dim);margin-bottom:4px}
+.ev .cited{font-size:12.5px;color:var(--dim)}
+@media(max-width:700px){.ev .sbs{grid-template-columns:1fr}}
+.ev .evc{color:var(--false)}
+.ev .evh{color:var(--mislead)}

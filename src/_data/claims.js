@@ -152,6 +152,43 @@ const claims = files
       .sort((a, b) => String(a.date).localeCompare(String(b.date)))
       .map((d) => ({ ...d, injection: reachedSet.has(d.domain) }));
 
+    // Layer 3 "Live formulations vs constructed grid": the same claim asked the
+    // way people actually ask, against the designed prompts, in the one market
+    // where both exist. A check on our own method, never pooled with the grid.
+    const liveRuns = [...new Set(cells.filter((c) => c.is_live).map((c) => c.run))];
+    const liveComparison = liveRuns.map((run) => ({
+      run: runs.byKey[run],
+      rows: bots.map((chatbot) => {
+        const live = metrics.poolOf({ claim: claim.id, chatbot, run, is_live: true });
+        const gridSide = metrics.poolOf({ claim: claim.id, chatbot, run, persona: "P2", is_live: false });
+        return { chatbot, live: live.repeat_rate, grid: gridSide.repeat_rate,
+                 agree: metrics.compare(gridSide, live) };
+      })
+    }));
+
+    // Layer 3 "Limitations": generated from the run, not written by hand.
+    const lowCells = grid.filter((c) => c.repeat_rate.low_n).length;
+    const limitations = grid.length ? {
+      lowCells,
+      cells: grid.length,
+      quarantined: grid.reduce((n, c) => n + c.quarantined, 0),
+      unresolved: grid.reduce((n, c) => n + c.unresolved, 0),
+      needsReview: grid.reduce((n, c) => n + c.review.needs_human_review, 0),
+      reviewed: grid.reduce((n, c) => n + c.review.human_labelled, 0),
+      repeats: (claimRuns.map((k) => runs.byKey[k]).find(Boolean) || {}).repeats || null,
+      judge: (claimRuns.map((k) => runs.byKey[k]).find(Boolean) || {}).judge_validation || null,
+      unstable: grid.reduce((n, c) => n + (c.unstable_pairs || 0), 0),
+      stability: (() => {
+        const values = grid.map((c) => c.stability).filter((v) => typeof v === "number");
+        return values.length ? values.reduce((a, b) => a + b, 0) / values.length : null;
+      })(),
+      window: [grid.map((c) => c.first_seen).sort()[0],
+               grid.map((c) => c.last_seen).sort().pop()],
+      live: cells.filter((c) => c.is_live).reduce((n, c) => n + c.n, 0),
+      missing: claimRuns.map((k) => runs.byKey[k]).filter(Boolean)
+        .reduce((n, r) => n + (r.reconciliation.missing || 0), 0)
+    } : null;
+
     // ---------------------------------------------------------- Layer 1
     // The headline is the finding, not the topic (Claim Report Spec, Layer 1).
     // Analyst-written where the prose supplies one; otherwise built from what
@@ -202,6 +239,8 @@ const claims = files
       status_field: claim.status || null,
       cells: grid,
       incidents,
+      liveComparison,
+      limitations,
       incidentCounts: { critical: criticalIncidents.length, high: highIncidents.length,
                         shown: incidents.length, total: allIncidents.length },
       hasSyntheticText: incidents.some((i) => i.synthetic),

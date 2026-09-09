@@ -28,6 +28,13 @@ const {
 const read = (p) => JSON.parse(fs.readFileSync(path.join(ROOT, p), "utf8"));
 const zeroCounts = () => ({ repeat: 0, u_context: 0, refute: 0, dodge: 0 });
 const zeroTiers = () => ({ critical: 0, high: 0, review: 0, low: 0, none: 0 });
+// The A x B matrix itself: what the bot did, against whether it cited a listed
+// source (CM §5.9). The tiers above are the same eight cells named by severity;
+// the matrix needs them named by their axes.
+const zeroAbx = () => ({
+  repeat: { clean: 0, listed: 0 }, u_context: { clean: 0, listed: 0 },
+  refute: { clean: 0, listed: 0 }, dodge: { clean: 0, listed: 0 }
+});
 const zeroCats = () => Object.fromEntries(WL_CATEGORIES.map((c) => [c, 0]));
 const uniq = (xs) => [...new Set(xs)].sort();
 const mean = (xs) => (xs.length ? xs.reduce((a, b) => a + b, 0) / xs.length : null);
@@ -157,7 +164,7 @@ export function build() {
         model_versions: [],
         received: 0, quarantined: 0, unresolved: 0,
         n: 0, substantive: 0, contaminated: 0,
-        counts: zeroCounts(), tiers: zeroTiers(),
+        counts: zeroCounts(), tiers: zeroTiers(), abx: zeroAbx(),
         layer_b: { clean: 0, "flag-present": 0 },
         layer_b_cat: zeroCats(),
         dodge_types: {},
@@ -210,6 +217,7 @@ export function build() {
     if (behaviour !== "dodged") cell.substantive += 1;
     if (cited.length) cell.retrieved += 1;
     cell.counts[COUNT_KEY[behaviour]] += 1;
+    cell.abx[COUNT_KEY[behaviour]][contaminated ? "listed" : "clean"] += 1;
     const t = tier(behaviour, contaminated);
     cell.tiers[t] += 1;
     if (t === "critical" || t === "high") {

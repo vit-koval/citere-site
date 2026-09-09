@@ -517,6 +517,9 @@
         "unstable_pairs": {
           "type": "integer",
           "minimum": 0
+        },
+        "abx": {
+          "type": "object"
         }
       }
     }

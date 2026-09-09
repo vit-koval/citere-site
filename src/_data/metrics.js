@@ -34,6 +34,8 @@ function pool(list) {
   const counts = { repeat: 0, u_context: 0, refute: 0, dodge: 0 };
   const tiers = { critical: 0, high: 0, review: 0, low: 0, none: 0 };
   const layerB = { clean: 0, "flag-present": 0 };
+  const abx = { repeat: { clean: 0, listed: 0 }, u_context: { clean: 0, listed: 0 },
+                refute: { clean: 0, listed: 0 }, dodge: { clean: 0, listed: 0 } };
   const domains = {};
   let received = 0, quarantined = 0, unresolved = 0;
   let n = 0, substantive = 0, contaminated = 0, needsReview = 0;
@@ -45,6 +47,10 @@ function pool(list) {
     for (const k of Object.keys(counts)) counts[k] += c.counts[k];
     for (const k of Object.keys(tiers)) tiers[k] += c.tiers[k];
     for (const k of Object.keys(layerB)) layerB[k] += c.layer_b[k] || 0;
+    for (const k of Object.keys(abx)) {
+      abx[k].clean += (c.abx && c.abx[k] ? c.abx[k].clean : 0);
+      abx[k].listed += (c.abx && c.abx[k] ? c.abx[k].listed : 0);
+    }
     for (const [d, e] of Object.entries(c.domains || {})) {
       const acc = (domains[d] ||= { cited: 0, repeat: 0, u_context: 0, refute: 0, dodge: 0, critical: 0, listed: e.listed });
       for (const k of ["cited", ...CATEGORIES, "critical"]) acc[k] += e[k] || 0;
@@ -58,7 +64,7 @@ function pool(list) {
   return {
     cells: list.length,
     received, quarantined, unresolved,
-    n, substantive, contaminated, counts, tiers, layer_b: layerB, domains, dims, blocked,
+    n, substantive, contaminated, counts, tiers, abx, layer_b: layerB, domains, dims, blocked,
     needs_human_review: needsReview,
     // CM §5.2-5.5: Repeat Rate over substantive answers, everything else over
     // all valid answers.

@@ -56,6 +56,23 @@ wrap: wrap-narrow
 </div>
 {%- endif %}
 
+{%- if claim.tested %}
+<nav class="toc" aria-label="On this page" style="font-size:12.5px;color:var(--dim);margin:0 0 26px;display:flex;flex-wrap:wrap;gap:6px 14px">
+  <a href="#why-this-is-false">Why this is false</a>
+  <a href="#what-the-chatbots-did">What the chatbots did</a>
+  <a href="#evidence">Evidence</a>
+  <a href="#claim-card">The claim card</a>
+  <a href="#sources-identified">Sources identified</a>
+  <a href="#results-by-bot">Results by assistant</a>
+  <a href="#a-b-matrix">A&times;B</a>
+  {%- if claim.liveComparison | length %}<a href="#live-vs-grid">Live vs grid</a>{% endif %}
+  <a href="#what-changed">What changed</a>
+  <a href="#what-we-did">Countermeasures</a>
+  <a href="#limitations">Limitations</a>
+  <a href="#method">Method</a>
+</nav>
+{%- endif %}
+
 {# ------------------------------------------------------ Layer 2 #}
 <h2 id="why-this-is-false" style="margin:0 0 6px">Why this is false</h2>
 <p class="note" style="margin:0 0 14px">What the claim says, what is actually true, and the evidence for
@@ -159,20 +176,6 @@ wrap: wrap-narrow
   out of the models, not out of a search result.{% endif %}</p>
 {%- endif %}
 
-{%- if claim.confirmations | length %}
-<h2 id="who-else-has-checked-this" style="margin:36px 0 12px">{{ 'claim.whoElse' | t }}</h2>
-<div class="panel"><table>
-  <caption class="visually-hidden">Independent organisations that reached the same conclusion</caption>
-  <thead><tr><th scope="col">{{ 'col.organisation' | t }}</th><th scope="col">{{ 'col.finding' | t }}</th><th scope="col">{{ 'col.date' | t }}</th></tr></thead>
-  <tbody>
-  {%- for c in claim.confirmations %}
-    <tr><td>{% if c.url %}<a href="{{ c.url }}">{{ c.org }}</a>{% else %}{{ c.org }}{% endif %}</td>
-      <td style="color:var(--dim)">{{ c.finding_en }}</td>
-      <td class="num" style="color:var(--dimmer)"><time datetime="{{ c.date | isoDate }}">{{ c.date | shortDate }}</time></td></tr>
-  {%- endfor %}
-  </tbody></table></div>
-{%- endif %}
-
 {%- if claim.incidents | length %}
 <h2 id="evidence" style="margin:36px 0 6px">Evidence &mdash; the flagged answers</h2>
 <p class="note" style="margin:0 0 6px">Every answer in which an assistant stated the claim as fact:
@@ -189,27 +192,22 @@ wrap: wrap-narrow
   market, which question type, what it cited, how it was coded &mdash; is from the run.</p>
 {%- endif %}
 {%- for incident in claim.incidents %}
-<div class="panel" style="padding:16px 18px;margin-bottom:12px;border-left:4px solid var({{ '--false' if incident.tier == 'critical' else '--mislead' }})"{% if incident.synthetic %} data-synthetic="true"{% endif %}>
-  <div style="font-size:12.5px;color:var(--dim);margin-bottom:8px" data-persona="{{ incident.persona }}">
+<div class="ev {{ 'crit' if incident.tier == 'critical' else 'high' }}"{% if incident.synthetic %} data-synthetic="true"{% endif %}>
+  <div class="who" data-persona="{{ incident.persona }}">
     <b>{{ incident.chatbot | botName }}</b> &middot; {{ incident.market | upper }} &middot;
     {{ incident.persona }} {{ incident.persona | personaLabel }} &middot;
     <time datetime="{{ incident.date | isoDate }}">{{ incident.date | shortDate }}</time> &middot;
-    repeat {{ incident.repeat_n }} &middot; <b style="color:var({{ '--false' if incident.tier == 'critical' else '--mislead' }})">{{ incident.tier | upper }}</b>
+    repeat {{ incident.repeat_n }} &middot; <b class="{{ 'evc' if incident.tier == 'critical' else 'evh' }}">{{ incident.tier | upper }}</b>
     {%- if incident.review %} &middot; human-verified{% endif %}
     {%- if incident.is_live %} &middot; live formulation{% endif %}</div>
   {%- if incident.prompt_text %}
-  <div style="font-size:13px;color:var(--dim);margin-bottom:8px"><b>Question asked:</b>
-    {{ incident.prompt_text | defangCopy }}</div>
+  <div class="q"><b>Question asked:</b> {{ incident.prompt_text | defangCopy }}</div>
   {%- endif %}
-  <div class="grid2" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:8px">
-    <div style="background:var(--false-bg);border-radius:8px;padding:10px 12px;font-size:13px">
-      <small style="display:block;font-weight:600;font-size:11px;color:var(--dim);margin-bottom:4px">What the assistant said</small>
-      {{ incident.quote | defangCopy | default("Not published.") }}</div>
-    <div style="background:var(--ok-bg);border-radius:8px;padding:10px 12px;font-size:13px">
-      <small style="display:block;font-weight:600;font-size:11px;color:var(--dim);margin-bottom:4px">What is actually the case</small>
-      {{ claim.canonical_debunk | default(claim.raw.canonical_debunk) }}</div>
+  <div class="sbs">
+    <div class="said"><small>What the assistant said</small>{{ incident.quote | defangCopy | default("Not published.") }}</div>
+    <div class="truth"><small>What is actually the case</small>{{ claim.canonical_debunk }}</div>
   </div>
-  <div style="font-size:12.5px;color:var(--dim)"><b>Cited:</b>
+  <div class="cited"><b>Cited:</b>
     {%- if incident.domains | length %}{% for d in incident.domains %}<span{% if d in incident.listed %} class="domain"{% endif %}>{{ d | defang }}</span>{% if not loop.last %}, {% endif %}{% endfor %}
     {%- else %}nothing &mdash; the claim came out of the model, not out of a search result{% endif %}
     {%- if incident.judge_confidence %} &middot; judge confidence {{ incident.judge_confidence }}{% endif %}</div>
@@ -217,29 +215,215 @@ wrap: wrap-narrow
 {%- endfor %}
 {%- endif %}
 
-<h2 id="which-chatbots-repeated-it" style="margin:36px 0 8px">{{ 'claim.whichChatbots' | t }}</h2>
-{% include "partials/observations-table.njk" %}
+{%- if claim.tested %}
+{# ------------------------------------------------------ Layer 3 #}
+<h2 id="claim-card" style="margin:36px 0 6px">The claim card</h2>
+<p class="note" style="margin:0 0 14px">The reference record the judge compares every answer against.
+  Rendered from the claim's own entry, unedited.</p>
+<div class="panel" style="padding:16px 18px">
+  {%- if claim.false_claim %}
+  <h3 class="ssub" style="margin-top:0">The false claim</h3>
+  <blockquote style="margin:0 0 12px;padding-left:12px;border-left:3px solid var(--line2)">{{ claim.false_claim }}</blockquote>
+  {%- endif %}
+  <h3 class="ssub">What is actually the case</h3>
+  <p style="margin:0 0 12px;font-size:13.5px">{{ claim.canonical_debunk }}</p>
+  <h3 class="ssub">How the lie is built</h3>
+  <p style="margin:0 0 12px;font-size:13.5px"><b>Splice {{ claim.splice }}.</b> The claim
+    {{ claim.splice_label }}. Prompts for this claim therefore aim at
+    {% if claim.splice == "A" %}the source and the actor{% elif claim.splice == "B" %}the inference, not the premise{% elif claim.splice == "C" %}currency and scale{% else %}whether the object exists at all{% endif %}.</p>
+  {%- if claim.surface_objects | length %}
+  <h3 class="ssub">Where it spread</h3>
+  <table>
+    <caption class="visually-hidden">Domains, markers and artifacts recorded as carrying this claim</caption>
+    <thead><tr><th scope="col">Object</th><th scope="col">Type</th><th scope="col">First seen</th><th scope="col">Found in</th></tr></thead>
+    <tbody>
+    {%- for o in claim.surface_objects %}
+      <tr><th scope="row" style="font-weight:400"><span class="domain">{{ o.object | defang }}</span></th>
+        <td style="color:var(--dim)">{{ o.type }}</td>
+        <td class="num" style="color:var(--dimmer)">{% if o.date %}<time datetime="{{ o.date | isoDate }}">{{ o.date | shortDate }}</time>{% else %}&mdash;{% endif %}</td>
+        <td style="color:var(--dim);font-size:12.5px">{{ o.found_in }}</td></tr>
+    {%- endfor %}
+    </tbody></table>
+  {%- endif %}
+</div>
 
-{%- if claim.citedDomains | length %}
-<h2 id="sources-the-chatbots-cited" style="margin:36px 0 12px">{{ 'claim.sourcesCited' | t }}</h2>
+{%- if claim.confirmations | length %}
+<h2 id="who-else-has-checked-this" style="margin:36px 0 12px">{{ 'claim.whoElse' | t }}</h2>
 <div class="panel"><table>
-  <caption class="visually-hidden">Watchlisted domains cited in the recorded answers. Domains are printed defanged and never linked.</caption>
+  <caption class="visually-hidden">Independent organisations that reached the same conclusion</caption>
+  <thead><tr><th scope="col">{{ 'col.organisation' | t }}</th><th scope="col">{{ 'col.finding' | t }}</th><th scope="col">{{ 'col.date' | t }}</th></tr></thead>
   <tbody>
-  {%- for domain in claim.citedDomains %}
-    {%- set source = sources | whereEq('domain', domain) | first %}
-    <tr><th scope="row" style="font-weight:400"><span class="domain">{{ domain | defang }}</span></th>
-      <td>{% if source %}<span class="netchip {{ source.network | networkClass }}">{{ source.network | networkLabel }}</span>{% endif %}</td>
-      <td style="text-align:right">{% if navigation.has.sources and source %}<a href="{{ ('/sources/' + source.slug + '/') | url }}" style="color:var(--accent);font-weight:600;font-size:13px">View domain &rarr;</a>{% endif %}</td></tr>
+  {%- for c in claim.confirmations %}
+    <tr><td>{% if c.url %}<a href="{{ c.url }}">{{ c.org }}</a>{% else %}{{ c.org }}{% endif %}</td>
+      <td style="color:var(--dim)">{{ c.finding_en }}</td>
+      <td class="num" style="color:var(--dimmer)"><time datetime="{{ c.date | isoDate }}">{{ c.date | shortDate }}</time></td></tr>
   {%- endfor %}
   </tbody></table></div>
 {%- endif %}
 
-<h2 id="what-we-did" style="margin:36px 0 12px">{{ 'claim.whatWeDid' | t }}</h2>
-{% include "partials/actions-table.njk" %}
+
+<h2 id="sources-identified" style="margin:36px 0 6px">Disinformation sources identified</h2>
+<p class="note" style="margin:0 0 14px">{{ claim.sourcesIdentified.traced | length + claim.sourcesIdentified.found | length }}
+  sources have been identified on this claim: {{ claim.sourcesIdentified.traced | length }} traced from where
+  it first appeared, {{ claim.sourcesIdentified.found | length }} found because an assistant cited them while
+  answering about it. {{ claim.sourcesIdentified.injection }} did both &mdash; that is the line from a
+  publisher to an answer.</p>
+
+{%- if claim.sourcesIdentified.traced | length %}
+<h3 class="ssub">Traced from where the claim first appeared ({{ claim.sourcesIdentified.traced | length }})</h3>
+<div class="panel"><table>
+  <caption class="visually-hidden">Domains recorded as carrying this claim, and how often assistants cited them while answering about it</caption>
+  <thead><tr><th scope="col">Domain</th><th scope="col">Carried it</th><th scope="col" class="num">Cited here</th>
+    <th scope="col" class="num">While repeating</th><th scope="col">Source-to-answer line</th></tr></thead>
+  <tbody>
+  {%- for d in claim.sourcesIdentified.traced %}
+    <tr><th scope="row" style="font-weight:400"><span class="domain">{{ d.domain | defang }}</span></th>
+      <td class="num" style="color:var(--dimmer)">{% if d.date %}<time datetime="{{ d.date | isoDate }}">{{ d.date | shortDate }}</time>{% else %}&mdash;{% endif %}</td>
+      <td class="num">{{ d.cited }}</td>
+      <td class="num">{% if d.repeat %}<b style="color:var(--false)">{{ d.repeat }}</b>{% else %}0{% endif %}</td>
+      <td>{% if d.injection %}<b style="color:var(--false)">yes</b>{% else %}<span style="color:var(--dimmer)">carried it, not cited on it</span>{% endif %}</td></tr>
+  {%- endfor %}
+  </tbody></table></div>
+{%- endif %}
+
+{%- if claim.sourcesIdentified.found | length %}
+<h3 class="ssub">Found through assistant citations ({{ claim.sourcesIdentified.found | length }}) &mdash; not yet on the card</h3>
+<div class="panel"><table>
+  <caption class="visually-hidden">Listed domains assistants cited on this claim that the card does not record as carrying it</caption>
+  <thead><tr><th scope="col">Domain</th><th scope="col" class="num">Cited</th><th scope="col" class="num">While repeating</th>
+    <th scope="col">Note</th></tr></thead>
+  <tbody>
+  {%- for d in claim.sourcesIdentified.found %}
+    <tr><th scope="row" style="font-weight:400"><span class="domain">{{ d.domain | defang }}</span></th>
+      <td class="num">{{ d.cited }}</td>
+      <td class="num">{% if d.repeat %}<b style="color:var(--false)">{{ d.repeat }}</b>{% else %}0{% endif %}</td>
+      <td style="color:var(--dim);font-size:12.5px">candidate for the claim card</td></tr>
+  {%- endfor %}
+  </tbody></table></div>
+{%- endif %}
+<p class="note">Every domain here has its own record in the sources registry. Domains are printed
+  defanged and never linked.</p>
+
+<h2 id="results-by-bot" style="margin:36px 0 6px">Results by assistant</h2>
+{% include "partials/observations-table.njk" %}
+
+<h2 id="a-b-matrix" style="margin:36px 0 6px">A&times;B matrix</h2>
+<p class="note" style="margin:0 0 14px">Every answer placed by two things at once: what the assistant did
+  with the claim, and whether it cited a listed source. The top-right cell is the one that matters.</p>
+<div class="panel"><table>
+  <caption class="visually-hidden">Answers by what the assistant did and whether it cited a listed source</caption>
+  <thead><tr><th scope="col"></th><th scope="col" class="num">Source clean</th><th scope="col" class="num">Listed source cited</th></tr></thead>
+  <tbody>
+    <tr><th scope="row">REPEAT</th>
+      <td class="num"><b style="color:var(--mislead)">HIGH &middot; {{ claim.pooled.abx.repeat.clean }}</b></td>
+      <td class="num"><b style="color:var(--false)">CRITICAL &middot; {{ claim.pooled.abx.repeat.listed }}</b></td></tr>
+    <tr><th scope="row">U_context</th>
+      <td class="num">{{ claim.pooled.abx.u_context.clean }}</td>
+      <td class="num"><b>REVIEW &middot; {{ claim.pooled.abx.u_context.listed }}</b></td></tr>
+    <tr><th scope="row">REFUTE</th>
+      <td class="num">{{ claim.pooled.abx.refute.clean }}</td>
+      <td class="num">LOW &middot; {{ claim.pooled.abx.refute.listed }}</td></tr>
+    <tr><th scope="row">DODGE</th>
+      <td class="num">{{ claim.pooled.abx.dodge.clean }}</td>
+      <td class="num">{{ claim.pooled.abx.dodge.listed }}</td></tr>
+  </tbody></table></div>
+<p class="note">{{ claim.counts.observations }} valid answers &middot;
+  {{ claim.limitations.unresolved }} unresolved, excluded &middot;
+  {{ claim.limitations.quarantined }} quarantined, excluded.
+  <b>CRITICAL</b> repeated the claim and cited a listed source. <b>HIGH</b> repeated it from the model's
+  own memory, with no listed source. <b>REVIEW</b> hedged, but pulled a listed source into the answer.</p>
+
+{%- if claim.liveComparison | length %}
+<h2 id="live-vs-grid" style="margin:36px 0 6px">Live formulations against the constructed grid</h2>
+<p class="note" style="margin:0 0 14px">A check on our own method: the same claim asked in the words people
+  actually use, set against our designed questions. If the two disagree, our questions are shaping the
+  result. The two are reported side by side and never pooled.</p>
+{%- for block in claim.liveComparison %}
+<div class="panel"><table>
+  <caption class="visually-hidden">Repeat rate on live formulations against the constructed grid, {{ block.run.country | countryName }}</caption>
+  <thead><tr><th scope="col">{{ 'col.chatbot' | t }}</th><th scope="col" class="num">Grid ({{ 'P2' }})</th>
+    <th scope="col" class="num">Live</th><th scope="col">Agreement</th></tr></thead>
+  <tbody>
+  {%- for row in block.rows %}
+    <tr data-persona="P2">
+      <th scope="row" style="font-weight:400">{{ row.chatbot | botName }}</th>
+      <td class="num"><span class="cellstat{% if row.grid.low_n %} lown{% endif %}">{{ row.grid.rate | rate }}<small>{{ row.grid.ci | ciLabel }} &middot; n={{ row.grid.n }}</small></span></td>
+      <td class="num"><span class="cellstat{% if row.live.low_n %} lown{% endif %}">{{ row.live.rate | rate }}<small>{{ row.live.ci | ciLabel }} &middot; n={{ row.live.n }}</small></span></td>
+      <td style="color:var(--dim);font-size:12.5px">{% if row.agree and row.agree.significant %}<b style="color:var(--false)">they differ</b>{% else %}agrees directionally &middot; low n{% endif %}</td></tr>
+  {%- endfor %}
+  </tbody></table></div>
+{%- endfor %}
+<p class="note">At these sample sizes the live intervals are wide, so this section can neither confirm nor
+  rule out an artefact of our own wording. It is reported as it stands.</p>
+{%- endif %}
+{%- endif %}
 
 {%- if claim.cleansing | length %}
-<h2 id="what-changed" style="margin:36px 0 12px">{{ 'claim.whatChanged' | t }}</h2>
+<h2 id="what-changed" style="margin:36px 0 6px">{{ 'claim.whatChanged' | t }}</h2>
+<p class="note" style="margin:0 0 14px">Where a market has been measured twice under the same grid, what
+  the second run found beside the first.</p>
 {% include "partials/before-after-table.njk" %}
+{%- elif claim.tested %}
+<h2 id="what-changed" style="margin:36px 0 6px">{{ 'claim.whatChanged' | t }}</h2>
+<p class="note">No market has yet been measured twice under the same grid with the same number of repeats,
+  so there is nothing to compare. A trend appears after the second comparable run.</p>
+{%- endif %}
+
+<h2 id="what-we-did" style="margin:36px 0 6px">{{ 'claim.whatWeDid' | t }}</h2>
+{%- if claim.countermeasures | length %}
+{% include "partials/actions-table.njk" %}
+{%- else %}
+<p class="note">Nothing has been sent, filed or published on this claim yet.</p>
+{%- endif %}
+
+{%- if claim.limitations %}
+<h2 id="limitations" style="margin:36px 0 6px">Limitations</h2>
+<p class="note" style="margin:0 0 14px">What this page cannot tell you, generated from the run itself.</p>
+<div class="panel" style="padding:16px 18px">
+  <ul style="margin:0;padding-left:18px;font-size:13.5px;line-height:1.7">
+    <li><b>Judge validation {{ claim.limitations.judge.status }}.</b> Until agreement between the judge and
+      human coders is reported, every content verdict on this page is provisional.</li>
+    <li><b>All {{ claim.limitations.lowCells }} of {{ claim.limitations.cells }} assistant × question-type
+      cells are below n = {{ metrics.lowN }}</b> ({{ claim.limitations.repeats }} repeats × four wordings
+      = {{ claim.limitations.repeats * 4 }} answers each) and are shown greyed. At claim level this page
+      describes direction, not significance; significance is tested where cells pool across the cluster.</li>
+    <li>{{ claim.limitations.unresolved }} {{ claim.limitations.unresolved | plural("answer", "answers") }}
+      unresolved and {{ claim.limitations.quarantined }} quarantined, excluded from every figure.
+      {{ claim.limitations.missing }} expected {{ claim.limitations.missing | plural("answer", "answers") }} not collected.</li>
+    <li>{{ claim.limitations.reviewed }} of {{ claim.limitations.needsReview }} answers flagged for human
+      review have been reviewed.</li>
+    {%- if claim.limitations.stability %}
+    <li>Mean stability {{ claim.limitations.stability | round(2) }} across
+      {{ claim.limitations.repeats }} repeats, with {{ claim.limitations.unstable }} prompt × assistant
+      pairs giving three different verdicts. A single-shot audit of this claim would have been unreliable.</li>
+    {%- endif %}
+    <li>Collected <time datetime="{{ claim.limitations.window[0] | isoDate }}">{{ claim.limitations.window[0] | displayDate }}</time>
+      to <time datetime="{{ claim.limitations.window[1] | isoDate }}">{{ claim.limitations.window[1] | displayDate }}</time>.
+      Assistants change with model updates; these figures describe that window.</li>
+    {%- if claim.limitations.live %}
+    <li>{{ claim.limitations.live }} live-formulation answers, too few to detect an artefact of our own wording.</li>
+    {%- endif %}
+  </ul>
+</div>
+{%- endif %}
+
+{%- if claim.tested %}
+<h2 id="method" style="margin:36px 0 6px">Method summary</h2>
+<div class="prose" style="max-width:none">
+  <p>Each claim is tested with {{ claim.runs[0].prompts }} prompts per run: four question types &mdash;
+    neutral, news-style, leading, and a request to write it up &mdash; times four wordings, authored in the
+    language of each market rather than translated. Every prompt goes to every assistant
+    {{ claim.runs[0].repeats }} times through the public consumer interface, not the API.</p>
+  <p>Each answer is coded twice, independently. What the assistant did with the claim is coded by an LLM
+    judge over three passes with a majority vote, and every repeat is put to a person. Whether any cited
+    domain is on a versioned watchlist is a separate, mechanical check that forms no opinion about why the
+    domain was cited. The intersection of the two gives the escalation tier.</p>
+  <p>The repeat rate divides by substantive answers, with refusals removed; the contamination rate and the
+    verdict distribution divide by all valid answers. Every share carries a Wilson 95% interval, cells under
+    n = {{ metrics.lowN }} are flagged, and no figure is ever aggregated across question types, markets or
+    runs. Versions of the catalog, prompt grid, judge and watchlist are frozen per run and printed at the
+    top of this page.</p>
+</div>
 {%- endif %}
 
 {%- if claim.changelog | length %}
