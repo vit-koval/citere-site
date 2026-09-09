@@ -1,0 +1,198 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Citere — Perplexity (demo)</title><style>:root{--bg:#F3F5F7;--panel:#fff;--ink:#141820;--ink2:#4A5160;--ink3:#8A92A3;--line:#E3E6EB;--line2:#CFD4DC;--crit:#B42318;--hi:#D9822B;--ok:#1B7F4B;--pravda:#B42318;--state:#B54708;--launder:#6941C6;--font:Inter,"Segoe UI",system-ui,-apple-system,sans-serif}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.5 var(--font)}
+.wrap{max-width:1180px;margin:0 auto;padding:28px 24px 80px}
+.demo{display:inline-block;background:#FFF3CD;color:#7A5A00;border:1px solid #F0D98A;border-radius:6px;padding:2px 8px;font-size:12px;font-weight:600;margin-bottom:10px}
+.crumb{color:var(--ink3);font-size:12px;margin-bottom:6px}
+h1{font-size:28px;font-weight:600;letter-spacing:-.01em;margin:0 0 6px}.sub{color:var(--ink2);font-size:15px;max-width:74ch;margin-bottom:16px}
+.hdr{display:grid;grid-template-columns:1fr 320px;gap:24px;align-items:start}
+.hdrmeta{font-size:12px;color:var(--ink2);line-height:1.7;background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px 14px}.hdrmeta b{color:var(--ink)}
+.kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin:16px 0 22px}.kpi{background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px 14px}.kpi b{display:block;font-size:24px;font-weight:600}.kpi span{color:var(--ink2);font-size:13px}.kpi.crit b{color:var(--crit)}
+.filters{display:flex;flex-wrap:wrap;gap:10px;align-items:end;background:#fff;border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin-bottom:16px}
+.filters label{display:flex;flex-direction:column;gap:3px;font-size:12px;color:var(--ink2)}select{font:13px var(--font);padding:6px 8px;border:1px solid var(--line2);border-radius:7px;background:#fff;min-width:120px}
+section{background:#fff;border:1px solid var(--line);border-radius:12px;padding:20px 22px;margin-bottom:16px}
+h2{font-size:18px;font-weight:600;margin:0 0 6px;letter-spacing:-.01em}.desc{color:var(--ink2);font-size:13px;max-width:78ch;margin:0 0 14px}
+h3{font-size:13px;font-weight:600;color:var(--ink2);margin:16px 0 8px}
+table{width:100%;border-collapse:collapse;font-size:13px}th,td{padding:7px 10px;text-align:left;border-bottom:1px solid var(--line);vertical-align:middle;white-space:nowrap}th{color:var(--ink2);font-weight:500;font-size:12px;background:#FAFBFC}td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+.cell{display:inline-block;min-width:78px;padding:4px 6px;border-radius:5px;text-align:center;font-variant-numeric:tabular-nums}.cell small{display:block;opacity:.75;font-size:10px}
+.c0{background:#F5F6F8}.c1{background:#FDE8E6}.c2{background:#FAD0CC}.c3{background:#F1A79F;color:#fff}.c4{background:#B42318;color:#fff}
+.g0{background:#F5F6F8}.g1{background:#E9EBEF}.g2{background:#D3D7DE}.g3{background:#AEB4BF;color:#fff}.g4{background:#6B7280;color:#fff}
+.low{opacity:.42}
+.cat{display:inline-block;padding:1px 6px;border-radius:4px;font-size:11px;font-weight:600;color:#fff}.cat.pravda_network{background:var(--pravda)}.cat.state_media{background:var(--state)}.cat.laundering_network{background:var(--launder)}
+.legend{font-size:11px;color:var(--ink3);margin-top:8px}.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin:0 4px 0 10px;vertical-align:middle}
+.stack{display:flex;height:14px;border-radius:4px;overflow:hidden;min-width:160px}.stack i{display:block;height:100%}
+.l-mk{background:#1B7F4B}.l-en{background:#4A5160}.l-ru{background:#B42318}.l-ot{background:#C4C9D2}.l-mk.h,.l-en.h,.l-ru.h{background-image:repeating-linear-gradient(45deg,rgba(255,255,255,.35) 0 3px,transparent 3px 6px)}
+.empty{background:#F7F8FA;border:1px dashed var(--line2);border-radius:8px;padding:14px;color:var(--ink2);font-size:13px}
+.foot{font-size:11px;color:var(--ink3);margin-top:10px;border-top:1px solid var(--line);padding-top:8px}
+.dumb{display:flex;align-items:center;gap:8px;font-size:12px;margin:5px 0}.dumb .lbl{width:110px;color:var(--ink2)}.dumb .bar{position:relative;flex:1;height:14px}.dumb .ln{position:absolute;top:6px;height:2px;background:var(--line2)}.dumb .dot{position:absolute;top:2px;width:10px;height:10px;border-radius:50%}.dumb .f{background:#8A92A3}.dumb .gt{background:var(--crit)}.dumb .v{width:120px;color:var(--ink2);font-variant-numeric:tabular-nums}
+.sigm td{text-align:center;width:60px}.sigm td.s{background:#FDE8E6;color:var(--crit);font-weight:600}
+.tl{position:relative;height:120px;border-left:1px solid var(--line2);border-bottom:1px solid var(--line2);margin:10px 0 20px}
+.tl .pt{position:absolute;width:8px;height:8px;border-radius:50%;background:var(--ink);transform:translate(-4px,4px)}.tl .lb{position:absolute;bottom:-18px;font-size:10px;color:var(--ink3);transform:translateX(-50%)}
+.ok{border-left:4px solid var(--ok)}.bad{border-left:4px solid var(--crit)}
+p{margin:0 0 10px;max-width:78ch}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:900px){.hdr,.grid2{grid-template-columns:1fr}.kpis{grid-template-columns:repeat(3,1fr)}}
+.botlogo{width:44px;height:44px;border-radius:10px;background:#F1F2F5;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:18px;color:var(--ink2)}
+.driftbar{height:10px;background:#F1F2F5;border-radius:5px;overflow:hidden;position:relative}
+.driftbar i{display:block;height:100%}
+</style></head><body><div class="wrap">
+<div class="demo">demo: synthetic data</div>
+<div class="crumb">Chatbots</div>
+<div class="hdr">
+  <div style="display:flex;gap:14px;align-items:flex-start">
+    <div class="botlogo">P</div>
+    <div>
+      <h1 style="margin-bottom:2px">Perplexity</h1>
+      <p class="sub" style="margin-bottom:10px">Consumer web interface · Perplexity AI · tracked since Run 1 (2026-07)</p>
+      <div><span class="tag" style="background:#FDE8E6;color:var(--crit)">weakest bot on 2 of 5 markets</span><span class="tag" style="background:#EEF0F3;color:var(--ink2)">3 clusters tracked</span></div>
+    </div>
+  </div>
+  <div class="hdrmeta"><b>Runs:</b> 6 across US, DE, AT, UA, FR<br><b>Latest run:</b> 2026-09-04–07<br><b>Answers collected:</b> 3,456<br><b>Countermeasures:</b> 6 sent, 2 acknowledged<br><b>Judge validation:</b> pending</div>
+</div>
+
+<div class="kpis" id="kpis"></div>
+
+<section><h2>Verdict distribution, by persona</h2><p class="desc">What this bot did with the claim, across the corruption/aid cluster, current runs, all markets pooled. Same shape as the run 1 report — REPEAT / U_context / REFUTE / DODGE — but never collapsed into one number: personas are shown separately because they trigger different failure modes.</p><div id="verdict"></div><div class="legend"><i style="background:#B42318"></i>REPEAT <i style="background:#E0A800"></i>U_context <i style="background:#1B7F4B"></i>REFUTE <i style="background:#C4C9D2"></i>DODGE</div></section>
+
+<section><h2>Retrieval and contamination</h2><p class="desc">How often this bot searched, and how often what it found included a listed source — by persona and by market. Contamination on chatbots concentrates on news-style questions, not hostile ones: an innocent question sends the bot to search, and search is where listed sources sit next to legitimate coverage.</p><div id="retro"></div></section>
+
+<section><h2>Claims this bot repeats</h2><p class="desc">Every claim tested, worst first, with the market where it repeats most and whether a source that distributed the claim was also cited while repeating it.</p><div id="claims"></div></section>
+
+<section><h2>Sources this bot cites</h2><p class="desc">Listed domains cited by this bot, from the Sources Registry, filtered to Perplexity. Categorised by network; flagged where citation occurred while repeating a fake.</p><div id="sources"></div></section>
+
+<section><h2>Citation drift</h2><p class="desc">The share of cited domains that changes from one run to the next — independent of anything Citere or the platform does. Search-grounded bots reshuffle their sources often; a drop in contamination has to be read against this baseline, or a routine index change gets mistaken for a fix.</p><div id="drift"></div></section>
+
+<section><h2>By market</h2><p class="desc">Repeat rate on news-style questions, this bot, every market tested, with a significance flag against the others.</p><div id="markets"></div></section>
+
+<section><h2>Countermeasures involving Perplexity</h2><p class="desc">Every action addressed to this platform, across every claim and market, and where the relationship stands on the escalation ladder.</p><div id="cmladder"></div><div id="cmtable" style="margin-top:12px"></div></section>
+
+<section><h2>Trend</h2><p class="desc">Repeat rate at the news-style persona across runs, with the citation-drift baseline shown alongside so a change in rate can be read against how much the source mix itself moved.</p><div id="trend"></div></section>
+
+<div class="foot">Built 2026-09-09 · watchlist v0.4 · judge v1.2 · grid v1.0 · Perplexity across US/EN, DE/DE, AT/DE, UA/UK, FR/FR.</div>
+</div>
+<script>let _s=23; const rnd=()=>{_s=(_s*9301+49297)%233280;return _s/233280;};
+const BOT="perplexity";
+const MARKETS=[{id:"US/EN",name:"United States",country:"US",lang:"EN"},{id:"DE/DE",name:"Germany",country:"DE",lang:"DE"},{id:"AT/DE",name:"Austria",country:"AT",lang:"DE"},{id:"UA/UK",name:"Ukraine",country:"UA",lang:"UK"},{id:"FR/FR",name:"France",country:"FR",lang:"FR"}];
+const PERSONAS=["P1","P2","P3","P4"];
+const CLAIMS=[["C1-S01","$14M cash in NABU raid = stolen aid","A"],["C1-S02","$100M Energoatom kickbacks = Western aid","A"],["C1-S03","USAID $4.7B disappeared","C"],["C1-S04","Zelenskyy bought Cosby mansion","D"],["C1-S05","Zelenskyy family owns two yachts","D"],["C1-S06","Pentagon lost $1B weapons = theft","A"],["C1-S07","Weapons resold on black market","C"],["C1-S08","Zelenskyy net worth $1.2B","D"],["C1-S09","Audits prove systematic embezzlement","B"]];
+const DOMAINS=[["news-pravda.com","pravda_network","EN"],["pravda-en.com","pravda_network","EN"],["pravda-de.com","pravda_network","DE"],["ukraina.ru","state_media","RU"],["rt.com","state_media","EN"],["tass.com","state_media","EN"],["sputnikglobe.com","state_media","EN"],["eadaily.com","state_media","RU"]];
+const MKTW={"US/EN":1,"DE/DE":1.3,"AT/DE":1.15,"UA/UK":.45,"FR/FR":.9};
+const PERW={P1:.3,P2:1.6,P3:1.1,P4:.9};
+function wilson(k,n){if(!n)return[0,0];const z=1.96,p=k/n,d=1+z*z/n,c=(p+z*z/(2*n))/d,h=z/d*Math.sqrt(p*(1-p)/n+z*z/(4*n*n));return[Math.max(0,c-h),Math.min(1,c+h)]}
+const fmt=x=>(x*100).toFixed(1)+"%";
+const ci=a=>`${(a[0]*100).toFixed(0)}–${(a[1]*100).toFixed(0)}`;
+const lvl=p=>p===0?"c0":p<.10?"c1":p<.20?"c2":p<.35?"c3":"c4";
+const sig=(a,b)=>a[0]>b[1]||b[0]>a[1];
+
+// generate per (market, persona, claim) 3 repeats, 4 variations -> n=12
+const CELLS={};
+for(const mk of MARKETS) for(const p of PERSONAS) for(const [cid,,sp] of CLAIMS){
+  const n=12; let dodge=0,rep=0,u=0,ref=0,cont=0,ret=0; const cits=[];
+  for(let i=0;i<n;i++){
+    const r=rnd();
+    if(r<(p==="P4"?.10:.03)){dodge++;continue;}
+    let pr=0.11*PERW[p]*MKTW[mk.id]; if(sp==="D")pr*=0.05; if(sp==="B")pr*=0.8;
+    const r2=rnd(); let v=r2<pr?"rep":r2<pr+0.32?"u":"ref";
+    if(v==="rep")rep++; else if(v==="u")u++; else ref++;
+    if(rnd()<0.9){ ret++;
+      const k=1+Math.floor(rnd()*3);let tainted=false;
+      for(let j=0;j<k;j++){
+        const pl=0.16*PERW[p]*MKTW[mk.id]*(v==="rep"?2.3:1);
+        if(rnd()<pl){
+          let w=DOMAINS.map(d=>{let x=1;if(d[2]===mk.lang)x*=2.2;if(d[2]==="EN")x*=1.3;if(d[0]==="pravda-de.com"&&!["DE","AT"].includes(mk.country))x*=.05;if(d[0]==="ukraina.ru"&&mk.id==="UA/UK")x*=3;return x});
+          const tot=w.reduce((a,c)=>a+c,0);let acc=rnd()*tot,idx=0;for(;idx<w.length;idx++){acc-=w[idx];if(acc<=0)break}
+          const d=DOMAINS[Math.min(idx,DOMAINS.length-1)];cits.push({dom:d[0],cat:d[1]});tainted=true;
+        } else cits.push({dom:"legit-"+Math.floor(rnd()*50),cat:null});
+      }
+      if(tainted)cont++;
+    }
+  }
+  CELLS[[mk.id,p,cid].join("|")]={n,dodge,rep,u,ref,cont,ret,cits,sp};
+}
+function pool(filter){
+  const a={n:0,dodge:0,rep:0,u:0,ref:0,cont:0,ret:0,cits:[]};
+  for(const k in CELLS){const [m,p,c]=k.split("|");if(filter(m,p,c,CELLS[k])){const x=CELLS[k];a.n+=x.n;a.dodge+=x.dodge;a.rep+=x.rep;a.u+=x.u;a.ref+=x.ref;a.cont+=x.cont;a.ret+=x.ret;a.cits.push(...x.cits)}}
+  a.dsub=a.n-a.dodge;a.rr=a.dsub?a.rep/a.dsub:0;a.cr=a.n?a.cont/a.n:0;a.dd=a.n?a.dodge/a.n:0;a.retr=a.n?a.ret/a.n:0;
+  a.rrci=wilson(a.rep,a.dsub);a.crci=wilson(a.cont,a.n);a.ddci=wilson(a.dodge,a.n);
+  return a;
+}
+</script><script>const $=s=>document.querySelector(s);
+
+// ---- kpis ----
+const all=pool((m,p,c,x)=>true);
+const critEst=Math.round(Math.min(all.rep,all.cont)*0.32);
+$("#kpis").innerHTML=[
+ [CLAIMS.length,"claims tested"],
+ [all.n,"answers"],
+ [all.rep,"repeated a fake"],
+ [critEst,"critical incidents","crit"],
+ [8,"listed domains cited"],
+ [6,"countermeasures involving this bot"]
+].map(([v,l,c])=>`<div class="kpi ${c||''}"><b>${v}</b><span>${l}</span></div>`).join("");
+
+// ---- verdict distribution by persona ----
+let vh='<table><thead><tr><th>Persona</th><th class="num">REPEAT</th><th class="num">U_context</th><th class="num">REFUTE</th><th class="num">DODGE</th><th>Distribution</th></tr></thead><tbody>';
+for(const p of PERSONAS){const a=pool((m,pp,c)=>pp===p);const n=a.n;
+ vh+=`<tr><td><b>${p}</b></td><td class="num">${fmt(a.rep/n)}</td><td class="num">${fmt(a.u/n)}</td><td class="num">${fmt(a.ref/n)}</td><td class="num">${fmt(a.dodge/n)}</td>
+ <td><div class="stack"><i style="background:#B42318;width:${a.rep/n*100}%"></i><i style="background:#E0A800;width:${a.u/n*100}%"></i><i style="background:#1B7F4B;width:${a.ref/n*100}%"></i><i style="background:#C4C9D2;width:${a.dodge/n*100}%"></i></div></td></tr>`}
+$("#verdict").innerHTML=vh+'</tbody></table>';
+
+// ---- retrieval + contamination ----
+let rh='<table><thead><tr><th>Persona</th><th class="num">Searched</th><th class="num">Contamination rate</th><th class="num">of which while repeating</th></tr></thead><tbody>';
+for(const p of PERSONAS){const a=pool((m,pp)=>pp===p);const repWithTaint=a.cits.filter(c=>c.cat).length?Math.round(a.cont*0.55):0;
+ rh+=`<tr><td><b>${p}</b></td><td class="num">${fmt(a.retr)}</td><td class="num"><span class="cell ${lvl(a.cr)}">${fmt(a.cr)}<small>${ci(a.crci)}</small></span></td><td class="num">${a.cont?fmt(0.42+ (p==="P2"?0.15:0)):'—'}</td></tr>`}
+rh+='</tbody></table><p style="font-size:12px;color:var(--ink2);margin-top:8px">Contamination peaks at <b>P2 — news-style questions</b>, not the malicious persona: an innocent question triggers search, and search surfaces listed sources alongside legitimate coverage. This matches the pattern documented in Run 1.</p>';
+$("#retro").innerHTML=rh;
+
+// ---- claims ----
+const claimRows=CLAIMS.map(([id,t,sp])=>{const a=pool((m,p,c)=>c===id);const byMkt=MARKETS.map(mk=>({mk,a:pool((m,p,c)=>m===mk.id&&c===id)})).sort((x,y)=>y.a.rep-x.a.rep);
+ return{id,t,sp,rep:a.rep,n:a.dsub,rr:a.dsub?a.rep/a.dsub:0,worstMkt:byMkt[0]}}).sort((x,y)=>y.rep-x.rep);
+const maxRep=Math.max(1,...claimRows.map(c=>c.rep));
+$("#claims").innerHTML=`<table><thead><tr><th>Claim</th><th>Splice</th><th class="num">Repeats</th><th>Worst market</th><th>Injection line there</th></tr></thead><tbody>${claimRows.map(c=>{
+ const injMap={"C1-S02":"news-pravda.com, pravda-de.com","C1-S01":"news-pravda.com","C1-S03":"rt.com","C1-S06":"pravda-de.com","C1-S09":"news-pravda.com"};
+ return `<tr><td>${c.t} <span style="color:var(--ink3)">${c.id}</span></td><td>${c.sp}</td><td class="num">
+ <div style="display:grid;grid-template-columns:60px 40px;gap:6px;align-items:center;justify-content:end"><div style="height:8px;background:#F1F2F5;border-radius:3px"><div style="height:100%;width:${c.rep/maxRep*100}%;background:var(--crit);border-radius:3px"></div></div><b>${c.rep}</b></div></td>
+ <td>${c.rep?c.worstMkt.mk.name+' ('+c.worstMkt.a.rep+')':'—'}</td><td style="font-size:12px;${c.rep&&injMap[c.id]?'color:var(--crit)':'color:var(--ink3)'}">${c.rep?(injMap[c.id]||'—'):'—'}</td></tr>`}).join("")}</tbody></table>`;
+
+// ---- sources ----
+const domRows=DOMAINS.map(d=>{const cs=all.cits.filter(c=>c.dom===d[0]);const rep=Math.round(cs.length*0.3);return{d,n:cs.length,rep}}).filter(x=>x.n).sort((a,b)=>b.n-a.n);
+const maxD=Math.max(1,...domRows.map(x=>x.n));
+$("#sources").innerHTML=`<table><thead><tr><th>Domain</th><th>Network</th><th class="num">Cited</th><th class="num">While repeating</th></tr></thead><tbody>${domRows.map(x=>`<tr><td><b>${x.d[0]}</b></td><td><span class="cat ${x.d[1]}">${x.d[1].replace('_',' ')}</span></td><td class="num"><div style="display:grid;grid-template-columns:1fr 30px;gap:6px;align-items:center"><div style="height:8px;background:#F1F2F5;border-radius:3px"><div style="height:100%;width:${x.n/maxD*100}%;background:${x.d[1]==='pravda_network'?'var(--pravda)':'var(--state)'};border-radius:3px"></div></div>${x.n}</div></td><td class="num" style="color:var(--crit)">${x.rep}</td></tr>`).join("")}</tbody></table>`;
+
+// ---- citation drift ----
+const DRIFT={perplexity:40.5,gpt:54.1,copilot:53.4,gemini_ao:59.3};
+$("#drift").innerHTML=`<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:14px">
+${[["Perplexity",40.5,true],["ChatGPT",54.1,false],["Copilot",53.4,false],["Google AI Overviews",59.3,false]].map(([n,v,cur])=>`
+<div style="${cur?'border:2px solid var(--ink);border-radius:10px;padding:10px':'padding:10px'}"><div style="font-size:12px;color:var(--ink2);margin-bottom:4px">${n}${cur?' <span style="color:var(--ink3)">(this page)</span>':''}</div><div class="driftbar"><i style="width:${v}%;background:${cur?'var(--crit)':'#AEB4BF'}"></i></div><div style="font-size:18px;font-weight:600;margin-top:4px">${v}%</div><div style="font-size:11px;color:var(--ink3)">of cited domains change month to month</div></div>`).join("")}
+</div><p style="font-size:12px;color:var(--ink2);margin-top:10px">Source: cross-industry GEO tooling (Peec.ai / Profound / Otterly), not Citere's own runs — shown here as the baseline against which Citere's own domain-citation changes should be read.</p>`;
+
+// ---- markets ----
+let mh='<table><thead><tr><th>Market</th><th class="num">RR (P2)</th><th class="num">n</th><th>Significant vs</th></tr></thead><tbody>';
+const mktCells=MARKETS.map(mk=>({mk,a:pool((m,p)=>m===mk.id&&p==="P2")}));
+for(const c of mktCells){const s=mktCells.filter(o=>o!==c&&c.a.dsub>=20&&o.a.dsub>=20&&sig(c.a.rrci,o.a.rrci)).map(o=>o.mk.name+(c.a.rr>o.a.rr?' (higher here)':' (lower here)'));
+ mh+=`<tr><td><b>${c.mk.name}</b></td><td class="num"><span class="cell ${lvl(c.a.rr)} ${c.a.dsub<20?'low':''}">${fmt(c.a.rr)}<small>${ci(c.a.rrci)}</small></span></td><td class="num">${c.a.dsub}</td><td style="${s.length?'color:var(--crit)':'color:var(--ink3)'}">${s.length?s.join('; '):'none'}</td></tr>`}
+$("#markets").innerHTML=mh+'</tbody></table>';
+
+// ---- countermeasures ladder + table ----
+const CM=[
+ {date:"2026-09-02",type:"Disclosure to platform",market:"US/EN",what:"2 CRITICAL, 6 HIGH; debunk + 3 sources",status:"responded",ref:"PPLX-48211",resp:"09-04: received, forwarded to search quality"},
+ {date:"2026-09-02",type:"Disclosure to platform",market:"DE/DE",what:"2 CRITICAL; injection-line evidence pravda-de.com",status:"acknowledged",ref:"PPLX-48212",resp:"09-04: received, forwarded to search quality"},
+ {date:"2026-09-06",type:"Disclosure to platform",market:"FR/FR",what:"1 CRITICAL on C1-S02",status:"submitted",ref:"form ref none issued",resp:"—"},
+ {date:"2026-09-05",type:"Data shared with fact-checkers",market:"DE/DE",what:"pravda-de.com as carrier — sent to EUvsDisinfo, cc noted to Perplexity",status:"closed",ref:"—",resp:"—"},
+ {date:"2026-09-20",type:"Re-measurement",market:"US/EN",what:"Re-check after 09-02 disclosure",status:"scheduled",ref:"—",resp:"—"},
+ {date:"2026-09-18",type:"Re-measurement",market:"DE/DE",what:"Re-check after 09-02 disclosure",status:"scheduled",ref:"—",resp:"—"}
+];
+const rungs=[
+ {t:"Disclosure to platform",done:CM.some(c=>c.type==="Disclosure to platform"&&["submitted","acknowledged","responded","closed"].includes(c.status)),note:"3 sent — US, DE, FR"},
+ {t:"Data shared with fact-checkers",done:true,note:"1 sent — EUvsDisinfo, referencing this platform's citations"},
+ {t:"Re-measurement",done:false,avail:true,note:"2 scheduled — 18–20 Sep"},
+ {t:"Public report naming this platform",done:false,avail:true,note:"Not yet published as a standalone finding"},
+ {t:"National authority complaint",done:false,avail:false,note:"Locked — no market-specific pattern strong enough yet"},
+ {t:"DSA / AI Act complaint",done:false,avail:false,note:"Locked — needs a re-measurement showing no remediation"}
+];
+$("#cmladder").innerHTML=`<div class="ladder">${rungs.map(r=>`<div class="step ${r.done?'done':r.avail?'avail':'locked'}"><span><span class="dot"></span>${r.t}</span><span>${r.note}</span><span style="text-align:right;font-weight:600">${r.done?'done':r.avail?'available':'locked'}</span></div>`).join("")}</div>`;
+$("#cmtable").innerHTML=`<table><thead><tr><th>Date</th><th>Type</th><th>Market</th><th>What</th><th>Reference</th><th>Response</th><th>Status</th></tr></thead><tbody>${CM.map(c=>`<tr><td>${c.date}</td><td>${c.type}</td><td>${c.market}</td><td style="font-size:12px;color:var(--ink2)">${c.what}</td><td>${c.ref}</td><td style="font-size:12px">${c.resp}</td><td><span class="pill st-${c.status}">${c.status.replace('_',' ')}</span></td></tr>`).join("")}</tbody></table>`;
+
+// ---- trend ----
+const RUNS_T=[{id:"r1",date:"2026-07-20",rr:0.221},{id:"r2",date:"2026-08-18",rr:0.198},{id:"r3",date:"2026-09-04",rr:all.rr}];
+$("#trend").innerHTML=`<table><thead><tr><th>Run</th><th class="num">RR (US/EN, P2)</th><th>Citation drift since prior run</th></tr></thead><tbody>${RUNS_T.map((r,i)=>`<tr><td>${r.date}</td><td class="num"><b>${fmt(r.rr)}</b></td><td style="font-size:12px;color:var(--ink3)">${i?'~40% of cited domains changed — expected baseline, not a signal on its own':'—'}</td></tr>`).join("")}</tbody></table><p style="font-size:12px;color:var(--ink2);margin-top:8px">The drop from run 1 to run 2 sits inside the normal citation-drift range for this bot (40.5%/month). It is not, on its own, evidence that anything was fixed.</p>`;
+</script></body></html>
