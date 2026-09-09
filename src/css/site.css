@@ -598,3 +598,9 @@ h3.ssub{font-size:13px;font-weight:600;color:var(--dim);margin:22px 0 8px;letter
 .rung.locked{background:var(--bg);color:var(--dimmer)}
 .rung .rbody{padding:0 14px 12px}
 @media(max-width:820px){.rung>summary{grid-template-columns:auto 1fr;row-gap:4px}}
+
+/* Verdict distribution bar: the four outcomes of one cell, in order. */
+.vbar{display:flex;height:14px;min-width:150px;border-radius:4px;overflow:hidden}
+.vbar i{display:block;height:100%}
+.vlegend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin:0 5px 0 12px;vertical-align:middle}
+.vlegend i:first-child{margin-left:0}

@@ -75,6 +75,114 @@ wrap: wrap-narrow
 {%- endfor %}
 {%- endif %}
 
+<h2 id="verdicts" style="margin:36px 0 6px">What it did with the claims</h2>
+<p class="note" style="margin:0 0 14px">The four outcomes as shares of every valid answer, one row per
+  question type per market. Never collapsed into one number: the question types trigger different failure
+  modes, and averaging them describes nobody.</p>
+<div class="panel"><table>
+  <caption class="visually-hidden">Share of answers by outcome, per market and question type</caption>
+  <thead><tr><th scope="col">Market</th><th scope="col">{{ 'col.persona' | t }}</th>
+    <th scope="col" class="num">Repeated</th><th scope="col" class="num">Hedged</th>
+    <th scope="col" class="num">Refuted</th><th scope="col" class="num">Refused</th>
+    <th scope="col">Distribution</th></tr></thead>
+  <tbody>
+  {%- for entry in profile.markets %}
+  {%- for row in entry.personas %}
+    <tr data-persona="{{ row.persona }}">
+      <th scope="row" style="font-weight:400">{% if loop.first %}{{ entry.name }}{% endif %}</th>
+      <td class="mono" style="font-size:12px;color:var(--dimmer)">{{ row.persona }} &middot; {{ row.persona | personaLabel }}</td>
+      <td class="num">{{ row.verdict_shares.repeat.rate | rate }}</td>
+      <td class="num">{{ row.verdict_shares.u_context.rate | rate }}</td>
+      <td class="num">{{ row.verdict_shares.refute.rate | rate }}</td>
+      <td class="num">{{ row.verdict_shares.dodge.rate | rate }}</td>
+      <td><span class="vbar"><i class="s-rep" style="width:{{ row.verdict_shares.repeat.rate * 100 }}%"></i><i class="s-ctx" style="width:{{ row.verdict_shares.u_context.rate * 100 }}%"></i><i class="s-ref" style="width:{{ row.verdict_shares.refute.rate * 100 }}%"></i><i class="s-dod" style="width:{{ row.verdict_shares.dodge.rate * 100 }}%"></i></span></td>
+    </tr>
+  {%- endfor %}
+  {%- endfor %}
+  </tbody></table></div>
+<p class="note vlegend"><i class="s-rep"></i>repeated <i class="s-ctx"></i>hedged
+  <i class="s-ref"></i>refuted <i class="s-dod"></i>refused</p>
+
+<h2 id="retrieval" style="margin:36px 0 6px">Searching, and what it found</h2>
+<p class="note" style="margin:0 0 14px">How often this assistant cited anything at all, and how often what
+  it cited included a listed source. Contamination concentrates on news-style questions rather than hostile
+  ones: an ordinary question sends the assistant to search, and search is where listed sources sit beside
+  legitimate coverage.</p>
+<div class="panel"><table>
+  <caption class="visually-hidden">Share of answers citing anything, and share citing a listed source, per market and question type</caption>
+  <thead><tr><th scope="col">Market</th><th scope="col">{{ 'col.persona' | t }}</th>
+    <th scope="col" class="num">Cited anything</th><th scope="col" class="num">Cited a listed source</th></tr></thead>
+  <tbody>
+  {%- for entry in profile.markets %}
+  {%- for row in entry.personas %}
+    <tr data-persona="{{ row.persona }}">
+      <th scope="row" style="font-weight:400">{% if loop.first %}{{ entry.name }}{% endif %}</th>
+      <td class="mono" style="font-size:12px;color:var(--dimmer)">{{ row.persona }}</td>
+      <td class="num">{{ row.retrieval_rate.rate | rate }}</td>
+      <td class="num"><span class="cellstat{% if row.contamination_rate.low_n %} lown{% endif %}">{{ row.contamination_rate.rate | rate }}<small>{{ row.contamination_rate.ci | ciLabel }} &middot; n={{ row.contamination_rate.n }}</small></span></td>
+    </tr>
+  {%- endfor %}
+  {%- endfor %}
+  </tbody></table></div>
+
+{%- if profile.cited | length %}
+<h2 id="sources" style="margin:36px 0 6px">Sources it cites</h2>
+<p class="note" style="margin:0 0 14px">Listed domains this assistant cited, from the sources registry.
+  Counted once per answer per domain. Domains are printed defanged and never linked.</p>
+<div class="panel"><table>
+  <caption class="visually-hidden">Listed domains cited by this assistant</caption>
+  <thead><tr><th scope="col">{{ 'col.domain' | t }}</th><th scope="col">{{ 'col.network' | t }}</th>
+    <th scope="col" class="num">Cited by this assistant</th><th scope="col" class="num">Critical incidents</th></tr></thead>
+  <tbody>
+  {%- for row in profile.cited %}
+    <tr><th scope="row" style="font-weight:400"><a href="{{ row.source.url | url }}"><span class="domain">{{ row.source.defanged }}</span></a></th>
+      <td><span class="netchip {{ row.source.network | networkClass }}">{{ row.source.network | networkLabel }}</span></td>
+      <td class="num">{{ row.cited }}</td>
+      <td class="num">{% if row.source.criticalCount %}<b style="color:var(--false)">{{ row.source.criticalCount }}</b>{% else %}<span style="color:var(--dimmer)">0</span>{% endif %}</td></tr>
+  {%- endfor %}
+  </tbody></table></div>
+{%- endif %}
+
+<h2 id="drift" style="margin:36px 0 6px">Citation drift</h2>
+<p class="note" style="margin:0 0 14px">The share of the domains an assistant cites that changes from one
+  month to the next, for reasons unrelated to anything we or the platform do. This is an external figure,
+  not one of ours &mdash; it is here because a change between our runs has to be read against it.</p>
+<div class="panel"><table>
+  <caption class="visually-hidden">Published month-to-month citation drift by product</caption>
+  <thead><tr><th scope="col">Product</th><th scope="col" class="num">Cited domains that change month to month</th></tr></thead>
+  <tbody>
+  {%- for p in drift.products %}
+    <tr{% if p.key == profile.key %} style="font-weight:600"{% endif %}>
+      <th scope="row" style="font-weight:inherit">{{ p.label }}{% if p.key == profile.key %} &mdash; this assistant{% endif %}</th>
+      <td class="num">{{ p.rate | rate }}</td></tr>
+  {%- endfor %}
+  </tbody></table></div>
+<p class="note">Source: {{ drift.source }}. {{ drift.note_en }}</p>
+
+{%- if profile.gaps | length %}
+<h2 id="markets" style="margin:36px 0 6px">Where it does worst</h2>
+<p class="note" style="margin:0 0 14px">Markets whose intervals do not overlap at the news-style question:
+  the only comparisons this page will call real.</p>
+<div class="panel"><table>
+  <caption class="visually-hidden">Pairs of markets where this assistant's repeat rate differs significantly</caption>
+  <thead><tr><th scope="col">Higher in</th><th scope="col" class="num">Repeat rate</th>
+    <th scope="col">Lower in</th><th scope="col" class="num">Repeat rate</th><th scope="col" class="num">Ratio</th></tr></thead>
+  <tbody>
+  {%- for gap in profile.gaps %}
+    <tr data-persona="{{ profile.persona }}">
+      <th scope="row" style="font-weight:400">{{ gap.high.name }}</th>
+      <td class="num"><span class="cellstat">{{ gap.high.headline.repeat_rate.rate | rate }}<small>{{ gap.high.headline.repeat_rate.ci | ciLabel }} &middot; n={{ gap.high.headline.repeat_rate.n }}</small></span></td>
+      <td>{{ gap.low.name }}</td>
+      <td class="num"><span class="cellstat">{{ gap.low.headline.repeat_rate.rate | rate }}<small>{{ gap.low.headline.repeat_rate.ci | ciLabel }} &middot; n={{ gap.low.headline.repeat_rate.n }}</small></span></td>
+      <td class="num"><b>{{ gap.ratio | round(1) }}&times;</b></td></tr>
+  {%- endfor %}
+  </tbody></table></div>
+{%- else %}
+<h2 id="markets" style="margin:36px 0 6px">Where it does worst</h2>
+<p class="note">No two markets differ significantly for this assistant: every pair of intervals overlaps,
+  so any difference between them is directional and this page does not claim it.</p>
+{%- endif %}
+
 {%- if profile.repeatedClaims | length %}
 <h2 id="claims" style="margin:36px 0 12px">{{ 'section.claimsRepeated' | t }}</h2>
 <div class="panel"><table>
@@ -89,19 +197,38 @@ wrap: wrap-narrow
   </tbody></table></div>
 {%- endif %}
 
-<h2 id="countermeasures" style="margin:36px 0 12px">{{ 'section.countermeasuresTo' | t }} {{ profile.company }}</h2>
-{%- if profile.countermeasures | length %}
-<div class="panel">
-  {%- for e in profile.countermeasures %}
-  <div class="actrow">
-    <div class="what">{{ e.typeLabel }}{% if e.subtypeLabel %} &middot; {{ e.subtypeLabel }}{% endif %}<small>{{ e.claims | join(", ") }}{% if e.market %} &middot; {{ e.market | upper }}{% endif %}</small></div>
-    <span class="chip {{ 'ok' if e.status in ['acknowledged','responded','closed'] else ('wait' if e.status in ['submitted','pending_confirmation'] else '') }}"><span class="dot"></span>{{ e.statusLabel }}</span>
-    <div class="when">{% if e.date %}<time datetime="{{ e.date | isoDate }}">{{ e.date | shortDate }}</time>{% else %}<span style="color:var(--dimmer)">not sent</span>{% endif %}</div>
-  </div>
-  {%- endfor %}
+<h2 id="countermeasures" style="margin:36px 0 6px">{{ 'section.countermeasuresTo' | t }} {{ profile.company }}</h2>
+{%- if profile.platformActions | length %}
+<p class="note" style="margin:0 0 14px">Where the relationship with this platform stands on the escalation
+  ladder. A rung is reached once something on it has been done; nothing leaves Citere without a person
+  approving it, so a draft is shown as a draft.</p>
+<div class="ladder">
+{%- for rung in profile.ladder %}
+  <details class="rung {{ rung.state }}"{% if rung.all | length %} open{% endif %}>
+    <summary><span class="rdot"></span><b>{{ rung.label }}</b>
+      <span class="rnote">{% if rung.done | length %}{{ rung.done | length }} taken{% if rung.drafted | length %}, {{ rung.drafted | length }} drafted{% endif %}
+        {%- elif rung.drafted | length %}{{ rung.drafted | length }} drafted, none sent
+        {%- else %}nothing of this kind sent to {{ profile.company }} yet{% endif %}</span>
+      <span class="rstate">{{ rung.state }}</span></summary>
+    <div class="rbody">
+    {%- for a in rung.all %}
+      <div class="actrow">
+        <div class="what">{{ a.typeLabel }}{% if a.subtypeLabel %} &middot; {{ a.subtypeLabel }}{% endif %}
+          <small>{% for id in a.claims %}{{ id }}{% if not loop.last %}, {% endif %}{% endfor %}
+            {%- if a.market %} &middot; {{ a.market | upper }}{% endif %}</small></div>
+        <span class="cmpill {{ a.statusClass }}">{{ a.statusLabel }}</span>
+        <div class="when">{% if a.date %}<time datetime="{{ a.date | isoDate }}">{{ a.date | shortDate }}</time>{% else %}<span style="color:var(--dimmer)">not sent</span>{% endif %}</div>
+      </div>
+    {%- endfor %}
+    {%- if not rung.all | length %}<p class="note" style="margin:0">Nothing of this kind has been sent to
+      {{ profile.company }}.</p>{% endif %}
+    </div>
+  </details>
+{%- endfor %}
 </div>
 <p class="note">We publish the fact, date and status of each countermeasure. We do not publish what was
-  submitted, the proof of submission, correspondence with {{ profile.company }}, or the names of individuals.</p>
+  submitted, the proof of submission, correspondence with {{ profile.company }}, or the names of
+  individuals.</p>
 {%- else %}
 <p class="note">We have sent {{ profile.company }} nothing about the findings on this page yet.</p>
 {%- endif %}

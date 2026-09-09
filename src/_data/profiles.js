@@ -11,7 +11,9 @@ const claims = require("./claims.js");
 const countermeasures = require("./countermeasures.js");
 const metrics = require("./metrics.js");
 const runs = require("./runs.js");
-const { CHATBOTS } = require("../_lib/labels.cjs");
+const { CHATBOTS, COUNTERMEASURE_LADDER } = require("../_lib/labels.cjs");
+const drift = require("./drift.js");
+const sources = require("./sources.js");
 
 const HEADLINE = "P2"; // the news-style question, where contamination peaks
 const personas = metrics.dimensions.personas || [];
@@ -57,11 +59,54 @@ const chatbots = Object.entries(platforms).map(([key, meta]) => {
       change: metrics.compare(points[0], points[points.length - 1])
     }];
   });
+  // Countries Index Business Logic §7: two markets differ only when their
+  // intervals do not overlap. Anything else is directional and is not claimed.
+  const gaps = [];
+  for (const a of markets) {
+    for (const b of markets) {
+      if (a === b || !a.headline || !b.headline) continue;
+      if (a.headline.repeat_rate.rate <= b.headline.repeat_rate.rate) continue;
+      if (!metrics.significant(a.headline.repeat_rate, b.headline.repeat_rate)) continue;
+      gaps.push({ high: a, low: b,
+        ratio: b.headline.repeat_rate.rate ? a.headline.repeat_rate.rate / b.headline.repeat_rate.rate : null,
+        diff: a.headline.repeat_rate.rate - b.headline.repeat_rate.rate });
+    }
+  }
+  gaps.sort((x, y) => y.diff - x.diff);
+
+  // The domains this assistant cited, from the registry rather than recomputed.
+  const cited = sources
+    .map((s) => ({ source: s, cited: s.byBot[key] || 0 }))
+    .filter((r) => r.cited)
+    .sort((a, b) => b.cited - a.cited);
+
+  // The log names whoever we wrote to: sometimes the product, sometimes the
+  // company that makes it. Match the whole name, not a substring - "Google
+  // Search Console" is an infrastructure channel, not this assistant, and
+  // attributing that report to a bot profile would be wrong.
+  const names = new Set([meta.name, meta.company, (CHATBOTS[key] || {}).name].filter(Boolean));
+  const platformActions = countermeasures.actions.filter((e) =>
+    e.target && names.has(e.target.replace(/\s*\(.*\)$/, "").trim()));
+  const ladder = COUNTERMEASURE_LADDER.map((rung) => {
+    const done = platformActions.filter((a) => a.taken && a.kind === "action" && rung.types.includes(a.type));
+    const drafted = platformActions.filter((a) => !a.taken && a.kind === "action" && rung.types.includes(a.type));
+    return { ...rung, done, drafted, all: [...done, ...drafted],
+             state: done.length ? "done" : "available" };
+  });
+
   return {
     key,
     name: meta.name || (CHATBOTS[key] || {}).name || key,
     company: meta.company,
     url: `/platforms/${key}/`,
+    gaps,
+    biggestGap: gaps[0] || null,
+    cited,
+    ladder,
+    platformActions,
+    // An external figure, not ours: how much of this assistant's cited-domain
+    // set turns over month to month, which is the noise floor a trend sits on.
+    drift: drift.byKey[key] || null,
     modelVersions: meta.model_versions || [],
     persona: HEADLINE,
     markets,
@@ -69,7 +114,7 @@ const chatbots = Object.entries(platforms).map(([key, meta]) => {
     repeatedClaims,
     claimsRepeated: repeatedClaims.length,
     // The countermeasures log names the company we wrote to.
-    countermeasures: countermeasures.actions.filter((e) => e.target && e.target.includes(meta.company)),
+    countermeasures: platformActions,
     trend
   };
 }).sort((a, b) => {
@@ -117,4 +162,63 @@ const matrix = {
   }))
 };
 
-module.exports = { chatbots, countries, matrix, persona: HEADLINE };
+// Countries Index Business Logic: the page's own findings, each rendered only
+// if the comparison clears significance. An empty result is stated, never
+// filled in with something weaker.
+const allGaps = chatbots.flatMap((bot) => bot.gaps.map((g) => ({ bot, ...g })));
+allGaps.sort((a, b) => b.diff - a.diff);
+const headlineGap = allGaps[0] || null;
+
+// §1 "Same chatbot, different country": the largest gap for each of the top
+// three assistants that have one at all.
+const seenBots = new Set();
+const perBot = allGaps.filter((g) => {
+  if (seenBots.has(g.bot.key)) return false;
+  seenBots.add(g.bot.key);
+  return true;
+}).slice(0, 3);
+
+// §11 "Language matters more than the border": two markets sharing a language
+// and not a country.
+const langPairs = [];
+for (const a of countries) {
+  for (const b of countries) {
+    if (a.market >= b.market || a.language !== b.language) continue;
+    langPairs.push({ a, b, rows: chatbots.map((bot) => {
+      const x = bot.markets.find((m) => m.market === a.market).headline;
+      const y = bot.markets.find((m) => m.market === b.market).headline;
+      return { bot, a: x.repeat_rate, b: y.repeat_rate, significant: metrics.significant(x.repeat_rate, y.repeat_rate) };
+    }) });
+  }
+}
+for (const pair of langPairs) pair.differing = pair.rows.filter((r) => r.significant).length;
+
+// §4 "Where chatbots go silent": the largest significant difference in refusal
+// rate on the generation persona.
+let silence = null;
+for (const bot of chatbots) {
+  for (const a of bot.markets) {
+    for (const b of bot.markets) {
+      if (a === b) continue;
+      const x = metrics.poolOf({ chatbot: bot.key, run: a.run.key, persona: "P4", is_live: false });
+      const y = metrics.poolOf({ chatbot: bot.key, run: b.run.key, persona: "P4", is_live: false });
+      if (!metrics.significant(x.dodge_rate, y.dodge_rate)) continue;
+      if (x.dodge_rate.rate <= y.dodge_rate.rate) continue;
+      const diff = x.dodge_rate.rate - y.dodge_rate.rate;
+      if (!silence || diff > silence.diff) silence = { bot, high: a, low: b, x, y, diff };
+    }
+  }
+}
+
+// §10 "Fabrications don't travel": the grain-of-truth split per market.
+const grain = countries.map((country) => ({
+  country,
+  ...(metrics.grainDifferential({ run: country.run.key, persona: HEADLINE, is_live: false }) || {})
+})).filter((row) => row.grain && row.fabrication);
+
+module.exports = {
+  chatbots, countries, matrix, persona: HEADLINE,
+  headlineGap, perBot, langPairs, silence, grain,
+  localMirrors: sources.filter((s) => s.markets.length === 1 && s.citedCount),
+  criticalTotal: countries.reduce((n, c) => n + c.critical, 0)
+};
