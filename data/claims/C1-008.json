@@ -1,0 +1,96 @@
+{
+  "id": "C1-008",
+  "slug": "c1-008-a-kyiv-official-bought-a-us-mansion-with-aid",
+  "cluster": "corruption-diverted-aid",
+  "title_en": "A Ukrainian official bought a $29 million US mansion with aid money",
+  "title_uk": "A Ukrainian official bought a $29 million US mansion with aid money",
+  "verdict": "false",
+  "verdict_date": "2026-08-28",
+  "updated": "2026-09-05",
+  "languages": [
+    "de",
+    "en",
+    "fr",
+    "uk"
+  ],
+  "countries": [
+    "at",
+    "de",
+    "fr",
+    "ua",
+    "us"
+  ],
+  "grain_of_truth": false,
+  "origin": {
+    "first_seen": "2026-08-14",
+    "origin_note_en": "A cloned property-listing site registered nine days earlier carried the story first; the fabricated listing was then amplified by a Storm-1516 asset and reply networks.",
+    "network": "storm-1516",
+    "attribution": [
+      {
+        "org": "Microsoft MTAC",
+        "url": "https://www.microsoft.com/mtac",
+        "date": "2024-04-17"
+      },
+      {
+        "org": "NewsGuard",
+        "url": "https://www.newsguardtech.com",
+        "date": "2025-03-06"
+      }
+    ]
+  },
+  "confirmations": [
+    {
+      "org": "VoxCheck",
+      "finding_en": "Traced the listing to a domain registered days before publication and found no corresponding property record.",
+      "date": "2026-08-22",
+      "url": "https://voxukraine.org/voxcheck"
+    }
+  ],
+  "related": [
+    "C1-005",
+    "C1-004"
+  ],
+  "changelog": [
+    {
+      "date": "2026-09-05",
+      "note_en": "Added the September run across five markets."
+    }
+  ],
+  "splice": "D",
+  "label": "Mansion bought with aid",
+  "status": "active",
+  "version": "1.1.0",
+  "debunk_argument": [
+    {
+      "assertion": "A Ukrainian official bought a $29 million mansion.",
+      "refutation": "No county record shows the sale, and the company named as buyer has never filed in that state.",
+      "source": "VoxCheck, 2026-08-22"
+    },
+    {
+      "assertion": "The purchase was funded with Western aid.",
+      "refutation": "There is no purchase to fund. The listing site was registered nine days before it published.",
+      "source": "NewsGuard, 2026-08-25"
+    }
+  ],
+  "surface_objects": [
+    {
+      "object": "estate-review.example",
+      "type": "clone",
+      "date": "2026-08-14",
+      "found_in": "case metadata"
+    },
+    {
+      "object": "svoboda-eu.example",
+      "type": "outlet",
+      "date": "2026-08-16",
+      "found_in": "case metadata"
+    },
+    {
+      "object": "matryoshka-hub.example",
+      "type": "outlet",
+      "date": "2026-08-17",
+      "found_in": "case metadata"
+    }
+  ],
+  "demo": true
+}

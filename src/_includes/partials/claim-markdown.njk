@@ -30,12 +30,16 @@ First seen {{ claim.origin.first_seen | displayDate }} on the {{ claim.origin.ne
 {% endif %}
 ## Which chatbots repeated it
 
-Personas are reported separately and never averaged.
+Repeat rate by assistant and question type, one table per market. Personas are reported separately and
+never averaged, markets are never merged, and every figure carries its 95% interval and its sample size.
+A cell built on fewer than {{ metrics.lowN }} answers settles nothing.
+{% for table in claim.tables %}
+### {{ table.run.country | countryName }} · {{ table.run.language | languageName }} · {{ table.run.collected_at | displayDate }}
 
-| Chatbot | Country | Persona | Verdict | Judge confidence |
-|---|---|---|---|---|
-{% for o in claim.observations %}| {{ o.chatbot | botName }} | {{ o.country | upper }} | {{ o.persona }} · {{ o.persona | personaLabel }} | {{ o.behaviour | behaviourLabel }} | {% if o.judge %}{{ o.judge.confidence }}{% endif %} |
-{% endfor %}
+| Chatbot | {% for p in metrics.dimensions.personas %}{{ p }} · {{ p | personaLabel }} | {% endfor %}
+|---|{% for p in metrics.dimensions.personas %}---|{% endfor %}
+{% for row in table.rows %}| {{ row.chatbot | botName }} | {% for entry in row.cells %}{% if entry.cell and entry.cell.repeat_rate.n %}{{ entry.cell.repeat_rate.rate | rate }} ({{ entry.cell.repeat_rate.ci | ciLabel }}, n={{ entry.cell.repeat_rate.n }}) | {% else %}— | {% endif %}{% endfor %}
+{% endfor %}{% endfor %}
 {% if claim.citedDomains | length %}
 ## Sources the chatbots cited
 
@@ -44,24 +48,26 @@ Personas are reported separately and never averaged.
 {% endif %}
 ## What we did
 
-{{ claim.counts.actions }} actions taken · {{ claim.counts.responses }} platform {{ claim.counts.responses | plural("response", "responses") }}{% if claim.remeasuredOn %} · re-measured {{ claim.remeasuredOn | displayDate }}{% endif %}
+{{ claim.counts.actions }} {{ claim.counts.actions | plural("countermeasure taken", "countermeasures taken") }} · {{ claim.counts.responses }} {{ claim.counts.responses | plural("response received", "responses received") }}{% if claim.remeasuredOn %} · re-measured {{ claim.remeasuredOn | displayDate }}{% endif %}
 
-| Action | To | Date | Status |
+| Countermeasure | To | Date | Status |
 |---|---|---|---|
-{% for a in claim.actions %}| {{ a.type | actionTypeLabel }} | {{ a.target | defangCopy }} | {{ a.date | displayDate }} | {{ a.status | statusLabel }}{% if a.response_date %} {{ a.response_date | displayDate }}{% endif %} |
+{% for a in claim.countermeasures %}| {{ a.typeLabel }}{% if a.subtypeLabel %} · {{ a.subtypeLabel }}{% endif %} | {{ a.target | defangCopy }} | {% if a.date %}{{ a.date | displayDate }}{% else %}not sent{% endif %} | {{ a.statusLabel }}{% if a.response_date %} {{ a.response_date | displayDate }}{% endif %} |
 {% endfor %}
-We publish the fact, date and status of each action. We do not publish correspondence with platforms or the names of individuals.
-{% if claim.before_after | length %}
-## What changed
+We publish the fact, date and status of each countermeasure. We do not publish what was submitted, the proof
+of submission, correspondence with platforms, or the names of individuals.
+{% for block in claim.cleansing %}
+## What changed — {{ block.before.country | countryName }}
 
-Measured under persona {{ (claim.before_after | first).persona }} · {{ (claim.before_after | first).persona | personaLabel }}.
+Persona {{ block.persona }} · {{ block.persona | personaLabel }}, {{ block.before.collected_at | displayDate }} against {{ block.after.collected_at | displayDate }}.
 
 | Chatbot | Before | After | Change |
 |---|---|---|---|
-{% for r in claim.before_after %}| {{ r.chatbot | botName }} | {{ r.before.rate | rate }} ({{ r.before.date | displayDate }}) | {{ r.after.rate | rate }} ({{ r.after.date | displayDate }}) | {{ (r.after.rate - r.before.rate) | pp }} |
+{% for r in block.rows %}| {{ r.chatbot | botName }} | {{ r.before.rate | rate }} ({{ r.before.ci | ciLabel }}, n={{ r.before.n }}) | {{ r.after.rate | rate }} ({{ r.after.ci | ciLabel }}, n={{ r.after.n }}) | {{ r.change.delta | pp }}, {{ "significant" if r.change.significant else "not significant" }} |
 {% endfor %}
-Models are updated continuously and independently of our reports. We publish the change without claiming causation we cannot demonstrate.
-{% endif %}{% if claim.changelog | length %}
+A change is called real only when the two intervals do not overlap. There is no control group: this is the
+change observed after the disclosure, not the effect of it.
+{% endfor %}{% if claim.changelog | length %}
 ## Changelog
 
 {% for e in claim.changelog %}- {{ e.date | displayDate }} — {{ e.note_en }}

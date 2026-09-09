@@ -9,49 +9,71 @@ wrap: wrap-narrow
     <div style="font-size:14px;color:var(--dimmer)">{{ profile.company }} &middot; public consumer interface, not API</div></div>
 </div>
 
-<p class="plead" style="margin-bottom:28px">In our <b>{{ benchmarks.label }}</b> run, {{ profile.name }}
-  repeated a documented false claim in <b>{{ profile.repeatRate | rate }}</b> of non-evasive answers under
-  the {{ profile.repeatPersona }} topical-news persona, and cited a Kremlin-linked domain in
-  <b>{{ profile.contaminationRate | rate }}</b> of its answers.
-  {%- if profile.modelVersion %} Model version <b>{{ profile.modelVersion }}</b>,
-  <time datetime="{{ profile.run.date | isoDate }}">{{ profile.run.date | displayDate }}</time>.{% endif %}
-  {{ profile.company }} has been notified of every finding on this page that carries a report date.</p>
+<p class="plead" style="margin-bottom:28px">{%- if profile.worst %}In the
+  <b>{{ profile.worst.run.collected_at | monthLabel }}</b> run, {{ profile.name }} repeated a documented
+  false claim in <b>{{ profile.worst.headline.repeat_rate.rate | rate }}</b> of its substantive answers to
+  {{ profile.persona }} news-style questions in <b>{{ profile.worst.name }}</b> &mdash; its worst market
+  &mdash; and cited a watchlisted domain in
+  <b>{{ profile.worst.headline.contamination_rate.rate | rate }}</b> of its answers there.
+  {%- else %}No market has yet collected enough answers from {{ profile.name }} to report a rate.{% endif %}
+  Markets are shown side by side below and never merged.
+  {{ profile.company }} has been notified of every finding on this page that carries a date.</p>
 
+{%- if profile.worst %}
 <div class="metrics" style="grid-template-columns:repeat(3,1fr);margin:0 0 34px">
-  <div class="m" data-persona="{{ profile.repeatPersona }}"><div class="n num">{{ profile.repeatRate | rate }}</div>
-    <div class="l">repeat-rate</div><div class="s">{{ profile.repeatPersona }} &middot; topical news &middot; n={{ profile.repeatN }}</div></div>
-  <div class="m"><div class="n num">{{ profile.contaminationRate | rate }}</div>
-    <div class="l">source-contamination rate</div><div class="s">all personas &middot; n={{ profile.contaminationN }}</div></div>
+  <div class="m" data-persona="{{ profile.persona }}"><div class="n num">{{ profile.worst.headline.repeat_rate.rate | rate }}</div>
+    <div class="l">repeat rate</div><div class="s">{{ profile.persona }} &middot; news-style &middot; {{ profile.worst.name }} &middot; n={{ profile.worst.headline.repeat_rate.n }}</div></div>
+  <div class="m" data-persona="{{ profile.persona }}"><div class="n num">{{ profile.worst.headline.contamination_rate.rate | rate }}</div>
+    <div class="l">source-contamination rate</div><div class="s">{{ profile.persona }} &middot; {{ profile.worst.name }} &middot; n={{ profile.worst.headline.contamination_rate.n }}</div></div>
   <div class="m"><div class="n num">{{ profile.claimsRepeated }}</div>
     <div class="l">claims repeated</div><div class="s">of {{ claims | length }} documented</div></div>
 </div>
+{%- endif %}
 
 <h2 id="by-persona" style="margin:0 0 12px">{{ 'section.byQuestionType' | t }}</h2>
+<p class="note" style="margin:0 0 12px">One table per market. Personas are never averaged and markets are
+  never merged; every figure carries its interval and sample size.</p>
+{%- for entry in profile.markets %}
+<h3 class="ssub">{{ entry.name }} &middot; {{ entry.language | languageName }}
+  <span style="color:var(--dimmer);font-weight:400">&middot; <time datetime="{{ entry.run.collected_at | isoDate }}">{{ entry.run.collected_at | shortDate }}</time></span></h3>
 <div class="panel"><table>
-  <caption class="visually-hidden">Repeat-rate for this assistant per persona, never averaged</caption>
-  <thead><tr><th scope="col">{{ 'col.persona' | t }}</th><th scope="col">{{ 'col.repeatRate' | t }}</th><th scope="col">{{ 'col.responses' | t }}</th></tr></thead>
+  <caption class="visually-hidden">Repeat rate, contamination and refusals for this assistant in {{ entry.name }}, by question type</caption>
+  <thead><tr><th scope="col">{{ 'col.persona' | t }}</th><th scope="col" class="num">{{ 'col.repeatRate' | t }}</th>
+    <th scope="col" class="num">{{ 'col.contamination' | t }}</th><th scope="col" class="num">Refused</th>
+    <th scope="col" class="num">Searched</th></tr></thead>
   <tbody>
-  {%- for row in profile.byPersona %}
-    <tr data-persona="{{ row.persona }}"><td class="mono" style="font-size:12px;color:var(--dimmer)">{{ row.persona }} &middot; {{ row.persona | personaLabel }}</td>
-      <td class="rmeta">{{ row.repeat_rate | rate }}</td>
-      <td class="num" style="color:var(--dim)">{{ row.n }}</td></tr>
+  {%- for row in entry.personas %}
+    <tr data-persona="{{ row.persona }}">
+      <th scope="row" class="mono" style="font-size:12px;color:var(--dimmer);font-weight:400">{{ row.persona }} &middot; {{ row.persona | personaLabel }}</th>
+      <td class="num"><span class="cellstat{% if row.repeat_rate.low_n %} lown{% endif %}">{{ row.repeat_rate.rate | rate }}<small>{{ row.repeat_rate.ci | ciLabel }} &middot; n={{ row.repeat_rate.n }}</small></span></td>
+      <td class="num"><span class="cellstat{% if row.contamination_rate.low_n %} lown{% endif %}">{{ row.contamination_rate.rate | rate }}<small>n={{ row.contamination_rate.n }}</small></span></td>
+      <td class="num"><span class="cellstat">{{ row.dodge_rate.rate | rate }}<small>n={{ row.dodge_rate.n }}</small></span></td>
+      <td class="num" style="color:var(--dim)">{{ (row.n - row.counts.dodge) }} answers</td>
+    </tr>
   {%- endfor %}
   </tbody></table></div>
+{%- endfor %}
 
-{%- if profile.byCountry | length %}
-<h2 id="by-country" style="margin:36px 0 12px">{{ 'section.byCountry' | t }}</h2>
+{%- if profile.trend | length %}
+<h2 id="trend" style="margin:36px 0 12px">Change between runs</h2>
+{%- for line in profile.trend %}
 <div class="panel"><table>
-  <caption class="visually-hidden">Repeat-rate for this assistant per market</caption>
-  <thead><tr><th scope="col">{{ 'col.country' | t }}</th><th scope="col">{{ 'col.repeatRate' | t }}</th><th scope="col">{{ 'col.responses' | t }}</th></tr></thead>
+  <caption class="visually-hidden">Repeat rate for this assistant across comparable runs in one market</caption>
+  <thead><tr><th scope="col">Run</th><th scope="col" class="num">{{ 'col.repeatRate' | t }}</th><th scope="col">{{ 'col.change' | t }}</th></tr></thead>
   <tbody>
-  {%- for row in profile.byCountry %}
-    <tr><td>{% if navigation.has.countries %}<a href="{{ ('/countries/' + row.country + '/') | url }}">{{ row.country | countryName }}</a>{% else %}{{ row.country | countryName }}{% endif %}</td>
-      <td class="rmeta">{{ row.repeat_rate | rate }}</td>
-      <td class="num" style="color:var(--dim)">{{ row.n }}</td></tr>
+  {%- for point in line.points %}
+    <tr data-persona="{{ profile.persona }}">
+      <th scope="row" style="font-weight:400"><time datetime="{{ point.run.collected_at | isoDate }}">{{ point.run.collected_at | displayDate }}</time>
+        <span style="color:var(--dimmer)">&middot; {{ point.run.country | countryName }}</span></th>
+      <td class="num"><span class="cellstat{% if point.repeat_rate.low_n %} lown{% endif %}">{{ point.repeat_rate.rate | rate }}<small>{{ point.repeat_rate.ci | ciLabel }} &middot; n={{ point.repeat_rate.n }}</small></span></td>
+      <td class="rmeta" style="color:var(--dim)">{% if not loop.first %}{{ line.change.delta | pp }} &middot; {{ "significant" if line.change.significant else "not significant" }}{% endif %}</td>
+    </tr>
   {%- endfor %}
   </tbody></table></div>
-<p class="note">Rates in this table are the assistant's repeat-rate within each market, across all
-  personas in that market's sample.</p>
+{%- endfor %}
+<p class="note">A change is called real only when the two intervals do not overlap. Search-grounded
+  assistants also reshuffle the sources they cite between runs for reasons unrelated to anything we do,
+  so a movement here is not on its own evidence that anything was fixed.</p>
 {%- endif %}
 
 {%- if profile.repeatedClaims | length %}
@@ -68,22 +90,21 @@ wrap: wrap-narrow
   </tbody></table></div>
 {%- endif %}
 
-<h2 id="countermeasures" style="margin:36px 0 12px">Escalations to {{ profile.company }}</h2>
+<h2 id="countermeasures" style="margin:36px 0 12px">{{ 'section.countermeasuresTo' | t }} {{ profile.company }}</h2>
 {%- if profile.countermeasures | length %}
 <div class="panel">
   {%- for e in profile.countermeasures %}
-  {%- set claim = claims | whereEq('id', e.claim_id) | first %}
   <div class="actrow">
-    <div class="what">{{ e.claim_id }} — {{ e.type | actionTypeLabel | lower }}<small>{{ e.target | defangCopy }}</small></div>
-    <span class="chip {{ 'ok' if e.status in ['acknowledged','actioned','completed','receipt_confirmed','published','live'] else ('wait' if e.status == 'submitted' else '') }}"><span class="dot"></span>{{ e.status | statusLabel }}</span>
-    <div class="when"><time datetime="{{ e.date | isoDate }}">{{ e.date | shortDate }}</time></div>
+    <div class="what">{{ e.typeLabel }}{% if e.subtypeLabel %} &middot; {{ e.subtypeLabel }}{% endif %}<small>{{ e.claims | join(", ") }}{% if e.market %} &middot; {{ e.market | upper }}{% endif %}</small></div>
+    <span class="chip {{ 'ok' if e.status in ['acknowledged','responded','closed'] else ('wait' if e.status in ['submitted','pending_confirmation'] else '') }}"><span class="dot"></span>{{ e.statusLabel }}</span>
+    <div class="when">{% if e.date %}<time datetime="{{ e.date | isoDate }}">{{ e.date | shortDate }}</time>{% else %}<span style="color:var(--dimmer)">not sent</span>{% endif %}</div>
   </div>
   {%- endfor %}
 </div>
-<p class="note">We publish the fact, date and status of each report. We do not publish correspondence
-  with {{ profile.company }} or the names of individuals.</p>
+<p class="note">We publish the fact, date and status of each countermeasure. We do not publish what was
+  submitted, the proof of submission, correspondence with {{ profile.company }}, or the names of individuals.</p>
 {%- else %}
-<p class="note">We have sent {{ profile.company }} no report about the findings on this page yet.</p>
+<p class="note">We have sent {{ profile.company }} nothing about the findings on this page yet.</p>
 {%- endif %}
 
 <p class="note" style="margin-bottom:40px">We test the public consumer interface, not the API. Results

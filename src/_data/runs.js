@@ -1,10 +1,9 @@
-// Runs, one record per run x market. The brief's Run entity carries a single
-// country and a single language, so an export that collects four markets under
-// one run id becomes four run records here (CLAUDE_CODE_BRIEF §2).
-const { readJson } = require("../_lib/markdown.cjs");
+// Runs. The source table in data/runs.json carries the grid shape and the
+// frozen versions; the derived counts, reconciliation and comparability come
+// from the metrics store, which is where they are computed (CM §1.1-1.3, §6.1).
+const metrics = require("./metrics.js");
 
-const raw = readJson("data/runs.json") || { runs: [] };
-const runs = raw.runs || [];
+const runs = (metrics.raw.runs || []).slice();
 
 const index = (key) => {
   const map = {};
@@ -12,12 +11,27 @@ const index = (key) => {
   return map;
 };
 
+const byMarket = index("market");
+// The latest run in each market: unless a block says otherwise, every page
+// reads the current run per market (Countries Index Business Logic §0).
+const current = Object.fromEntries(
+  Object.entries(byMarket).map(([market, list]) => [
+    market,
+    [...list].sort((a, b) => b.collected_at.localeCompare(a.collected_at))[0]
+  ])
+);
+
 module.exports = {
   all: runs,
   byKey: Object.fromEntries(runs.map((r) => [r.key, r])),
-  byMarket: index("market"),
-  byRunId: index("run_id"),
-  markets: [...new Set(runs.map((r) => r.market))].sort(),
-  // Newest first: every page that names "the current run" means this one.
+  byMarket,
+  byRunId: Object.fromEntries(runs.map((r) => [r.run_id, r])),
+  current,
+  currentKeys: Object.values(current).map((r) => r.key),
+  markets: Object.keys(byMarket).sort(),
+  // A market with two comparable runs is the only place a trend may be drawn.
+  withTrend: Object.entries(byMarket)
+    .filter(([, list]) => list.some((r) => r.comparable_with.length))
+    .map(([market]) => market),
   latest: [...runs].sort((a, b) => b.collected_at.localeCompare(a.collected_at))[0] || null
 };

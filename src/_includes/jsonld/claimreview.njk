@@ -1,11 +1,13 @@
 {%- set ratingValues = { "false": 1, "misleading": 2, "unsupported": 3 } -%}
+{#- One appearance per run this claim was measured in: the run, not the answer,
+    is what we publish (brief §4 "/data"). -#}
 {%- set appearances = [] -%}
-{%- for observation in claim.observations -%}
+{%- for run in claim.runs -%}
 {%- set appearances = (appearances.push({
   "@type": "CreativeWork",
-  "name": (observation.chatbot | botName) + " answer, " + (observation.country | countryName) + ", " + (observation.date | displayDate),
-  "datePublished": observation.date,
-  "inLanguage": observation.language
+  "name": "Chatbot answers recorded in " + (run.country | countryName) + ", " + (run.collected_at | displayDate),
+  "datePublished": run.collected_at,
+  "inLanguage": run.language
 }), appearances) -%}
 {%- endfor -%}
 {%- set jsonldReview = {

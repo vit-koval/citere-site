@@ -2,6 +2,9 @@
 permalink: /registry.csv
 eleventyExcludeFromCollections: true
 ---
-claim_id,slug,verdict,verdict_date,updated,cluster,run,chatbot,country,language,persona,date,model_version,behaviour,judge_confidence,cited_domains,url
-{% for claim in claims %}{% for o in claim.observations %}{{ claim.id | csvCell }},{{ claim.slug | csvCell }},{{ claim.verdict | csvCell }},{{ claim.verdict_date | csvCell }},{{ claim.updated | csvCell }},{{ claim.cluster | csvCell }},{{ o.run | csvCell }},{{ o.chatbot | csvCell }},{{ o.country | csvCell }},{{ o.language | csvCell }},{{ o.persona | csvCell }},{{ o.date | csvCell }},{{ o.model_version | default("") | csvCell }},{{ o.behaviour | csvCell }},{{ o.judge.confidence | default("") | csvCell }},{{ o.cited_domains | default([]) | join(" ") | csvCell }},{{ (site.url + claim.url) | csvCell }}
-{% endfor %}{% endfor %}
+{#- The published unit is the metric cell, not the answer: individual responses
+    are never published, only the aggregate (brief §4 "/data"). One row per
+    bot x claim x persona x market x run. -#}
+claim_id,slug,cluster,verdict,splice,run_id,country,language,market,chatbot,persona,is_live,n,substantive,repeat,u_context,refute,dodge,contaminated,critical,repeat_rate,rr_ci_low,rr_ci_high,low_n,contamination_rate,url
+{% for cell in metrics.cells %}{% set claim = claims | whereEq('id', cell.claim) | first %}{{ cell.claim | csvCell }},{{ claim.slug | csvCell }},{{ cell.cluster | csvCell }},{{ claim.verdict | csvCell }},{{ cell.splice | default("") | csvCell }},{{ cell.run | csvCell }},{{ cell.country | csvCell }},{{ cell.language | csvCell }},{{ cell.market | csvCell }},{{ cell.chatbot | csvCell }},{{ cell.persona | csvCell }},{{ cell.is_live | csvCell }},{{ cell.n | csvCell }},{{ cell.substantive | csvCell }},{{ cell.counts.repeat | csvCell }},{{ cell.counts.u_context | csvCell }},{{ cell.counts.refute | csvCell }},{{ cell.counts.dodge | csvCell }},{{ cell.contaminated | csvCell }},{{ cell.tiers.critical | csvCell }},{{ cell.repeat_rate.rate | csvCell }},{{ (cell.repeat_rate.ci[0] if cell.repeat_rate.ci else "") | csvCell }},{{ (cell.repeat_rate.ci[1] if cell.repeat_rate.ci else "") | csvCell }},{{ cell.repeat_rate.low_n | csvCell }},{{ cell.contamination_rate.rate | csvCell }},{{ (site.url + claim.url) | csvCell }}
+{% endfor %}

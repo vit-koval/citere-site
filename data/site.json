@@ -44,11 +44,14 @@
     "countermeasures_actioned": 12
   },
   "used_by": [],
-  "last_update": "2026-10-24",
+  "last_update": "2026-09-09",
   "watchlist_version": "v14",
   "methodology_version": "1.2",
   "current_run": {
-    "label": "Run 4 in progress",
-    "markets": "Germany, France, Poland, Baltics"
-  }
+    "label": "Run 3 in progress",
+    "markets": "Poland, Baltics, Spain"
+  },
+  "catalog_version": "0.7",
+  "grid_version": "1.0",
+  "judge_version": "1.2"
 }

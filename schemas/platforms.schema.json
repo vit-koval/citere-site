@@ -27,7 +27,8 @@
         "type": "object",
         "required": [
           "name",
-          "company"
+          "company",
+          "initials"
         ],
         "additionalProperties": false,
         "properties": {
@@ -40,112 +41,7 @@
           "initials": {
             "type": "string"
           },
-          "runs": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "required": [
-                "run",
-                "date"
-              ],
-              "additionalProperties": false,
-              "properties": {
-                "run": {
-                  "type": "string"
-                },
-                "date": {
-                  "type": "string",
-                  "format": "date"
-                },
-                "country": {
-                  "type": "string",
-                  "pattern": "^[a-z]{2}$"
-                },
-                "model_version": {
-                  "type": "string"
-                },
-                "by_persona": {
-                  "type": "object",
-                  "propertyNames": {
-                    "enum": [
-                      "P1",
-                      "P2",
-                      "P3",
-                      "P4"
-                    ]
-                  },
-                  "additionalProperties": {
-                    "type": "object",
-                    "required": [
-                      "repeat_rate",
-                      "n"
-                    ],
-                    "additionalProperties": false,
-                    "properties": {
-                      "repeat_rate": {
-                        "type": "number",
-                        "minimum": 0,
-                        "maximum": 1
-                      },
-                      "n": {
-                        "type": "integer",
-                        "minimum": 0
-                      },
-                      "ci": {
-                        "type": "array",
-                        "items": {
-                          "type": "number"
-                        },
-                        "minItems": 2,
-                        "maxItems": 2
-                      }
-                    }
-                  }
-                },
-                "by_country": {
-                  "type": "object",
-                  "propertyNames": {
-                    "pattern": "^[a-z]{2}$"
-                  },
-                  "additionalProperties": {
-                    "type": "object",
-                    "required": [
-                      "repeat_rate",
-                      "n"
-                    ],
-                    "additionalProperties": false,
-                    "properties": {
-                      "repeat_rate": {
-                        "type": "number",
-                        "minimum": 0,
-                        "maximum": 1
-                      },
-                      "n": {
-                        "type": "integer",
-                        "minimum": 0
-                      }
-                    }
-                  }
-                },
-                "contamination_rate": {
-                  "type": "number",
-                  "minimum": 0,
-                  "maximum": 1
-                },
-                "n": {
-                  "type": "integer",
-                  "minimum": 0
-                }
-              }
-            }
-          },
-          "countermeasures": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "claims_repeated": {
+          "model_versions": {
             "type": "array",
             "items": {
               "type": "string"

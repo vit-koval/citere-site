@@ -6,4 +6,5 @@ pagination:
 permalink: "/registry/{{ claim.slug }}.json"
 eleventyExcludeFromCollections: true
 ---
-{{ claim.raw | dump(2) | safe }}
+{#- The claim card plus its metric cells: the aggregate is the published unit. -#}
+{{ { "claim": claim.raw, "runs": claim.runs, "cells": claim.cells, "live_cells": claim.liveCells, "countermeasures": claim.countermeasures } | dump(2) | safe }}

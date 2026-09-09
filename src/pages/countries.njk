@@ -19,43 +19,28 @@ permalink: "{{ '/countries/' | loc(lang) }}"
 
 <div class="grid4" style="margin-bottom:26px">
 {%- for c in profiles.countries %}
-  <a class="cc {{ c.key }}" href="{{ c.url | url }}"><div><div class="rank-n">#{{ loop.index }} by repeat-rate</div>
+  <a class="cc {{ c.key }}" href="{{ c.url | url }}"><div><div class="rank-n">#{{ loop.index }} by assistants with a confirmed problem</div>
     <span class="flag">{{ c.key | flag }}</span>
-    <h3>{{ c.name }}</h3><div class="stat">{{ c.repeatRate | rate }} repeat &middot; {{ c.n }} answers &middot; {{ c.language | languageName }}</div></div>
-    <div class="bots-mini">{% for b in c.bots %}{{ botMark(logos, b, "sm") }}{% endfor %}</div></a>
+    <h3>{{ c.name }}</h3><div class="stat">{{ c.confirmed }} of {{ c.bots | length }} assistants confirmed &middot;
+      {{ c.critical }} critical &middot; {{ c.language | languageName }}</div></div>
+    <div class="bots-mini">{% for b in c.bots %}{{ botMark(logos, b.key, "sm") }}{% endfor %}</div></a>
 {%- endfor %}
 </div>
 
-<div class="shead"><h2>{{ 'section.sameClaim' | t }}</h2><span style="font-size:13px;color:var(--dimmer)">all personas in each market's sample</span></div>
+<div class="shead"><h2>{{ 'section.sameClaim' | t }}</h2><span style="font-size:13px;color:var(--dimmer)">persona {{ profiles.matrix.persona }} &middot; news-style questions &middot; markets are never merged</span></div>
 <div class="panel"><table>
-  <caption class="visually-hidden">Repeat-rate per assistant in each market, with the spread between its best and worst</caption>
+  <caption class="visually-hidden">Repeat rate per assistant in each market on news-style questions, each cell with its interval and sample size</caption>
   <thead><tr><th scope="col">{{ 'col.chatbot' | t }}</th>
-    {%- for c in profiles.countries %}<th scope="col">{{ c.key | flag }} {{ c.key | upper }}</th>{% endfor %}
-    <th scope="col">{{ 'col.spread' | t }}</th></tr></thead>
+    {%- for c in profiles.countries %}<th scope="col" class="num">{{ c.key | flag }} {{ c.key | upper }}</th>{% endfor %}</tr></thead>
   <tbody>
   {%- for row in profiles.matrix.rows %}
-    <tr><td class="cl"><span class="markcell">{{ botMark(logos, row.chatbot, "sm", true) }}{{ row.name }}</span></td>
-      {%- for cell in row.cells %}<td class="rmeta">{% if cell %}{{ cell.rate | rate }}{% else %}<span style="color:var(--dimmer)">&mdash;</span>{% endif %}</td>{% endfor %}
-      <td class="rmeta" style="color:var({{ '--false' if row.spread > 0.025 else ('--mislead' if row.spread > 0.015 else '--dim') }})">{{ row.spread | pp | replace("+","") }}</td></tr>
+    <tr data-persona="{{ profiles.matrix.persona }}">
+      <th scope="row" style="font-weight:400"><span class="markcell">{{ botMark(logos, row.chatbot, "sm", true) }}{{ row.name }}</span></th>
+      {%- for cell in row.cells %}<td class="num"><span class="cellstat{% if cell.repeat_rate.low_n %} lown{% endif %}">{{ cell.repeat_rate.rate | rate }}<small>{{ cell.repeat_rate.ci | ciLabel }} &middot; n={{ cell.repeat_rate.n }}</small></span></td>{% endfor %}
+    </tr>
   {%- endfor %}
   </tbody></table></div>
-<p class="note" style="margin-bottom:34px">Spread is the gap between an assistant's best and worst market.
-  A wide spread means the safeguards do not travel across languages equally.</p>
-
-{%- if profiles.clusterGrid | length %}
-<div class="shead"><h2>{{ 'section.clustersWhere' | t }}</h2></div>
-<div class="panel"><table>
-  <caption class="visually-hidden">Repeat-rate per narrative cluster in each market</caption>
-  <thead><tr><th scope="col">{{ 'col.cluster' | t }}</th>
-    {%- for c in profiles.countries %}<th scope="col">{{ c.key | flag }} {{ c.key | upper }}</th>{% endfor %}</tr></thead>
-  <tbody>
-  {%- for row in profiles.clusterGrid %}
-    <tr><td>{{ clusters[row.cluster].name_en | default(row.cluster) }}</td>
-      {%- for c in profiles.countries %}
-      <td class="rmeta">{% if row.cells[c.key] is defined %}{{ row.cells[c.key] | rate }}{% else %}<span style="color:var(--dimmer)">&mdash;</span>{% endif %}</td>
-      {%- endfor %}</tr>
-  {%- endfor %}
-  </tbody></table></div>
-<p class="note" style="margin-bottom:44px">A cluster that registers in one market and not another shows
-  the operation localising its themes, not just its language.</p>
-{%- endif %}
+<p class="note" style="margin-bottom:34px">Rows are assistants, columns are markets, and nothing is
+  averaged across either. Two markets differ only when their intervals do not overlap; where they overlap
+  the difference is directional and this page does not claim it. There is no score per country: countries
+  are not ranked, assistants are.</p>

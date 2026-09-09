@@ -28,6 +28,13 @@
           },
           "label_uk": {
             "type": "string"
+          },
+          "status": {
+            "enum": [
+              "active",
+              "dormant",
+              "archived"
+            ]
           }
         }
       }

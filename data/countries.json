@@ -4,49 +4,45 @@
     "us": {
       "name": "United States",
       "language": "en",
-      "repeat_rate": 0.0786,
-      "contamination_rate": 0.0234,
-      "n": 512,
       "partners": [
-        "EU DisinfoLab"
+        "EU DisinfoLab",
+        "NewsGuard"
       ],
-      "note_en": "English-language corpus and the largest sample; the corruption cluster dominates."
+      "note_en": "The English-language corpus and the only market with two comparable runs."
     },
     "de": {
       "name": "Germany",
       "language": "de",
-      "repeat_rate": 0.0685,
-      "contamination_rate": 0.0246,
-      "n": 448,
       "partners": [
-        "German EDMO hub",
-        "CheckFirst"
+        "Correctiv",
+        "EUvsDisinfo"
       ],
-      "note_en": "Highest repeat-rate of the four markets; energy narratives appear here and barely in English."
+      "note_en": "Worst market in the cluster, and the one with its own German-language mirror."
+    },
+    "at": {
+      "name": "Austria",
+      "language": "de",
+      "partners": [
+        "APA-Faktencheck"
+      ],
+      "note_en": "Same language as Germany, different country: the pair that separates language from border."
+    },
+    "ua": {
+      "name": "Ukraine",
+      "language": "uk",
+      "partners": [
+        "Centre for Countering Disinformation (RNBO)",
+        "VoxCheck"
+      ],
+      "note_en": "Cleanest market in the cluster; local coverage of the underlying cases is dense."
     },
     "fr": {
       "name": "France",
       "language": "fr",
-      "repeat_rate": 0.1047,
-      "contamination_rate": 0.0208,
-      "n": 288,
       "partners": [
-        "Viginum (public reporting)",
-        "EDMO France"
+        "Viginum"
       ],
-      "note_en": "Weapons-diversion narratives are more active here than elsewhere."
-    },
-    "pl": {
-      "name": "Poland",
-      "language": "pl",
-      "repeat_rate": 0.0863,
-      "contamination_rate": 0.0114,
-      "n": 352,
-      "partners": [
-        "EDMO Poland",
-        "Demagog"
-      ],
-      "note_en": "Delegitimisation and mobilisation narratives are the most active."
+      "note_en": "French-language mirror active, but citation volume is lower than in German."
     }
   }
 }

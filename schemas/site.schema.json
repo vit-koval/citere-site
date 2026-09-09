@@ -198,6 +198,15 @@
           }
         }
       }
+    },
+    "catalog_version": {
+      "type": "string"
+    },
+    "grid_version": {
+      "type": "string"
+    },
+    "judge_version": {
+      "type": "string"
     }
   }
 }

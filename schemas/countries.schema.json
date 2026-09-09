@@ -17,7 +17,8 @@
       "additionalProperties": {
         "type": "object",
         "required": [
-          "name"
+          "name",
+          "language"
         ],
         "additionalProperties": false,
         "properties": {
@@ -27,27 +28,6 @@
           "language": {
             "type": "string",
             "pattern": "^[a-z]{2}$"
-          },
-          "languages": {
-            "type": "array",
-            "items": {
-              "type": "string",
-              "pattern": "^[a-z]{2}$"
-            }
-          },
-          "repeat_rate": {
-            "type": "number",
-            "minimum": 0,
-            "maximum": 1
-          },
-          "contamination_rate": {
-            "type": "number",
-            "minimum": 0,
-            "maximum": 1
-          },
-          "n": {
-            "type": "integer",
-            "minimum": 0
           },
           "partners": {
             "type": "array",
@@ -59,9 +39,6 @@
             "type": "string"
           },
           "note_uk": {
-            "type": "string"
-          },
-          "regulatory_note_en": {
             "type": "string"
           }
         }

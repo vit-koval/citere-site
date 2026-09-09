@@ -1,20 +1,28 @@
-{%- set ba = claim.before_after -%}
+{#- Observed change after escalation (Calculation Methodology 7). Two runs in
+    one market, same grid and same repeats, at one persona. Never a single
+    figure "improved by X%". -#}
+{%- for block in claim.cleansing %}
 <div class="panel"><table>
-  <caption class="visually-hidden">Repeat-rate before and after we reported this claim, persona {{ (ba | first).persona }} only, never averaged across personas</caption>
+  <caption class="visually-hidden">Repeat rate before and after the disclosure in {{ block.before.country | countryName }}, persona {{ block.persona }} only, never averaged across personas</caption>
   <thead><tr><th scope="col">{{ 'col.chatbot' | t }}</th>
-    <th scope="col">Before (<time datetime="{{ (ba | first).before.date | isoDate }}">{{ (ba | first).before.date | shortDate }}</time>)</th>
-    <th scope="col">After (<time datetime="{{ (ba | first).after.date | isoDate }}">{{ (ba | first).after.date | shortDate }}</time>)</th>
+    <th scope="col" class="num">Before (<time datetime="{{ block.before.collected_at | isoDate }}">{{ block.before.collected_at | shortDate }}</time>)</th>
+    <th scope="col" class="num">After (<time datetime="{{ block.after.collected_at | isoDate }}">{{ block.after.collected_at | shortDate }}</time>)</th>
     <th scope="col">{{ 'col.change' | t }}</th></tr></thead>
   <tbody>
-  {%- for row in ba %}
-    <tr data-persona="{{ row.persona }}">
-      <td>{{ row.chatbot | botName }}</td>
-      <td class="num">{{ row.before.rate | rate }}</td>
-      <td class="num">{{ row.after.rate | rate }}</td>
-      <td class="rmeta" style="color:var({{ '--ok' if (row.after.rate - row.before.rate) < -0.005 else '--dim' }})">{{ (row.after.rate - row.before.rate) | pp }}</td>
+  {%- for row in block.rows %}
+    <tr data-persona="{{ block.persona }}">
+      <th scope="row" style="font-weight:400">{{ row.chatbot | botName }}</th>
+      <td class="num"><span class="cellstat{% if row.before.low_n %} lown{% endif %}">{{ row.before.rate | rate }}<small>{{ row.before.ci | ciLabel }} &middot; n={{ row.before.n }}</small></span></td>
+      <td class="num"><span class="cellstat{% if row.after.low_n %} lown{% endif %}">{{ row.after.rate | rate }}<small>{{ row.after.ci | ciLabel }} &middot; n={{ row.after.n }}</small></span></td>
+      <td class="rmeta" style="color:var({{ '--ok' if row.change.significant and row.change.delta < 0 else '--dim' }})">
+        {{ row.change.delta | pp }}
+        <small style="display:block;color:var(--dimmer)">{{ "significant" if row.change.significant else "not significant" }}</small></td>
     </tr>
   {%- endfor %}
   </tbody></table></div>
-<p class="note">Measured under persona {{ (ba | first).persona }} &middot; {{ (ba | first).persona | personaLabel }}.
-  Models are updated continuously and independently of our reports. We record the model
-  version at both measurements and publish the change without claiming causation we cannot demonstrate.</p>
+<p class="note">Measured under persona {{ block.persona }} &middot; {{ block.persona | personaLabel }}, in
+  {{ block.before.country | countryName }} only. A change is called real only when the two intervals do not
+  overlap. There is no control group: a change here cannot be separated from a model update in the same
+  window, so this is the change observed after the disclosure, not the effect of it. Model versions are
+  recorded on both sides.</p>
+{%- endfor %}

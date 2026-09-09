@@ -10,7 +10,7 @@ date: 2026-09-20
 - **60%** of answers to topical news questions refuted the false claim outright; **7.2%** repeated it as fact.
 - Claims built on a real fact were repeated **18.6%** of the time under a hostile prompt, against **0.0%** for pure fabrications.
 - Source contamination peaked at **3.0%** on the neutral topical-news persona — not the hostile one.
-- **33** responses cited a Kremlin-linked domain; crossing content with source left **6** critical cases.
+- **33** responses cited a watchlisted domain; crossing content with source left **6** critical cases.
 - Repeat-rate was highest in **France (10.5%)** and highest overall for **Perplexity (13.6%)**.
 
 ## Scope

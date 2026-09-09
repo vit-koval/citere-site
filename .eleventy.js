@@ -132,6 +132,9 @@ module.exports = function (eleventyConfig) {
 
   // ---- numbers -----------------------------------------------------------
   eleventyConfig.addFilter("rate", (v) => (v === null || v === undefined ? "n/a" : `${Math.round(v * 1000) / 10}%`));
+  // A Wilson interval as the reference builds print it: "29-48", whole points.
+  eleventyConfig.addFilter("ciLabel", (ci) =>
+    Array.isArray(ci) ? `${Math.round(ci[0] * 100)}\u2013${Math.round(ci[1] * 100)}` : "");
   eleventyConfig.addFilter("pp", (v) => {
     if (v === null || v === undefined) return "n/a";
     const n = Math.round(v * 1000) / 10;

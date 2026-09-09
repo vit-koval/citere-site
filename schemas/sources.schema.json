@@ -157,6 +157,34 @@
                 }
               }
             }
+          },
+          "language": {
+            "type": "string",
+            "pattern": "^[a-z]{2}$"
+          }
+        }
+      }
+    },
+    "exclusions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "patterns": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "pattern",
+          "category"
+        ],
+        "properties": {
+          "pattern": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string"
           }
         }
       }

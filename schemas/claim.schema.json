@@ -14,8 +14,8 @@
     "languages",
     "countries",
     "origin",
-    "observations",
-    "actions"
+    "splice",
+    "status"
   ],
   "additionalProperties": false,
   "properties": {
@@ -59,16 +59,14 @@
       "items": {
         "type": "string",
         "pattern": "^[a-z]{2}$"
-      },
-      "minItems": 1
+      }
     },
     "countries": {
       "type": "array",
       "items": {
         "type": "string",
         "pattern": "^[a-z]{2}$"
-      },
-      "minItems": 1
+      }
     },
     "grain_of_truth": {
       "type": "boolean"
@@ -143,198 +141,6 @@
         }
       }
     },
-    "observations": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "required": [
-          "run",
-          "chatbot",
-          "country",
-          "language",
-          "persona",
-          "date",
-          "behaviour"
-        ],
-        "additionalProperties": false,
-        "properties": {
-          "run": {
-            "type": "string"
-          },
-          "chatbot": {
-            "enum": [
-              "chatgpt",
-              "gemini",
-              "grok",
-              "claude",
-              "copilot",
-              "perplexity",
-              "deepseek",
-              "le-chat"
-            ]
-          },
-          "country": {
-            "type": "string",
-            "pattern": "^[a-z]{2}$"
-          },
-          "language": {
-            "type": "string",
-            "pattern": "^[a-z]{2}$"
-          },
-          "persona": {
-            "enum": [
-              "P1",
-              "P2",
-              "P3",
-              "P4"
-            ]
-          },
-          "date": {
-            "type": "string",
-            "format": "date"
-          },
-          "model_version": {
-            "type": "string"
-          },
-          "behaviour": {
-            "enum": [
-              "repeated",
-              "contextualised",
-              "refuted",
-              "dodged"
-            ]
-          },
-          "cited_domains": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "quote_en": {
-            "type": "string"
-          },
-          "quote_uk": {
-            "type": "string"
-          },
-          "judge": {
-            "type": "object",
-            "required": [
-              "confidence"
-            ],
-            "additionalProperties": false,
-            "properties": {
-              "confidence": {
-                "type": "number",
-                "minimum": 0,
-                "maximum": 1
-              },
-              "agreement": {
-                "type": "number",
-                "minimum": 0,
-                "maximum": 1
-              },
-              "reasoning_en": {
-                "type": "string"
-              }
-            }
-          }
-        }
-      }
-    },
-    "actions": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "required": [
-          "type",
-          "target",
-          "date",
-          "status"
-        ],
-        "additionalProperties": false,
-        "properties": {
-          "type": {
-            "enum": [
-              "published",
-              "platform_report",
-              "domain_complaint",
-              "shared",
-              "partner_publication",
-              "authority_confirmation",
-              "remeasured"
-            ]
-          },
-          "target": {
-            "type": "string"
-          },
-          "date": {
-            "type": "string",
-            "format": "date"
-          },
-          "status": {
-            "enum": [
-              "submitted",
-              "acknowledged",
-              "actioned",
-              "no_response",
-              "declined",
-              "completed",
-              "live",
-              "published",
-              "receipt_confirmed"
-            ]
-          },
-          "response_date": {
-            "type": "string",
-            "format": "date"
-          },
-          "url": {
-            "type": "string"
-          }
-        }
-      }
-    },
-    "before_after": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "required": [
-          "chatbot",
-          "persona",
-          "before",
-          "after"
-        ],
-        "additionalProperties": false,
-        "properties": {
-          "chatbot": {
-            "enum": [
-              "chatgpt",
-              "gemini",
-              "grok",
-              "claude",
-              "copilot",
-              "perplexity",
-              "deepseek",
-              "le-chat"
-            ]
-          },
-          "before": {
-            "$ref": "#/definitions/measurement"
-          },
-          "after": {
-            "$ref": "#/definitions/measurement"
-          },
-          "persona": {
-            "enum": [
-              "P1",
-              "P2",
-              "P3",
-              "P4"
-            ]
-          }
-        }
-      }
-    },
     "changelog": {
       "type": "array",
       "items": {
@@ -367,6 +173,90 @@
     },
     "demo": {
       "type": "boolean"
+    },
+    "splice": {
+      "enum": [
+        "A",
+        "B",
+        "C",
+        "D"
+      ]
+    },
+    "label": {
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "active",
+        "dormant",
+        "archived"
+      ]
+    },
+    "version": {
+      "type": "string"
+    },
+    "debunk_argument": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "assertion",
+          "refutation"
+        ],
+        "properties": {
+          "assertion": {
+            "type": "string"
+          },
+          "refutation": {
+            "type": "string"
+          },
+          "source": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      }
+    },
+    "surface_objects": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "object",
+          "type"
+        ],
+        "properties": {
+          "object": {
+            "type": "string"
+          },
+          "type": {
+            "enum": [
+              "outlet",
+              "clone",
+              "marker",
+              "artifact",
+              "brand",
+              "person"
+            ]
+          },
+          "date": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "found_in": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      }
     }
   },
   "definitions": {

@@ -3,19 +3,23 @@
   "clusters": [
     {
       "id": "corruption-diverted-aid",
-      "label_en": "Corruption / diverted aid"
+      "label_en": "Corruption / diverted aid",
+      "status": "active"
     },
     {
       "id": "delegitimisation",
-      "label_en": "Zelensky delegitimisation"
+      "label_en": "Zelensky delegitimisation",
+      "status": "active"
     },
     {
       "id": "weapons-diversion",
-      "label_en": "Weapons diversion"
+      "label_en": "Weapons diversion",
+      "status": "dormant"
     },
     {
       "id": "energy-panic",
-      "label_en": "Energy panic"
+      "label_en": "Energy panic",
+      "status": "active"
     }
   ]
 }

@@ -27,18 +27,54 @@ permalink: "{{ entry.url }}"
     <div class="s">{% for b in source.citedBy | take(3) %}{{ b | botName }}{% if not loop.last %}, {% endif %}{% endfor %}</div></div>
 </div>
 
-{%- if source.claims | length %}
-<h2 id="where-cited" style="margin:0 0 12px">{{ 'section.whereCited' | t }}</h2>
+{%- if source.claimsDistributed | length %}
+<h2 id="distributed" style="margin:0 0 12px">Claims this domain carried</h2>
 <div class="panel"><table>
-  <caption class="visually-hidden">Claims whose recorded answers cited this domain</caption>
-  <thead><tr><th scope="col">{{ 'col.claim' | t }}</th><th scope="col">{{ 'col.verdict' | t }}</th><th scope="col">{{ 'col.citedBy' | t }}</th></tr></thead>
+  <caption class="visually-hidden">Claims this domain published, and whether an assistant later cited it while answering about them</caption>
+  <thead><tr><th scope="col">{{ 'col.claim' | t }}</th><th scope="col">{{ 'col.verdict' | t }}</th><th scope="col" class="num">Cited on it</th><th scope="col">Source-to-answer line</th></tr></thead>
   <tbody>
-  {%- for c in source.claims %}
+  {%- for c in source.claimsDistributed %}
     <tr><td class="cl"><a href="{{ c.url | url }}">&ldquo;{{ c.title_en }}&rdquo;</a></td>
       <td><span class="badge {{ c.verdict | verdictClass }}">{{ c.verdict | verdictLabel }}</span></td>
-      <td>{% for o in c.observations %}{% if source.domain in (o.cited_domains | default([])) %}{{ o.chatbot | botName }}{% if not loop.last %} {% endif %}{% endif %}{% endfor %}</td></tr>
+      <td class="num">{{ source.byClaim[c.id] | default(0) }}</td>
+      <td>{% if source.byClaim[c.id] %}<b style="color:var(--false)">yes</b>{% else %}<span style="color:var(--dimmer)">published, not cited</span>{% endif %}</td></tr>
   {%- endfor %}
   </tbody></table></div>
+<p class="note">A source-to-answer line means this domain published the falsehood <i>and</i> an assistant
+  cited it while answering about that same falsehood.</p>
+{%- endif %}
+
+{%- if source.claimsReachedOnly | length %}
+<h2 id="where-cited" style="margin:36px 0 12px">Cited on claims it did not carry</h2>
+<div class="panel"><table>
+  <caption class="visually-hidden">Claims where assistants cited this domain although it is not recorded as having published them</caption>
+  <thead><tr><th scope="col">{{ 'col.claim' | t }}</th><th scope="col">{{ 'col.verdict' | t }}</th><th scope="col" class="num">Citations</th><th scope="col">{{ 'col.citedBy' | t }}</th></tr></thead>
+  <tbody>
+  {%- for c in source.claimsReachedOnly %}
+    <tr><td class="cl"><a href="{{ c.url | url }}">&ldquo;{{ c.title_en }}&rdquo;</a></td>
+      <td><span class="badge {{ c.verdict | verdictClass }}">{{ c.verdict | verdictLabel }}</span></td>
+      <td class="num">{{ source.byClaim[c.id] | default(0) }}</td>
+      <td style="color:var(--dim)">{{ source.citedBy | length }} assistants</td></tr>
+  {%- endfor %}
+  </tbody></table></div>
+<p class="note">These are candidates for the claim card: the domain reached an answer about a claim we have
+  not recorded it as distributing.</p>
+{%- endif %}
+
+{%- if source.citedCount %}
+<h2 id="by-persona" style="margin:36px 0 12px">Cited by assistant and question type</h2>
+<div class="panel"><table>
+  <caption class="visually-hidden">Citation counts per assistant and question type. Counts only: a share would need a denominator that lives in the metrics store.</caption>
+  <thead><tr><th scope="col">{{ 'col.chatbot' | t }}</th>{% for p in metrics.dimensions.personas %}<th scope="col" class="num">{{ p }}</th>{% endfor %}<th scope="col" class="num">Total</th></tr></thead>
+  <tbody>
+  {%- for bot, n in source.byBot %}
+    <tr><th scope="row" style="font-weight:400">{{ bot | botName }}</th>
+      {%- for p in metrics.dimensions.personas %}<td class="num" data-persona="{{ p }}" style="color:var(--dim)">{{ source.grid[bot][p] | default(0) }}</td>{% endfor %}
+      <td class="num"><b>{{ n }}</b></td></tr>
+  {%- endfor %}
+  </tbody></table></div>
+<p class="note">Counts of answers, one per answer per domain. Persona columns are never summed into a
+  single figure, and a citation count is not a rate: the denominator lives in the metrics store.</p>
 {%- endif %}
 
 <h2 id="complaints" style="margin:36px 0 12px">{{ 'section.complaints' | t }}</h2>

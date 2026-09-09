@@ -2,65 +2,184 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://citere.ai/schemas/countermeasures.schema.json",
   "title": "Public countermeasures log",
-  "description": "The public slice of the countermeasures table (Citere_Countermeasures_Catalogue.md §1). Submission content, proof, contact details and reviewer names are internal only and are forbidden here.",
+  "description": "The public slice of the countermeasures table (Citere_Countermeasures_Catalogue.md \u00a71). Submission content, proof, contact details and reviewer names are internal only and are forbidden here.",
   "type": "object",
   "additionalProperties": false,
-  "required": ["actions"],
+  "required": [
+    "actions"
+  ],
   "properties": {
-    "demo": { "type": "boolean" },
-    "total": { "type": "integer", "minimum": 0 },
-    "answered": { "type": "integer", "minimum": 0 },
-    "median_response_days": { "type": ["number", "null"] },
+    "demo": {
+      "type": "boolean"
+    },
+    "total": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "answered": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "median_response_days": {
+      "type": [
+        "number",
+        "null"
+      ]
+    },
     "actions": {
       "type": "array",
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["date", "type", "target", "status"],
+        "required": [
+          "type",
+          "target",
+          "status"
+        ],
         "not": {
           "anyOf": [
-            { "required": ["submission_content"] },
-            { "required": ["proof"] },
-            { "required": ["target_contact"] },
-            { "required": ["confirmed_by"] }
+            {
+              "required": [
+                "submission_content"
+              ]
+            },
+            {
+              "required": [
+                "proof"
+              ]
+            },
+            {
+              "required": [
+                "target_contact"
+              ]
+            },
+            {
+              "required": [
+                "confirmed_by"
+              ]
+            }
           ]
         },
         "properties": {
-          "id": { "type": "string" },
-          "date": { "type": ["string", "null"], "format": "date" },
+          "id": {
+            "type": "string"
+          },
+          "date": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date"
+          },
           "type": {
-            "description": "The twelve catalogue types (§2.1-2.12); the legacy names are still accepted and mapped in src/_data/countermeasures.js.",
+            "description": "The twelve catalogue types (\u00a72.1-2.12); the legacy names are still accepted and mapped in src/_data/countermeasures.js.",
             "enum": [
-              "disclosure", "factcheck", "partner", "catalog", "public", "github",
-              "feed", "infra", "social", "fimi", "national", "dsa",
-              "published", "platform_report", "domain_complaint", "shared",
-              "partner_publication", "authority_confirmation", "remeasured"
+              "disclosure",
+              "factcheck",
+              "partner",
+              "catalog",
+              "public",
+              "github",
+              "feed",
+              "infra",
+              "social",
+              "fimi",
+              "national",
+              "dsa",
+              "published",
+              "platform_report",
+              "domain_complaint",
+              "shared",
+              "partner_publication",
+              "authority_confirmation",
+              "remeasured"
             ]
           },
-          "kind": { "enum": ["action", "remeasurement"] },
-          "subtype": { "type": ["string", "null"] },
-          "target": { "type": "string" },
-          "market": { "type": ["string", "null"] },
-          "claim_id": { "type": "string" },
-          "claim_ids": { "type": "array", "items": { "type": "string" } },
+          "kind": {
+            "enum": [
+              "action",
+              "remeasurement"
+            ]
+          },
+          "subtype": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "target": {
+            "type": "string"
+          },
+          "market": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "claim_id": {
+            "type": "string"
+          },
+          "claim_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
           "status": {
-            "description": "Catalogue §1 lifecycle; legacy statuses are accepted and mapped.",
+            "description": "Catalogue \u00a71 lifecycle; legacy statuses are accepted and mapped.",
             "enum": [
-              "drafted", "pending_confirmation", "submitted", "acknowledged",
-              "responded", "closed", "declined",
-              "actioned", "no_response", "completed", "live", "published",
-              "receipt_confirmed", "scheduled"
+              "drafted",
+              "pending_confirmation",
+              "submitted",
+              "acknowledged",
+              "responded",
+              "closed",
+              "declined",
+              "actioned",
+              "no_response",
+              "completed",
+              "live",
+              "published",
+              "receipt_confirmed",
+              "scheduled"
             ]
           },
-          "drafted_at": { "type": "string" },
-          "confirmed_at": { "type": "string" },
-          "submitted_at": { "type": "string" },
-          "response_date": { "type": "string" },
-          "response_at": { "type": "string" },
-          "follow_up_due": { "type": ["string", "null"] },
-          "evidence_package_id": { "type": ["string", "null"] },
-          "public": { "type": "boolean" },
-          "url": { "type": "string" }
+          "drafted_at": {
+            "type": "string"
+          },
+          "confirmed_at": {
+            "type": "string"
+          },
+          "submitted_at": {
+            "type": "string"
+          },
+          "response_date": {
+            "type": "string"
+          },
+          "response_at": {
+            "type": "string"
+          },
+          "follow_up_due": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "evidence_package_id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "public": {
+            "type": "boolean"
+          },
+          "url": {
+            "type": "string"
+          },
+          "what": {
+            "type": "string"
+          }
         }
       }
     }

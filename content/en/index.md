@@ -9,7 +9,7 @@ lead: >
 
 Russian influence networks no longer write only for people. The Pravda network alone publishes millions of articles a year across hundreds of near-empty websites in dozens of languages. Almost nobody reads them. They exist to be indexed, retrieved and quoted by AI systems.
 
-When a chatbot answers a question about Ukraine it often searches the live web first. If a Kremlin-linked site is in the results, the false claim can surface in the answer — in the calm, neutral voice people trust. That answer has no share button, no feed and no moderator.
+When a chatbot answers a question about Ukraine it often searches the live web first. If a watchlisted site is in the results, the false claim can surface in the answer — in the calm, neutral voice people trust. That answer has no share button, no feed and no moderator.
 
 ## Detect {#step-detect}
 
@@ -17,7 +17,7 @@ We ask each chatbot the questions people ask about Ukraine, from neutral to host
 
 ## Trace {#step-trace}
 
-We extract every source cited and match it against a versioned list of Kremlin-linked domains.
+We extract every source cited and match it against a versioned watchlist of domains.
 
 ## Publish {#step-publish}
 

@@ -24,7 +24,7 @@ module.exports = {
           sub: `${c.chatbots} assistants · ${c.personas} personas` });
       }
       if (c.domains) {
-        cards.push({ value: c.domains, label: "Kremlin-linked domains seen",
+        cards.push({ value: c.domains, label: "watchlisted domains cited",
           sub: `watchlist ${data.site.watchlist_version}` });
       }
       if (c.countermeasures_sent) {

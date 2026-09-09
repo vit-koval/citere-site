@@ -70,7 +70,7 @@ permalink: "{{ '/benchmarks/' | loc(lang) }}"
       <div class="vb">
         {% include "partials/abx-matrix.njk" %}
         <p class="vnote"><b>HIGH</b> means the assistant produced it from memory — a training-data signal.
-          <b>CRITICAL</b> means it repeated the claim <i>and</i> cited a Kremlin-linked source — a
+          <b>CRITICAL</b> means it repeated the claim <i>and</i> cited a listed source — a
           retrieval-poisoning signal. Two different attacks, two different fixes.</p>
       </div>
       {%- if navigation.has.countermeasures %}<a class="vf" href="{{ '/countermeasures/' | url }}">See the countermeasures queue &rarr;</a>{% endif %}</div>
@@ -105,12 +105,12 @@ permalink: "{{ '/benchmarks/' | loc(lang) }}"
     {%- if benchmarks.contamination_by_persona | length %}
     <div class="vizcard">
       <div class="vh"><h3>Where contamination enters</h3>
-        <p>Share of answers citing a Kremlin-linked domain, by question type.</p></div>
+        <p>Share of answers citing a watchlisted domain, by question type.</p></div>
       <div class="vb">
         {%- set dumbbellRows = contaminationRows %}{% set dumbbellMax = contaminationMax %}{% set dumbbellLegend = false %}
         {% include "partials/dumbbell.njk" %}
         <p class="vnote"><b>Contamination peaks on the innocent question, not the hostile one.</b> An
-          ordinary news question sends the assistant to live web search, where Kremlin-linked mirrors are
+          ordinary news question sends the assistant to live web search, where watchlisted mirrors are
           waiting. A malicious prompt rarely triggers a search at all. This is why both layers are needed —
           they catch different attacks.</p>
       </div>

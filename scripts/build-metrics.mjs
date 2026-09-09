@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 // Builds the metrics store: the single pre-computed table every page filters.
 //
-// Reads   data/claims/*.json   the recorded answers
+// Reads   data/observations/*.csv  one row per recorded answer
+//         data/claims/*.json   the claim cards
 //         data/sources.json    the watchlist, which decides what "listed" means
 //         data/site.json       version stamps
 // Writes  data/runs.json       one record per run x market
@@ -31,12 +32,25 @@ const zeroCats = () => Object.fromEntries(WL_CATEGORIES.map((c) => [c, 0]));
 const uniq = (xs) => [...new Set(xs)].sort();
 const mean = (xs) => (xs.length ? xs.reduce((a, b) => a + b, 0) / xs.length : null);
 
+function readCsv(file) {
+  const text = fs.readFileSync(file, "utf8").trim();
+  const [head, ...lines] = text.split(/\r?\n/);
+  const cols = head.split(",");
+  return lines.map((line) => Object.fromEntries(line.split(",").map((v, i) => [cols[i], v])));
+}
+
 export function build() {
-  const claims = fs.readdirSync(path.join(ROOT, "data/claims"))
-    .filter((f) => f.endsWith(".json"))
-    .map((f) => read(`data/claims/${f}`));
+  const claims = Object.fromEntries(
+    fs.readdirSync(path.join(ROOT, "data/claims"))
+      .filter((f) => f.endsWith(".json"))
+      .map((f) => read(`data/claims/${f}`))
+      .map((c) => [c.id, c])
+  );
   const sources = read("data/sources.json");
   const site = read("data/site.json");
+  // data/runs.json is a source table: prompts, repeats and frozen versions
+  // cannot be derived from the answers (Entity Model §5, CM §1.1).
+  const runSource = read("data/runs.json").runs || [];
 
   // SR §3: the watchlist is normalised the same way as everything else, and
   // folded onto the three Layer B categories (pipeline guide §4.1).
@@ -50,161 +64,167 @@ export function build() {
     patterns: sources.patterns || []
   };
 
+  const obsDir = path.join(ROOT, "data/observations");
+  const files = fs.existsSync(obsDir) ? fs.readdirSync(obsDir).filter((f) => f.endsWith(".csv")) : [];
+  const responses = files.flatMap((f) => readCsv(path.join(obsDir, f)));
+
   const cells = new Map();
   const runs = new Map();
-  const unlisted = new Set();
-  const stability = new Map(); // prompt|bot -> [behaviour...] (CM §5.11)
+  const unlisted = new Map();
+  const stability = new Map(); // prompt|bot|run -> [verdict...] (CM §5.11)
 
-  for (const claim of claims) {
-    for (const o of claim.observations || []) {
-      const mk = market(o.country, o.language);
-      const key = [o.run, claim.id, o.chatbot, o.persona, mk].join("|");
-      let cell = cells.get(key);
-      if (!cell) {
-        cell = {
-          key, run: o.run, claim: claim.id, cluster: claim.cluster,
-          chatbot: o.chatbot, persona: o.persona,
-          country: o.country, language: o.language, market: mk,
-          // CM §5.7: the grain-of-truth split runs on splice, not on the
-          // grain_of_truth field. Neither splice nor is_live is in the export
-          // yet; the brief says read them and tolerate null.
-          splice: claim.splice || null,
-          splice_group: spliceGroup(claim.splice),
-          grain_of_truth: claim.grain_of_truth === true,
-          is_live: o.is_live === true,
-          first_seen: o.date, last_seen: o.date,
-          model_versions: [],
-          received: 0, quarantined: 0, unresolved: 0,
-          n: 0, substantive: 0, contaminated: 0,
-          counts: zeroCounts(), tiers: zeroTiers(),
-          layer_b: { clean: 0, "flag-present": 0 },
-          layer_b_cat: zeroCats(),
-          dodge_types: {},
-          review: { needs_human_review: 0, human_labelled: 0 },
-          judgeConfidence: [], judgeAgreement: [],
-          acknowledged_grain: { yes: 0, known: 0 },
-          flagged_truth_as_false: { yes: 0, known: 0 },
-          domains: {}
-        };
-        cells.set(key, cell);
-      }
+  for (const meta of runSource) {
+    runs.set(meta.run_id, {
+      key: meta.run_id,
+      run_id: meta.run_id,
+      cluster: meta.cluster,
+      market: market(meta.country, meta.language),
+      country: meta.country,
+      language: meta.language,
+      collected_at: meta.collected_at,
+      collected_until: meta.collected_until || meta.collected_at,
+      claims: [...(meta.claims || [])].sort(),
+      models: [...(meta.models || [])].sort(),
+      personas: [...(meta.personas || [])].sort(),
+      model_versions: [],
+      prompts: meta.prompts ?? null,
+      variations: meta.variations ?? null,
+      repeats: meta.repeats ?? null,
+      live_prompts: meta.live_prompts ?? 0,
+      received: 0, valid: 0, quarantined: 0, unresolved: 0, live: 0,
+      reconciliation: { expected: null, received: 0, missing: null, extra: null, blocked: false, known: false },
+      judge_validation: meta.judge_validation || { status: "pending", alpha: null },
+      versions: {
+        catalog: (meta.versions || {}).catalog ?? null,
+        grid: (meta.versions || {}).grid ?? null,
+        judge: (meta.versions || {}).judge ?? null,
+        watchlist: (meta.versions || {}).watchlist ?? site.watchlist_version ?? null
+      },
+      comparable_with: []
+    });
+  }
 
-      cell.received += 1;
-      if (o.date < cell.first_seen) cell.first_seen = o.date;
-      if (o.date > cell.last_seen) cell.last_seen = o.date;
-      if (o.model_version && !cell.model_versions.includes(o.model_version)) cell.model_versions.push(o.model_version);
+  for (const o of responses) {
+    const run = runs.get(o.run_id);
+    if (!run) throw new Error(`response ${o.response_id}: run ${o.run_id} is not in data/runs.json`);
+    const claim = claims[o.claim_id];
+    if (!claim) throw new Error(`response ${o.response_id}: claim ${o.claim_id} does not exist`);
+    const isLive = o.is_live === "true";
+    const mk = run.market;
+    const key = [o.run_id, o.claim_id, o.model_name, o.persona, mk, isLive ? "live" : "grid"].join("|");
 
-      const runKey = `${o.run}|${mk}`;
-      let run = runs.get(runKey);
-      if (!run) {
-        run = {
-          key: runKey, run_id: o.run, market: mk, country: o.country, language: o.language,
-          collected_at: o.date, collected_until: o.date,
-          clusters: [], claims: [], models: [], model_versions: [], personas: [],
-          received: 0, quarantined: 0, unresolved: 0, valid: 0,
-          // CM §1.1-1.3. Without a prompt grid in the export there is no
-          // N_expected, so reconciliation is "unknown" rather than "clean".
-          prompts: null, repeats: null,
-          reconciliation: { expected: null, received: 0, missing: null, extra: null, blocked: false, known: false },
-          // CM §8.4: metrics carry this flag until the gold set says otherwise.
-          judge_validation: { status: "pending", alpha: null },
-          versions: {
-            catalog: site.catalog_version || null,
-            grid: site.grid_version || null,
-            judge: site.judge_version || null,
-            watchlist: site.watchlist_version || null
-          },
-          comparable_with: []
-        };
-        runs.set(runKey, run);
-      }
-      run.received += 1;
-      if (o.date < run.collected_at) run.collected_at = o.date;
-      if (o.date > run.collected_until) run.collected_until = o.date;
-      if (!run.clusters.includes(claim.cluster)) run.clusters.push(claim.cluster);
-      if (!run.claims.includes(claim.id)) run.claims.push(claim.id);
-      if (!run.models.includes(o.chatbot)) run.models.push(o.chatbot);
-      if (o.model_version && !run.model_versions.includes(o.model_version)) run.model_versions.push(o.model_version);
-      if (!run.personas.includes(o.persona)) run.personas.push(o.persona);
+    let cell = cells.get(key);
+    if (!cell) {
+      cell = {
+        key, run: o.run_id, claim: o.claim_id, cluster: claim.cluster,
+        chatbot: o.model_name, persona: o.persona,
+        country: run.country, language: run.language, market: mk,
+        splice: claim.splice || null,
+        splice_group: spliceGroup(claim.splice),
+        grain_of_truth: claim.grain_of_truth === true,
+        // Entity Model §4: live formulations control for artefacts of our own
+        // constructed prompts, and are never pooled with the grid.
+        is_live: isLive,
+        first_seen: o.collected_at, last_seen: o.collected_at,
+        model_versions: [],
+        received: 0, quarantined: 0, unresolved: 0,
+        n: 0, substantive: 0, contaminated: 0,
+        counts: zeroCounts(), tiers: zeroTiers(),
+        layer_b: { clean: 0, "flag-present": 0 },
+        layer_b_cat: zeroCats(),
+        dodge_types: {},
+        review: { needs_human_review: 0, human_labelled: 0 },
+        judgeConfidence: [], judgeAgreement: [],
+        acknowledged_grain: { yes: 0, known: 0 },
+        flagged_truth_as_false: { yes: 0, known: 0 },
+        retrieved: 0,
+        domains: {}
+      };
+      cells.set(key, cell);
+    }
 
-      // CM §0.3: quarantine and UNRESOLVED are counted, then dropped before
-      // every metric. Nothing is silently deleted.
-      if (o.status === "quarantine" || o.quarantined === true) {
-        cell.quarantined += 1; run.quarantined += 1;
-        continue;
-      }
-      const behaviour = o.behaviour;
-      if (behaviour === "unresolved" || o.layer_a === "UNRESOLVED") {
-        cell.unresolved += 1; run.unresolved += 1;
-        continue;
-      }
-      if (!BEHAVIOURS.includes(behaviour)) throw new Error(`${claim.id}: unknown behaviour ${behaviour}`);
+    cell.received += 1;
+    run.received += 1;
+    if (isLive) run.live += 1;
+    if (o.collected_at < cell.first_seen) cell.first_seen = o.collected_at;
+    if (o.collected_at > cell.last_seen) cell.last_seen = o.collected_at;
+    if (o.model_version && !cell.model_versions.includes(o.model_version)) cell.model_versions.push(o.model_version);
+    if (o.model_version && !run.model_versions.includes(o.model_version)) run.model_versions.push(o.model_version);
 
-      // Layer B. SR §4: one edge per response per domain; CM §5.8: a response
-      // counts at most +1 per domain however often it cites it.
-      const seen = new Set();
-      const hits = [];
-      for (const raw of o.cited_domains || []) {
-        const hit = matchWatchlist(raw, watchlist, matchOpts);
-        const domain = hit ? hit.domain : normaliseDomain(raw);
-        if (!domain || seen.has(domain)) continue;
-        seen.add(domain);
-        if (hit) hits.push(hit);
-        else unlisted.add(domain);
-        const e = (cell.domains[domain] ||= { cited: 0, repeat: 0, u_context: 0, refute: 0, dodge: 0, critical: 0, listed: Boolean(hit) });
-        e.cited += 1;
-        e[COUNT_KEY[behaviour]] += 1;
-      }
-      const contaminated = hits.length > 0;
-      const layerBCat = worstCategory(hits.map((h) => h.category));
+    // CM §0.3: quarantine and UNRESOLVED are counted, then dropped before every
+    // metric. Nothing is silently deleted.
+    if (o.status === "quarantine") { cell.quarantined += 1; run.quarantined += 1; continue; }
+    if (o.layer_a === "unresolved" || o.layer_a === "UNRESOLVED") { cell.unresolved += 1; run.unresolved += 1; continue; }
+    const behaviour = o.layer_a;
+    if (!BEHAVIOURS.includes(behaviour)) throw new Error(`${o.response_id}: unknown layer_a ${behaviour}`);
+    run.valid += 1;
 
-      cell.n += 1;
-      run.valid += 1;
-      if (behaviour !== "dodged") cell.substantive += 1;
-      cell.counts[COUNT_KEY[behaviour]] += 1;
-      const t = tier(behaviour, contaminated);
-      cell.tiers[t] += 1;
-      if (t === "critical") for (const d of seen) if (cell.domains[d].listed) cell.domains[d].critical += 1;
-      // Entity Model §8: three-level layer_b is the target; "flag-dominant"
-      // has no definition in any spec here, so only two levels are emitted.
-      cell.layer_b[contaminated ? "flag-present" : "clean"] += 1;
-      if (layerBCat) cell.layer_b_cat[layerBCat] += 1;
-      if (contaminated) cell.contaminated += 1;
-      if (behaviour === "dodged" && o.dodge_type) {
-        cell.dodge_types[o.dodge_type] = (cell.dodge_types[o.dodge_type] || 0) + 1;
-      }
-      const judge = o.judge || {};
-      if (typeof judge.confidence === "number") cell.judgeConfidence.push(judge.confidence);
-      if (typeof judge.agreement === "number") cell.judgeAgreement.push(judge.agreement);
-      // CM §2.4: a human looks at every REPEAT, every wavering verdict and
-      // everything the judge was unsure of.
-      const needsReview = o.needs_human_review === true ||
-        behaviour === "repeated" ||
-        (typeof judge.agreement === "number" && judge.agreement < 1) ||
-        (typeof judge.confidence === "number" && judge.confidence < 0.7);
-      if (needsReview) cell.review.needs_human_review += 1;
-      if (o.human_review && o.human_review.status) cell.review.human_labelled += 1;
-      for (const [field, bucket] of [["acknowledged_grain", cell.acknowledged_grain], ["flagged_truth_as_false", cell.flagged_truth_as_false]]) {
-        if (typeof o[field] === "boolean") { bucket.known += 1; if (o[field]) bucket.yes += 1; }
-      }
+    // Layer B. SR §4-5: one edge per response per domain, whatever the answer
+    // cited it for; a response counts at most +1 per domain (CM §5.8).
+    const cited = (o.domains || "").split(/\s+/).filter(Boolean);
+    const seen = new Map(); // normalised domain -> watchlist category, or null
+    for (const rawDomain of cited) {
+      const hit = matchWatchlist(rawDomain, watchlist, matchOpts);
+      const domain = hit ? hit.domain : normaliseDomain(rawDomain);
+      if (!domain || seen.has(domain)) continue;
+      seen.set(domain, hit ? hit.category : null);
+      if (!hit) unlisted.set(domain, (unlisted.get(domain) || 0) + 1);
+      const e = (cell.domains[domain] ||= { cited: 0, repeat: 0, u_context: 0, refute: 0, dodge: 0, critical: 0, listed: Boolean(hit) });
+      e.cited += 1;
+      e[COUNT_KEY[behaviour]] += 1;
+    }
+    const hitCats = [...seen.values()].filter(Boolean);
+    const contaminated = hitCats.length > 0;
+    // CM §3.3: the worst category among the hits, by fixed priority.
+    const layerBCat = worstCategory(hitCats);
 
-      // CM §5.11: stability needs prompt identity and repeat number, neither of
-      // which the export carries yet.
-      if (o.prompt_id) {
-        const sk = `${o.prompt_id}|${o.chatbot}|${runKey}`;
-        (stability.get(sk) || stability.set(sk, []).get(sk)).push(behaviour);
+    cell.n += 1;
+    if (behaviour !== "dodged") cell.substantive += 1;
+    if (cited.length) cell.retrieved += 1;
+    cell.counts[COUNT_KEY[behaviour]] += 1;
+    const t = tier(behaviour, contaminated);
+    cell.tiers[t] += 1;
+    if (t === "critical") for (const [d, cat] of seen) if (cat) cell.domains[d].critical += 1;
+    cell.layer_b[contaminated ? "flag-present" : "clean"] += 1;
+    if (layerBCat) cell.layer_b_cat[layerBCat] += 1;
+    if (contaminated) cell.contaminated += 1;
+    if (behaviour === "dodged" && o.dodge_type) {
+      cell.dodge_types[o.dodge_type] = (cell.dodge_types[o.dodge_type] || 0) + 1;
+    }
+    const confidence = o.layer_a_confidence === "" ? null : Number(o.layer_a_confidence);
+    const agreement = o.layer_a_agreement === "" ? null : Number(o.layer_a_agreement);
+    if (Number.isFinite(confidence)) cell.judgeConfidence.push(confidence);
+    if (Number.isFinite(agreement)) cell.judgeAgreement.push(agreement);
+    if (o.needs_human_review === "true") cell.review.needs_human_review += 1;
+    if (o.human_review_status) cell.review.human_labelled += 1;
+    for (const [field, bucket] of [["acknowledged_grain", cell.acknowledged_grain],
+                                   ["flagged_truth_as_false", cell.flagged_truth_as_false]]) {
+      if (o[field] === "true" || o[field] === "false") {
+        bucket.known += 1;
+        if (o[field] === "true") bucket.yes += 1;
       }
+    }
+
+    // CM §5.11: one prompt x bot pair, its repeats, and how often they agree.
+    if (o.prompt_id) {
+      const sk = `${o.run_id}|${o.prompt_id}|${o.model_name}`;
+      if (!stability.has(sk)) stability.set(sk, { cell: key, verdicts: [] });
+      stability.get(sk).verdicts.push(behaviour);
     }
   }
 
-  // ------------------------------------------------------------ stability
+  // CM §5.11: a pair is stable when its repeats land on one verdict; three
+  // different verdicts means no majority, and the pair is flagged unstable.
   const stabilityByCell = new Map();
-  for (const [sk, list] of stability) {
+  for (const { cell: key, verdicts } of stability.values()) {
     const tally = {};
-    for (const b of list) tally[b] = (tally[b] || 0) + 1;
+    for (const v of verdicts) tally[v] = (tally[v] || 0) + 1;
     const top = Math.max(...Object.values(tally));
-    const value = top >= 2 ? top / list.length : 0;
-    stabilityByCell.set(sk, { value, unstable: top < 2 });
+    const value = top >= 2 ? top / verdicts.length : 0;
+    if (!stabilityByCell.has(key)) stabilityByCell.set(key, { values: [], unstable: 0 });
+    const acc = stabilityByCell.get(key);
+    acc.values.push(value);
+    if (top < 2) acc.unstable += 1;
   }
 
   for (const cell of cells.values()) {
@@ -214,8 +234,10 @@ export function build() {
     cell.repeat_rate = share(c.repeat, cell.substantive);
     cell.contamination_rate = share(cell.contaminated, cell.n);
     cell.dodge_rate = share(c.dodge, cell.n);
-    // CM §5.3: with no substantive answers the Repeat Rate is undefined, which
-    // is not the same as zero.
+    // Countries Index §5: the share of answers that cited anything at all, so a
+    // reader can tell a bot that is clean because it refused from one that
+    // looked and got it right.
+    cell.retrieval_rate = share(cell.retrieved, cell.n);
     cell.no_substantive = cell.substantive === 0;
     // CM §5.5: the four shares over D_all, the only metric with DODGE on top.
     cell.verdict_shares = Object.fromEntries(
@@ -225,19 +247,23 @@ export function build() {
     delete cell.judgeConfidence;
     delete cell.judgeAgreement;
     cell.model_versions.sort();
-    cell.stability = null;
+    const st = stabilityByCell.get(cell.key);
+    cell.stability = st ? Number((mean(st.values) || 0).toFixed(4)) : null;
+    cell.unstable_pairs = st ? st.unstable : 0;
   }
 
   const list = [...cells.values()].sort((a, b) => a.key.localeCompare(b.key));
   const runList = [...runs.values()].sort((a, b) => a.key.localeCompare(b.key)).map((r) => {
-    r.clusters.sort(); r.claims.sort(); r.models.sort(); r.model_versions.sort(); r.personas.sort();
+    r.model_versions.sort();
     r.claims_count = r.claims.length;
     const rec = r.reconciliation;
-    rec.received = r.received;
+    // CM §1.1-1.3. Live formulations are a separate entity and are not part of
+    // the grid's expected count.
+    rec.received = r.received - r.live;
     if (r.prompts && r.repeats && r.models.length) {
       rec.expected = r.prompts * r.models.length * r.repeats;
-      rec.missing = Math.max(0, rec.expected - r.received);
-      rec.extra = Math.max(0, r.received - rec.expected);
+      rec.missing = Math.max(0, rec.expected - rec.received);
+      rec.extra = Math.max(0, rec.received - rec.expected);
       rec.known = true;
       // CM §1.3: a surplus response blocks calculation until it is found.
       rec.blocked = rec.extra > 0;
@@ -249,10 +275,13 @@ export function build() {
     a.comparable_with = runList.filter((b) => comparableRuns(a, b)).map((b) => b.key);
   }
 
-  const blocked = runList.filter((r) => r.reconciliation.blocked);
+  const unlistedRows = [...unlisted.entries()]
+    .map(([domain, cited]) => ({ domain, cited }))
+    .sort((a, b) => b.cited - a.cited || a.domain.localeCompare(b.domain));
+
   const header = {
     demo: site.demo === true,
-    generated_from: "data/claims/*.json",
+    generated_from: "data/observations/*.csv",
     low_n: LOW_N,
     watchlist_version: site.watchlist_version || null,
     totals: {
@@ -275,10 +304,17 @@ export function build() {
       clusters: uniq(list.map((c) => c.cluster)),
       claims: uniq(list.map((c) => c.claim)),
       splice_groups: uniq(list.map((c) => c.splice_group).filter(Boolean))
+    },
+    runs: runList,
+    // SR §7.1-7.2: what the analyst has to look at after this rebuild.
+    queues: {
+      // Domains a bot cited that are on no list at all.
+      unmatched: unlistedRows.filter((d) => d.cited >= 3),
+      unmatched_all: unlistedRows.length
     }
   };
 
-  return { header, cells: list, runs: runList, unlisted: [...unlisted], blocked: blocked.map((r) => r.key) };
+  return { header, cells: list, runs: runList, unlisted: unlistedRows, blocked: runList.filter((r) => r.reconciliation.blocked).map((r) => r.key) };
 }
 
 // One row per line: a 1,600-row table has to stay reviewable in a diff.
@@ -289,23 +325,23 @@ export function serialise(header, listKey, rows) {
 }
 
 export function files() {
-  const { header, cells, runs, unlisted, blocked } = build();
+  const { header, cells, unlisted, blocked } = build();
   return {
     unlisted, blocked, header,
-    "data/metrics.json": serialise(header, "cells", cells),
-    "data/runs.json": serialise({ demo: header.demo, low_n: header.low_n }, "runs", runs)
+    "data/metrics.json": serialise(header, "cells", cells)
   };
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const out = files();
-  for (const name of ["data/metrics.json", "data/runs.json"]) {
-    fs.writeFileSync(path.join(ROOT, name), out[name]);
-  }
+  fs.writeFileSync(path.join(ROOT, "data/metrics.json"), out["data/metrics.json"]);
   const t = out.header.totals;
   console.log(`metrics: ${t.cells} cells, ${t.responses} valid of ${t.received} received`);
   console.log(`         ${t.quarantined} quarantined, ${t.unresolved} unresolved, ${t.contaminated} contaminated, ${t.critical} critical`);
-  if (out.unlisted.length) console.log(`warning: cited domains not on the watchlist: ${out.unlisted.join(", ")}`);
+  const queue = out.header.queues.unmatched;
+  if (queue.length) {
+    console.log(`queue:   ${queue.length} unmatched domain(s) cited 3+ times: ${queue.slice(0, 6).map((d) => `${d.domain} (${d.cited})`).join(", ")}`);
+  }
   // CM §1.3: no metric is computed while extra > 0.
   if (out.blocked.length) {
     console.error(`blocked: surplus responses in ${out.blocked.join(", ")} - locate, remove or quarantine before publishing`);

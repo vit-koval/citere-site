@@ -7,6 +7,7 @@ const { readJson, ROOT } = require("../_lib/markdown.cjs");
 
 const site = readJson("data/site.json");
 const countermeasures = require("./countermeasures.js");
+const metrics = require("./metrics.js");
 
 const claimDir = path.join(ROOT, "data/claims");
 const claims = fs.existsSync(claimDir)
@@ -51,11 +52,16 @@ module.exports = {
   counters: {
     claims: claims.length,
     clusters: new Set(claims.map((c) => c.cluster)).size,
-    chatbots: new Set((benchmarks.heatmap || []).map((r) => r.chatbot)).size || Object.keys(CHATBOTS).length,
-    personas: new Set((benchmarks.heatmap || []).map((r) => r.persona)).size || 4,
+    chatbots: (metrics.dimensions.chatbots || []).length || Object.keys(CHATBOTS).length,
+    personas: (metrics.dimensions.personas || []).length || 4,
+    markets: (metrics.dimensions.markets || []).length,
+    runs: (metrics.dimensions.runs || []).length,
     languages: new Set(claims.flatMap((c) => c.languages || [])).size,
     domains: sources.length,
-    responses: claims.reduce((n, c) => n + (c.observations || []).length, 0),
+    responses: metrics.totals.responses,
+    quarantined: metrics.totals.quarantined,
+    unresolved: metrics.totals.unresolved,
+    critical: metrics.totals.critical,
     countermeasures_sent: sent.length,
     countermeasures_answered: answered.length,
     countermeasures_actioned: actioned.length,

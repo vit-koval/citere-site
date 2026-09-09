@@ -517,3 +517,11 @@ a:focus-visible,button:focus-visible,summary:focus-visible,[tabindex]:focus-visi
    flex rows they share with <img class="botmark"> (which does) they were the
    only thing that could shrink, and came out ~18px against the image's 22/25. */
 .mini,.bot .g,.pmark{flex:none}
+
+/* Metric cells. Every figure carries its interval and its sample size, and a
+   cell below n = 20 is greyed rather than hidden (Calculation Methodology 5.6). */
+.cellstat{display:inline-block;min-width:78px;text-align:right;font-variant-numeric:tabular-nums;line-height:1.25}
+.cellstat small{display:block;font-size:10.5px;color:var(--dimmer);font-variant-numeric:tabular-nums}
+.cellstat.lown{opacity:.55}
+.observations td .cellstat{white-space:nowrap}
+h3.ssub{font-size:13px;font-weight:600;color:var(--dim);margin:22px 0 8px;letter-spacing:.01em}

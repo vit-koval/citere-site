@@ -4,24 +4,32 @@ wrap: wrap-narrow
 ---
 {%- from "partials/bot-mark.njk" import botMark -%}
 <div class="phead"><h1>Russian disinformation in AI chatbots: {{ profile.name }}</h1>
-  <p class="plead">Tested in {{ profile.language | languageName }} across {{ profile.rows | length }} assistants,
-    {{ profile.n }} recorded answers, {{ benchmarks.label }} run. Repeat-rate <b>{{ profile.repeatRate | rate }}</b>,
-    source contamination <b>{{ profile.contaminationRate | rate }}</b>.
+  <p class="plead">{{ profile.bots | length }} assistants tested in {{ profile.language | languageName }},
+    run of <time datetime="{{ profile.run.collected_at | isoDate }}">{{ profile.run.collected_at | displayDate }}</time>.
+    <b>{{ profile.confirmed }} of {{ profile.bots | length }}</b> repeat a documented false claim here often
+    enough that the interval excludes zero, on {{ profile.persona }} news-style questions.
     {%- if profile.note %} {{ profile.note }}{% endif %}</p></div>
 
 <h2 id="assistants" style="margin:0 0 12px">{{ 'section.assistantsHere' | t }}</h2>
 <div class="panel"><table>
-  <caption class="visually-hidden">Repeat-rate per assistant for answers served to this market</caption>
-  <thead><tr><th scope="col">{{ 'col.chatbot' | t }}</th><th scope="col">{{ 'col.repeatRate' | t }}</th><th scope="col">{{ 'col.responses' | t }}</th></tr></thead>
+  <caption class="visually-hidden">Repeat rate, contamination and refusals per assistant in this market, on news-style questions</caption>
+  <thead><tr><th scope="col">{{ 'col.chatbot' | t }}</th><th scope="col" class="num">{{ 'col.repeatRate' | t }}</th>
+    <th scope="col" class="num">{{ 'col.contamination' | t }}</th><th scope="col" class="num">Refused</th>
+    <th scope="col" class="num">Searched</th></tr></thead>
   <tbody>
-  {%- for row in profile.rows %}
-    <tr><td class="cl"><span class="markcell">{{ botMark(logos, row.chatbot, "sm", true) }}<a href="{{ ('/platforms/' + row.chatbot + '/') | url }}">{{ row.name }}</a></span></td>
-      <td class="rmeta">{{ row.rate | rate }}</td>
-      <td class="num" style="color:var(--dim)">{{ row.n | default("&mdash;") | safe }}</td></tr>
+  {%- for row in profile.bots %}
+    <tr data-persona="{{ profile.persona }}">
+      <td class="cl"><span class="markcell">{{ botMark(logos, row.key, "sm", true) }}<a href="{{ row.url | url }}">{{ row.name }}</a></span></td>
+      <td class="num"><span class="cellstat{% if row.repeat_rate.low_n %} lown{% endif %}">{{ row.repeat_rate.rate | rate }}<small>{{ row.repeat_rate.ci | ciLabel }} &middot; n={{ row.repeat_rate.n }}</small></span></td>
+      <td class="num"><span class="cellstat{% if row.contamination_rate.low_n %} lown{% endif %}">{{ row.contamination_rate.rate | rate }}<small>n={{ row.contamination_rate.n }}</small></span></td>
+      <td class="num"><span class="cellstat">{{ row.dodge_rate.rate | rate }}<small>n={{ row.dodge_rate.n }}</small></span></td>
+      <td class="num" style="color:var(--dim)">{{ row.n - row.counts.dodge }} answers</td></tr>
   {%- endfor %}
   </tbody></table></div>
-<p class="note">Rates are for all personas in this market's sample. Per-persona figures are on each
-  assistant's own profile.</p>
+<p class="note">Every figure is the {{ profile.persona }} news-style persona in this market only: personas
+  are never averaged and markets are never merged. A market that looks clean because assistants refuse is
+  not the same as one where they answer and get it right, which is why refusals are shown beside the rate.
+  Per-persona figures are on each assistant's own profile.</p>
 
 {%- if profile.claims | length %}
 <h2 id="claims" style="margin:36px 0 12px">Claims recorded in {{ profile.name }}</h2>

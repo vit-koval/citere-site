@@ -25,8 +25,10 @@ module.exports = {
           bots.length
             ? `Repeated by ${listOf(bots)} in ${claim.counts.observations} recorded answers.`
             : `Recorded in ${claim.counts.observations} chatbot answers.`,
-          `Tested in ${listOf([...claim.countries].map((c) => countryName(String(c))))}.`,
-          "Verdict, evidence, the domains cited and every action we took.",
+          claim.markets.length
+            ? `Tested in ${claim.markets.length} markets by ${claim.botsTested} assistants.`
+            : "Catalogued but not yet tested in any market.",
+          "Verdict, evidence, the domains cited and every countermeasure we took.",
           `Updated ${claim.updated}.`
         ],
         `claim ${claim.id}`

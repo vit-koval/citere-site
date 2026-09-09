@@ -76,6 +76,7 @@ const site = JSON.parse(readFileSync(join(ROOT, "data/site.json"), "utf8"));
 const SITE_URL = (process.env.CANONICAL_URL || `https://${site.domain}`).replace(/\/+$/, "");
 const PRODUCTION_URL = `https://${site.domain}`;
 const sources = JSON.parse(readFileSync(join(ROOT, "data/sources.json"), "utf8")).domains || [];
+const metricRuns = (JSON.parse(readFileSync(join(ROOT, "data/metrics.json"), "utf8")).runs) || [];
 const claims = existsSync(join(ROOT, "data/claims"))
   ? readdirSync(join(ROOT, "data/claims"))
       .filter((f) => f.endsWith(".json"))
@@ -241,17 +242,23 @@ for (const file of htmlFiles) {
       err(page, `verdict badge "${badge.trim()}" does not match data "${claim.verdict}" (expected "${expectedBadge}")`);
     }
 
-    const hasBeforeAfter = /id="what-changed"/.test(html);
-    const dataHasBeforeAfter = Array.isArray(claim.before_after) && claim.before_after.length > 0;
-    if (hasBeforeAfter && !dataHasBeforeAfter) err(page, "before/after section rendered with no before_after data");
-    if (!hasBeforeAfter && dataHasBeforeAfter) err(page, "before_after data present but section missing");
+    // Cleansing exists only where one market has two comparable runs covering
+    // this claim (Calculation Methodology 6.1, 7.3). The section must appear
+    // exactly then - never as an empty placeholder, never silently dropped.
+    const hasCleansing = /id="what-changed"/.test(html);
+    const claimRuns = metricRuns.filter((r) => r.claims.includes(claim.id));
+    const dataHasCleansing = claimRuns.some((r) =>
+      r.comparable_with.some((other) => claimRuns.some((o) => o.key === other)));
+    if (hasCleansing && !dataHasCleansing) err(page, "cleansing section rendered with no second comparable run");
+    if (!hasCleansing && dataHasCleansing) err(page, "two comparable runs exist but the cleansing section is missing");
 
-    // Every observations row must carry its own persona cell.
-    const table = (html.match(/<table[^>]*class="[^"]*observations[^"]*"[\s\S]*?<\/table>/i) || [])[0];
-    if (table) {
-      const rows = [...table.matchAll(/<tr>([\s\S]*?)<\/tr>/gi)].slice(1);
-      for (const [, row] of rows) {
-        if (!/data-persona="P[1-4]"/.test(row)) err(page, "observations row without a persona");
+    // Every metric cell must carry its own persona.
+    for (const [, table] of html.matchAll(/<table[^>]*class="[^"]*observations[^"]*"([\s\S]*?)<\/table>/gi)) {
+      for (const [, row] of [...table.matchAll(/<tr>([\s\S]*?)<\/tr>/gi)].slice(1)) {
+        const cells = [...row.matchAll(/<td[^>]*>/gi)];
+        for (const [cell] of cells) {
+          if (!/data-persona="P[1-4]"/.test(cell)) err(page, "metric cell without a persona");
+        }
       }
     }
   }
@@ -307,6 +314,17 @@ if (sitemapFiles.length) {
   for (const file of htmlFiles) {
     const path = "/" + relative(SITE, file).split(/[\\/]/).join("/").replace(/index\.html$/, "");
     if (!childLocs.has(path)) err("sitemap", `does not cover ${path}`);
+  }
+}
+
+// --- terminology ----------------------------------------------------------
+// Claim Report Spec, "Terminology rules": domains bots cite are "listed
+// sources" or "watchlisted sources", never "Kremlin-linked" - the watchlist
+// will contain outlets that relayed a fake without being state-linked.
+for (const file of htmlFiles) {
+  const body = readFileSync(file, "utf8");
+  if (/kremlin[- ]linked/i.test(body)) {
+    err(relative(SITE, file), 'says "Kremlin-linked"; the term is "listed source" or "watchlisted source"');
   }
 }
 

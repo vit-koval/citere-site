@@ -37,13 +37,8 @@ validate("data/runs.json", schema("runs"), read("data/runs.json"));
 // The metrics store is derived. Rebuild it here and fail on any drift, so a
 // hand-edit or a forgotten `npm run metrics` cannot ship stale numbers.
 const rebuilt = metricsFiles();
-for (const name of ["data/metrics.json", "data/runs.json"]) {
-  if (readFileSync(join(ROOT, name), "utf8") !== rebuilt[name]) {
-    errors.push(`${name}: stale - does not match a rebuild from data/claims. Run: npm run metrics`);
-  }
-}
-for (const domain of rebuilt.unlisted) {
-  errors.push(`data/claims: cited domain ${domain} is not on the watchlist in data/sources.json`);
+if (readFileSync(join(ROOT, "data/metrics.json"), "utf8") !== rebuilt["data/metrics.json"]) {
+  errors.push("data/metrics.json: stale - does not match a rebuild from data/observations. Run: npm run metrics");
 }
 for (const key of rebuilt.blocked || []) {
   // Calculation Methodology 1.3: a surplus response blocks every metric.
@@ -124,22 +119,26 @@ for (const source of read("data/sources.json").domains) {
   }
 }
 
-// Cross-file: every claim's observations must name a chatbot we publish a
-// profile for, and every cited domain must be on the watchlist.
+// Cross-file: the source run table against the recorded answers.
+const runIds = new Set(read("data/runs.json").runs.map((r) => r.run_id));
 const botKeys = new Set(Object.keys(read("data/platforms.json").platforms));
-const watchlist = new Set(read("data/sources.json").domains.map((d) => d.domain));
-for (const file of claimFiles) {
-  const claim = read(`data/claims/${file}`);
-  for (const o of claim.observations || []) {
-    if (!botKeys.has(o.chatbot)) {
-      errors.push(`data/claims/${file}: observation names unknown chatbot ${o.chatbot}`);
-    }
-    for (const d of o.cited_domains || []) {
-      if (!watchlist.has(d)) {
-        errors.push(`data/claims/${file}: observation cites ${d}, which is not in sources.json`);
-      }
-    }
+for (const run of read("data/runs.json").runs) {
+  for (const model of run.models) {
+    if (!botKeys.has(model)) errors.push(`data/runs.json: ${run.run_id} names unknown chatbot ${model}`);
   }
+  for (const id of run.claims) {
+    if (!claimIds.has(id)) errors.push(`data/runs.json: ${run.run_id} names unknown claim ${id}`);
+  }
+  if (!clusterIds.has(run.cluster)) errors.push(`data/runs.json: ${run.run_id} names unknown cluster ${run.cluster}`);
+}
+const obsDir = join(ROOT, "data/observations");
+const obsFiles = existsSync(obsDir) ? readdirSync(obsDir).filter((f) => f.endsWith(".csv")) : [];
+for (const file of obsFiles) {
+  const id = file.replace(/\.csv$/, "");
+  if (!runIds.has(id)) errors.push(`data/observations/${file}: no run with id ${id} in data/runs.json`);
+}
+for (const id of runIds) {
+  if (!obsFiles.includes(`${id}.csv`)) errors.push(`data/runs.json: ${id} has no data/observations/${id}.csv`);
 }
 
 if (errors.length) {
