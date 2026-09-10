@@ -92,7 +92,10 @@ const claims = files
     const allIncidents = metrics.incidents.filter((i) => i.claim === claim.id);
     const criticalIncidents = allIncidents.filter((i) => i.tier === "critical");
     const highIncidents = allIncidents.filter((i) => i.tier === "high");
-    const incidents = [...criticalIncidents, ...highIncidents.slice(0, 6)];
+    // Every CRITICAL is shown; HIGH fills up to twenty blocks in total and never
+    // more than six (the spec caps HIGH at ten, and the page has a budget).
+    const highShown = Math.max(0, Math.min(6, 20 - criticalIncidents.length));
+    const incidents = [...criticalIncidents, ...highIncidents.slice(0, highShown)];
 
     // ---------------------------------------------------------- Layer 2
     // One block per bot, worst first: critical incidents, then repeats. Counts

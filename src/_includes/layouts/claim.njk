@@ -192,26 +192,40 @@ wrap: wrap-narrow
   market, which question type, what it cited, how it was coded &mdash; is from the run.</p>
 {%- endif %}
 {%- for incident in claim.incidents %}
-<div class="ev {{ 'crit' if incident.tier == 'critical' else 'high' }}"{% if incident.synthetic %} data-synthetic="true"{% endif %}>
-  <div class="who" data-persona="{{ incident.persona }}">
-    <b>{{ incident.chatbot | botName }}</b> &middot; {{ incident.market | upper }} &middot;
-    {{ incident.persona }} {{ incident.persona | personaLabel }} &middot;
-    <time datetime="{{ incident.date | isoDate }}">{{ incident.date | shortDate }}</time> &middot;
-    repeat {{ incident.repeat_n }} &middot; <b class="{{ 'evc' if incident.tier == 'critical' else 'evh' }}">{{ incident.tier | upper }}</b>
-    {%- if incident.review %} &middot; human-verified{% endif %}
-    {%- if incident.is_live %} &middot; live formulation{% endif %}</div>
-  {%- if incident.prompt_text %}
-  <div class="q"><b>Question asked:</b> {{ incident.prompt_text | defangCopy }}</div>
-  {%- endif %}
-  <div class="sbs">
-    <div class="said"><small>What the assistant said</small>{{ incident.quote | defangCopy | default("Not published.") }}</div>
-    <div class="truth"><small>What is actually the case</small>{{ claim.canonical_debunk }}</div>
+{#- Collapsed by default: the summary is the gist - who, where, which question
+    type, how serious, what it said and what it cited - and opening it gives
+    the exchange with what is actually true beside it. -#}
+<details class="evd {{ 'crit' if incident.tier == 'critical' else 'high' }}"{% if incident.synthetic %} data-synthetic="true"{% endif %}>
+  <summary>
+    <span class="evmeta" data-persona="{{ incident.persona }}">
+      <b class="evtier {{ 'evc' if incident.tier == 'critical' else 'evh' }}">{{ incident.tier | upper }}</b>
+      <b>{{ incident.chatbot | botName }}</b>
+      <span>{{ incident.market | upper }}</span>
+      <span>{{ incident.persona }} {{ incident.persona | personaLabel }}</span>
+      <time datetime="{{ incident.date | isoDate }}">{{ incident.date | shortDate }}</time>
+    </span>
+    <span class="evgist">{% if incident.quote %}&ldquo;{{ incident.quote | defangCopy | truncate(120, true, "…") }}&rdquo;{% else %}Response text not published.{% endif %}</span>
+    <span class="evsrc">{% if incident.listed | length %}Cited a listed source:
+      {% for d in incident.listed %}<span class="domain">{{ d | defang }}</span>{% if not loop.last %}, {% endif %}{% endfor %}
+      {%- else %}No listed source &mdash; the claim came out of the model, not a search result{% endif %}</span>
+  </summary>
+  <div class="evbody">
+    {%- if incident.prompt_text %}
+    <div class="q"><b>Question asked:</b> {{ incident.prompt_text | defangCopy }}</div>
+    {%- endif %}
+    <div class="sbs">
+      <div class="said"><small>What the assistant said</small>{{ incident.quote | defangCopy | default("Not published.") }}</div>
+      <div class="truth"><small>What is actually the case</small>{{ claim.canonical_debunk }}</div>
+    </div>
+    <div class="evline"><b>Everything it cited:</b>
+      {%- if incident.domains | length %} {% for d in incident.domains %}<span{% if d in incident.listed %} class="domain"{% endif %}>{{ d | defang }}</span>{% if not loop.last %}, {% endif %}{% endfor %}
+      {%- else %} nothing{% endif %}</div>
+    <div class="evline">Repeat {{ incident.repeat_n }} of {{ claim.limitations.repeats }}
+      {%- if incident.judge_confidence %} &middot; judge confidence {{ incident.judge_confidence }}{% endif %}
+      &middot; {% if incident.review %}verified by a person{% else %}awaiting human review{% endif %}
+      {%- if incident.is_live %} &middot; live formulation{% endif %}</div>
   </div>
-  <div class="cited"><b>Cited:</b>
-    {%- if incident.domains | length %}{% for d in incident.domains %}<span{% if d in incident.listed %} class="domain"{% endif %}>{{ d | defang }}</span>{% if not loop.last %}, {% endif %}{% endfor %}
-    {%- else %}nothing &mdash; the claim came out of the model, not out of a search result{% endif %}
-    {%- if incident.judge_confidence %} &middot; judge confidence {{ incident.judge_confidence }}{% endif %}</div>
-</div>
+</details>
 {%- endfor %}
 {%- endif %}
 

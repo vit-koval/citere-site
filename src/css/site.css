@@ -541,22 +541,7 @@ h3.ssub{font-size:13px;font-weight:600;color:var(--dim);margin:22px 0 8px;letter
 .st-dormant{background:#eef0f3;color:var(--dim)}
 .st-archived{background:#f5f6f8;color:var(--dimmer)}
 
-/* Evidence blocks on a Claim Report: one per flagged answer. Styling lives here
-   rather than inline because a claim page carries up to two dozen of them. */
-.ev{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin-bottom:12px}
-.ev.crit{border-left:4px solid var(--false)}
-.ev.high{border-left:4px solid var(--mislead)}
-.ev .who{font-size:12.5px;color:var(--dim);margin-bottom:8px}
-.ev .q{font-size:13px;color:var(--dim);margin-bottom:8px}
-.ev .sbs{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:8px}
-.ev .sbs>div{border-radius:8px;padding:10px 12px;font-size:13px}
-.ev .said{background:var(--false-bg)}
-.ev .truth{background:var(--ok-bg)}
-.ev .sbs small{display:block;font-weight:600;font-size:11px;color:var(--dim);margin-bottom:4px}
-.ev .cited{font-size:12.5px;color:var(--dim)}
-@media(max-width:700px){.ev .sbs{grid-template-columns:1fr}}
-.ev .evc{color:var(--false)}
-.ev .evh{color:var(--mislead)}
+
 
 /* Countermeasures log. A row is a <details>, so it opens without JavaScript. */
 .cmrow{border-bottom:1px solid var(--line)}
@@ -619,3 +604,31 @@ details.schema>summary{display:inline-flex}
 .codebox{background:#0c1220;color:#d6dbe3;border-radius:10px;padding:12px 14px;margin:8px 0 0;
   font:12px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;overflow-x:auto;white-space:pre}
 .codebox code{font:inherit;color:inherit;background:none;padding:0}
+
+/* Evidence as a disclosure: the summary is enough to understand the incident,
+   the body holds the exchange. A <details>, so it opens without JavaScript. */
+.evd{background:var(--card);border:1px solid var(--line);border-radius:14px;margin-bottom:8px}
+.evd.crit{border-left:4px solid var(--false)}
+.evd.high{border-left:4px solid var(--mislead)}
+.evd>summary{display:grid;grid-template-columns:1fr auto;gap:4px 14px;padding:12px 16px;cursor:pointer;list-style:none}
+.evd>summary::-webkit-details-marker{display:none}
+.evd>summary::after{content:"";grid-column:2;grid-row:1 / span 3;align-self:center;width:8px;height:8px;
+  border-right:2px solid var(--dim);border-bottom:2px solid var(--dim);transform:rotate(45deg);transition:transform .15s}
+.evd[open]>summary::after{transform:rotate(-135deg)}
+.evd>summary:hover{background:var(--bg);border-radius:14px}
+.evd .evmeta{grid-column:1;display:flex;flex-wrap:wrap;align-items:center;gap:4px 12px;font-size:12.5px;color:var(--dim)}
+.evd .evtier{font-size:11px;letter-spacing:.03em}
+.evd .evgist{grid-column:1;font-size:13.5px;color:var(--ink)}
+.evd .evsrc{grid-column:1;font-size:12px;color:var(--dim)}
+.evd.crit .evsrc .domain{color:var(--false);font-weight:600}
+.evd .evbody{padding:4px 16px 14px}
+.evd .evbody .q{font-size:13px;color:var(--dim);margin-bottom:8px}
+.evd .evbody .sbs{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:8px}
+.evd .evbody .sbs>div{border-radius:8px;padding:10px 12px;font-size:13px}
+.evd .evbody .said{background:var(--false-bg)}
+.evd .evbody .truth{background:var(--ok-bg)}
+.evd .evbody .sbs small{display:block;font-weight:600;font-size:11px;color:var(--dim);margin-bottom:4px}
+.evd .evbody .evline{font-size:12.5px;color:var(--dim);margin-top:4px}
+.evd .evc{color:var(--false)}
+.evd .evh{color:var(--mislead)}
+@media(max-width:700px){.evd .evbody .sbs{grid-template-columns:1fr}}
